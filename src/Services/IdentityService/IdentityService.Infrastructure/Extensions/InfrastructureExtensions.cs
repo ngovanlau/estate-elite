@@ -1,9 +1,12 @@
-using IdentityService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Infrastructure.Extensions;
+
+using Data;
+using Application.Interfaces;
+using Repositories;
 
 public static class InfrastructureExtensions
 {
@@ -15,6 +18,8 @@ public static class InfrastructureExtensions
                 x => x.MigrationsAssembly("IdentityService.Infrastructure")
             )
         );
+
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
