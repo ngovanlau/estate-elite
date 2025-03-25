@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_estate
+    environment:
+      POSTGRES_USER: lau
+      POSTGRES_PASSWORD: lau2962003
+      POSTGRES_DB: estate_elite
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
