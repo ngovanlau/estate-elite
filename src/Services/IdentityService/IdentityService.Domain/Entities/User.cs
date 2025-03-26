@@ -3,7 +3,7 @@ namespace IdentityService.Domain.Entities;
 using SharedKernel.Entities;
 using SharedKernel.Enums;
 
-public class User : AuditableEntity
+public partial class User : AuditableEntity
 {
     public required string Username { get; init; }
     public required string Email { get; init; }
@@ -14,6 +14,4 @@ public class User : AuditableEntity
     public required string PasswordHash { get; set; }
     public string Avatar { get; set; } = "";
     public string Background { get; set; } = "";
-
-    public User() { }
 }

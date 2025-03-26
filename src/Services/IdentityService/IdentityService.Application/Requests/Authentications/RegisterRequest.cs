@@ -1,6 +1,10 @@
-namespace IdentityService.Application.Requests.Authentications;
+using MediatR;
 
-public class RegisterRequest
+namespace IdentityService.Application.Requests;
+
+using SharedKernel.Commons;
+
+public class RegisterRequest : IRequest<ApiResponse>
 {
     public string? Username { get; set; }
     public string? Email { get; set; }

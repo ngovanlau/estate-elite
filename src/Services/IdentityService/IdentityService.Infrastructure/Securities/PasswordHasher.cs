@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 
 namespace IdentityService.Infrastructure.Securities;
 
-using Domain.Interfaces;
+using IdentityService.Application.Interfaces;
 
 public class PasswordHasher : IPasswordHasher
 {

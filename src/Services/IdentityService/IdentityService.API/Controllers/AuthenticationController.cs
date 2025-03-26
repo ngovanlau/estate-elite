@@ -1,11 +1,11 @@
 
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers;
 
-using IdentityService.Application.Requests.Authentications;
-using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Controllers;
+using Application.Requests;
 
 public class AuthenticationController(IMediator mediator) : BaseController(mediator)
 {
