@@ -7,6 +7,7 @@ namespace IdentityService.Infrastructure.Extensions;
 using Data;
 using Application.Interfaces;
 using Repositories;
+using Securities;
 
 public static class InfrastructureExtensions
 {
@@ -19,7 +20,14 @@ public static class InfrastructureExtensions
             )
         );
 
+        // Repository
         services.AddScoped<IUserRepository, UserRepository>();
+
+        // Auto mapper
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+        // Dependency injection
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
 
         return services;
     }

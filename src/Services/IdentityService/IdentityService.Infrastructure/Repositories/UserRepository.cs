@@ -11,7 +11,7 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
 {
     public async Task<UserDto> Create(RegisterRequest request)
     {
-        var user = User.Create(request.Username + "", request.Email + "", request.Password + "", request.Fullname + "");
+        var user = User.Create(request.Username + "", request.Email + "", request.Fullname + "", request.Password + "");
         await context.AddAsync(user);
         await context.SaveChangesAsync();
 
