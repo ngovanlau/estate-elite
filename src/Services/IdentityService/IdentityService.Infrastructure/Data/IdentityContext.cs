@@ -4,10 +4,8 @@ namespace IdentityService.Infrastructure.Data;
 
 using Domain.Entities;
 
-public class IdentityContext : DbContext
+public class IdentityContext(DbContextOptions<IdentityContext> options) : DbContext(options)
 {
-    public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
-
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

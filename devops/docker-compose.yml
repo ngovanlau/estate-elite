@@ -18,7 +18,7 @@ services:
     image: identity-service-image
     build:
       context: ../src
-      dockerfile: IdentityService.Dockerfile
+      dockerfile: identity-service.dockerfile
     container_name: identity-service-container-1
     ports:
       - "5001:5001"
@@ -33,7 +33,7 @@ services:
     image: identity-service-image
     build:
       context: ../src
-      dockerfile: IdentityService.Dockerfile
+      dockerfile: identity-service.dockerfile
     container_name: identity-service-container-2
     ports:
       - "5002:5001"
@@ -48,6 +48,7 @@ services:
     image: nginx-image
     build:
       context: ./nginx
+      dockerfile: nginx.dockerfile
     container_name: nginx-container
     ports:
       - "80:80"
