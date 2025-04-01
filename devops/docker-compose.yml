@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres:17
+    image: postgres
     container_name: postgres-container
     environment:
       POSTGRES_USER: lau
@@ -14,11 +14,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
-  identity-service:
+  identity-service-1:
+    image: identity-service-image
     build:
       context: ../src
       dockerfile: IdentityService.Dockerfile
-    container_name: identity-service-container
+    container_name: identity-service-container-1
     ports:
       - "5001:5001"
     environment:
@@ -28,7 +29,23 @@ services:
     networks:
       - backend_network
 
+  identity-service-2:
+    image: identity-service-image
+    build:
+      context: ../src
+      dockerfile: IdentityService.Dockerfile
+    container_name: identity-service-container-2
+    ports:
+      - "5002:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - postgres
+    networks:
+      - backend_network
+
   nginx:
+    image: nginx-image
     build:
       context: ./nginx
     container_name: nginx-container
@@ -37,7 +54,8 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - identity-service
+      - identity-service-1
+      - identity-service-2
     networks:
       - backend_network
 
