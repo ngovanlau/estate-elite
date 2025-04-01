@@ -32,7 +32,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); enable when use https
 app.UseAuthorization();
 app.MapControllers();
 
