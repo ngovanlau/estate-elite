@@ -2,12 +2,12 @@ using MediatR;
 
 namespace IdentityService.Application.Commands;
 
-using Validates;
+using Interfaces;
 using Requests;
 using SharedKernel.Commons;
 using SharedKernel.Extensions;
+using Validates;
 using static SharedKernel.Constants.ErrorCode;
-using IdentityService.Application.Interfaces;
 
 public class RegisterHandler(IUserRepository repository, IPasswordHasher hasher) : IRequestHandler<RegisterRequest, ApiResponse>
 {
@@ -21,6 +21,16 @@ public class RegisterHandler(IUserRepository repository, IPasswordHasher hasher)
         {
             var errors = validate.Errors.ToDic();
             return res.SetError(nameof(E000), E000, errors);
+        }
+
+        if (await repository.IsUsernameExist(request.Username + ""))
+        {
+            return res.SetError(nameof(E101), E101);
+        }
+
+        if (await repository.IsEmailExist(request.Email + ""))
+        {
+            return res.SetError(nameof(E102), E102);
         }
 
         request.Password = hasher.Hash(request.Password + "");
