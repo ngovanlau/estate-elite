@@ -1,6 +1,8 @@
 using System.Reflection;
 using IdentityService.Application.Mediators;
+using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,5 +37,12 @@ app.UseSwaggerUI();
 // app.UseHttpsRedirection(); enable when use https
 app.UseAuthorization();
 app.MapControllers();
+
+// Apply any pending migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+    await dbContext.Database.MigrateAsync(); // Automatically apply migrations
+}
 
 app.Run();
