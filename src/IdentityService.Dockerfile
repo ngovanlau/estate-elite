@@ -31,5 +31,5 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 EXPOSE 5001
-ENV ASPNETCORE_URLS=http://+:5001;https://+:5101
+ENV ASPNETCORE_URLS=http://+:5001
 ENTRYPOINT ["dotnet", "IdentityService.API.dll"]
