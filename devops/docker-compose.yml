@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_network
     restart: unless-stopped
 
   identity-service-1:
@@ -24,6 +26,7 @@ services:
       - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PostgresConnection=Host=postgres-container;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
     depends_on:
       - postgres
     networks:
@@ -39,6 +42,7 @@ services:
       - "5002:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PostgresConnection=Host=postgres-container;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
     depends_on:
       - postgres
     networks:
