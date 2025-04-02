@@ -2,20 +2,19 @@
 
   <ItemGroup>
     <ProjectReference Include="../IdentityService.Application/IdentityService.Application.csproj" />
-    <ProjectReference
-      Include="../IdentityService.Infrastructure/IdentityService.Infrastructure.csproj" />
+    <ProjectReference Include="../IdentityService.Infrastructure/IdentityService.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
   </ItemGroup>
 
 </Project>

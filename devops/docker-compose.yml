@@ -13,8 +13,23 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - backend_network
+      - app_network
     restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=lau
+      - RABBITMQ_DEFAULT_PASS=lau2962003
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app_network
+    restart: always
 
   identity-service-1:
     image: identity-service-image
@@ -30,7 +45,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - backend_network
+      - app_network
 
   identity-service-2:
     image: identity-service-image
@@ -46,7 +61,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - backend_network
+      - app_network
 
   nginx:
     image: nginx-image
@@ -62,11 +77,13 @@ services:
       - identity-service-1
       - identity-service-2
     networks:
-      - backend_network
+      - app_network
 
 networks:
-  backend_network:
+  app_network:
     driver: bridge
 
 volumes:
   postgres_data:
+  rabbitmq_data:
+    driver: local
