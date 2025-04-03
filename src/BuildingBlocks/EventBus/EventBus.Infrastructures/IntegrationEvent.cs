@@ -1,6 +1,6 @@
-using EventBus.Interfaces;
+namespace EventBus.Infrastructures;
 
-namespace EventBus;
+using Interfaces;
 
 public class IntegrationEvent : IIntegrationEvent
 {

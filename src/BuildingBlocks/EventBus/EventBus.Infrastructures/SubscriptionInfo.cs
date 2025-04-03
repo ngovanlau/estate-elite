@@ -1,4 +1,4 @@
-namespace EventBus;
+namespace EventBus.Infrastructures;
 
 public class SubscriptionInfo
 {
