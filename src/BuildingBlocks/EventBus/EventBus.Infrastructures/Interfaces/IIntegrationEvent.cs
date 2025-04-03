@@ -1,7 +1,4 @@
-using System;
-
-namespace EventBus.Interfaces;
-
+namespace EventBus.Infrastructures.Interfaces;
 public interface IIntegrationEvent
 {
     public Guid Id { get; }

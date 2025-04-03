@@ -1,4 +1,4 @@
-namespace EventBus.Interfaces;
+namespace EventBus.Infrastructures.Interfaces;
 
 public interface IIntegrationEventHandler
 {
