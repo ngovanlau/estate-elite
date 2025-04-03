@@ -24,15 +24,34 @@ public class RabbitMQEventBus : IEventBus
     private string _queueName;
     private const string BROKER_NAME = "EstateEliteEventBus";
 
-    public RabbitMQEventBus(IRabbitMQConnection connection, ILogger logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
+    private RabbitMQEventBus(IRabbitMQConnection connection, ILogger logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
     {
         _connection = connection;
         _logger = logger;
         _manager = manager;
         _queueName = queueName;
         _provider = provider;
-        _channel = CreateConsumerChanelAsync().GetAwaiter().GetResult();
         _retryCount = retryCount;
+        _channel = default!;
+    }
+
+    public static async Task<RabbitMQEventBus> CreateAsync(IRabbitMQConnection connection, ILogger logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
+    {
+        if (string.IsNullOrEmpty(queueName))
+        {
+            throw new ArgumentException("Queue name cannot be null or empty", nameof(queueName));
+        }
+
+        var eventBus = new RabbitMQEventBus(connection, logger, provider, manager, queueName, retryCount);
+        await eventBus.InitializeAsync();
+
+        return eventBus;
+    }
+
+    private async Task InitializeAsync()
+    {
+        _channel = await CreateConsumerChannelAsync();
+        await StartBasicConsumeAsync();
     }
 
     private async Task OnEventRemovedAsync(string eventName)
@@ -139,7 +158,7 @@ public class RabbitMQEventBus : IEventBus
         _manager.Clear();
     }
 
-    private async Task<IChannel> CreateConsumerChanelAsync()
+    private async Task<IChannel> CreateConsumerChannelAsync()
     {
         if (!_connection.IsConnected)
         {
@@ -158,8 +177,8 @@ public class RabbitMQEventBus : IEventBus
         {
             _logger.Warning(ea.Exception, "Recreating RabbitMQ consumer channel");
 
-            _channel.Dispose();
-            _channel = await CreateConsumerChanelAsync();
+            await _channel.DisposeAsync();
+            _channel = await CreateConsumerChannelAsync();
             await StartBasicConsumeAsync();
         };
 

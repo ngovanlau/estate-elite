@@ -9,7 +9,7 @@ using Application.Interfaces;
 using Repositories;
 using Securities;
 
-public static class InfrastructureExtensions
+public static class InfrastructureServicesExtensions
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
