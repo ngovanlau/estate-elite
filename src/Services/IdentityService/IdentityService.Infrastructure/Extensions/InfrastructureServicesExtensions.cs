@@ -8,7 +8,7 @@ using Application.Interfaces;
 using Data;
 using EventBus.RabbitMQ.Extensions;
 using Repositories;
-using Securities;
+using Utilities;
 
 public static class InfrastructureServicesExtensions
 {

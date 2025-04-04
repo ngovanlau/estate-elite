@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\Buildin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalService", "src\Services\FunctionalService\FunctionalService.csproj", "{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedCache", "DistributedCache", "{8B944508-7C20-AC23-D7EB-A0F4251B2BDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DistributedCache.Redis", "src\BuildingBlocks\DistributedCache\DistributedCache.Redis\DistributedCache.Redis.csproj", "{40D2C1F5-B947-4121-8DBD-6361A909979A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +139,18 @@ Global
 		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x64.Build.0 = Release|Any CPU
 		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x86.ActiveCfg = Release|Any CPU
 		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x86.Build.0 = Release|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Debug|x64.Build.0 = Debug|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Debug|x86.Build.0 = Debug|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Release|x64.ActiveCfg = Release|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Release|x64.Build.0 = Release|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Release|x86.ActiveCfg = Release|Any CPU
+		{40D2C1F5-B947-4121-8DBD-6361A909979A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,5 +168,7 @@ Global
 		{2E3973E2-4219-4AD4-9D20-A609981D9673} = {51F37690-481E-380E-F450-3E8F19A29BD8}
 		{20235C38-7E9F-4445-ABEC-CF92A4222C89} = {99DFED88-10FB-A485-4FCD-BB0F4424F5A7}
 		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB} = {621873E3-7108-4445-A59A-4C96046D5D7A}
+		{8B944508-7C20-AC23-D7EB-A0F4251B2BDA} = {99DFED88-10FB-A485-4FCD-BB0F4424F5A7}
+		{40D2C1F5-B947-4121-8DBD-6361A909979A} = {8B944508-7C20-AC23-D7EB-A0F4251B2BDA}
 	EndGlobalSection
 EndGlobal

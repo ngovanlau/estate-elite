@@ -8,9 +8,10 @@ COPY Services/IdentityService/IdentityService.Application/IdentityService.Applic
 COPY Services/IdentityService/IdentityService.Domain/IdentityService.Domain.csproj Services/IdentityService/IdentityService.Domain/
 COPY Services/IdentityService/IdentityService.Infrastructure/IdentityService.Infrastructure.csproj Services/IdentityService/IdentityService.Infrastructure/
 
-COPY BuildingBlocks/EventBus/EventBus.csproj BuildingBlocks/EventBus/
-COPY BuildingBlocks/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj BuildingBlocks/EventBus.RabbitMQ/
+COPY BuildingBlocks/EventBus/EventBus.Infrastructures/EventBus.Infrastructures.csproj BuildingBlocks/EventBus/EventBus.Infrastructures/
+COPY BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj BuildingBlocks/EventBus/EventBus.RabbitMQ/
 COPY BuildingBlocks/SharedKernel/SharedKernel.csproj BuildingBlocks/SharedKernel/
+COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj BuildingBlocks/DistributedCache/DistributedCache.Redis/
 
 # Restore packages
 RUN dotnet restore Services/IdentityService/IdentityService.API/IdentityService.API.csproj
