@@ -4,8 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Infrastructure.Extensions;
 
-using Data;
 using Application.Interfaces;
+using Data;
+using EventBus.RabbitMQ.Extensions;
 using Repositories;
 using Securities;
 
@@ -19,6 +20,9 @@ public static class InfrastructureServicesExtensions
                 x => x.MigrationsAssembly("IdentityService.Infrastructure")
             )
         );
+
+        // Event bus
+        services.AddEventBusServices(configuration);
 
         // Repository
         services.AddScoped<IUserRepository, UserRepository>();
