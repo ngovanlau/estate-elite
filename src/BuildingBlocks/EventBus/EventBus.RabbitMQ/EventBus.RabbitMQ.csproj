@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../EventBus.Infrastructures/EventBus.Infrastructures.csproj" />
-    <ProjectReference Include="..\EventBus\EventBus.Infrastructures\EventBus.Infrastructures.csproj" />
   </ItemGroup>
 
   <ItemGroup>
