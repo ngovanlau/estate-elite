@@ -15,7 +15,7 @@ public static class EventBusServicesExtension
         services.AddSingleton<IEventBusSubscriptionsManager, InMemoryEventBusSubscriptionsManager>();
 
         var retryCount = 5;
-        if (!int.TryParse(configuration["EventBus:RetryCount"], out retryCount))
+        if (!int.TryParse(configuration["RabbitMQ:RetryCount"], out retryCount))
         {
             Log.Warning("Invalid retry count configured. Using default value {RetryCount}", retryCount);
         }
