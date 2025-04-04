@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Infrastructures", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\BuildingBlocks\SharedKernel\SharedKernel.csproj", "{20235C38-7E9F-4445-ABEC-CF92A4222C89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalService", "src\Services\FunctionalService\FunctionalService.csproj", "{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,18 @@ Global
 		{20235C38-7E9F-4445-ABEC-CF92A4222C89}.Release|x64.Build.0 = Release|Any CPU
 		{20235C38-7E9F-4445-ABEC-CF92A4222C89}.Release|x86.ActiveCfg = Release|Any CPU
 		{20235C38-7E9F-4445-ABEC-CF92A4222C89}.Release|x86.Build.0 = Release|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Debug|x64.Build.0 = Debug|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Debug|x86.Build.0 = Debug|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x64.ActiveCfg = Release|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x64.Build.0 = Release|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x86.ActiveCfg = Release|Any CPU
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,5 +151,6 @@ Global
 		{0DB9F883-DF2E-4FCB-B190-FFF03173F1CA} = {51F37690-481E-380E-F450-3E8F19A29BD8}
 		{2E3973E2-4219-4AD4-9D20-A609981D9673} = {51F37690-481E-380E-F450-3E8F19A29BD8}
 		{20235C38-7E9F-4445-ABEC-CF92A4222C89} = {99DFED88-10FB-A485-4FCD-BB0F4424F5A7}
+		{3DBD7D69-7FD7-419E-B22C-AE843B1EFBAB} = {621873E3-7108-4445-A59A-4C96046D5D7A}
 	EndGlobalSection
 EndGlobal
