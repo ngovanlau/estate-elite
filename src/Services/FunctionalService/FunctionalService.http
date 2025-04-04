@@ -1,0 +1,6 @@
+@FunctionalService_HostAddress = http://localhost:5220
+
+GET {{FunctionalService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
