@@ -16,6 +16,23 @@ services:
       - app_network
     restart: unless-stopped
 
+  redis:
+    image: redis
+    container_name: redis-container
+    command: redis-server --requirepass lau2962003 --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: always
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "lau2962003", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq-container
@@ -85,5 +102,6 @@ networks:
 
 volumes:
   postgres_data:
+  redis-data:
   rabbitmq_data:
     driver: local
