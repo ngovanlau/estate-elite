@@ -17,7 +17,7 @@ public static class EventBusServicesExtension
         var retryCount = 5;
         if (!int.TryParse(configuration["RabbitMQ:RetryCount"], out retryCount))
         {
-            Log.Warning("Invalid retry count configured. Using default value {RetryCount}", retryCount);
+            Log.Logger.Warning("Invalid retry count configured. Using default value {RetryCount}", retryCount);
         }
 
         // Configure RabbitMQ connection
@@ -86,6 +86,9 @@ public static class EventBusServicesExtension
             var manager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
             var serviceName = configuration["ServiceName"] ?? "UnknownService";
             var queueName = $"{serviceName}_event_bus";
+
+            // Logging the initialization of the EventBus
+            logger.Information("Creating RabbitMQ EventBus with Queue: {QueueName}", queueName);
 
             return RabbitMQEventBus.CreateAsync(connection, logger, sp, manager, queueName, retryCount).GetAwaiter().GetResult();
         });

@@ -45,7 +45,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Register the custom logging middleware for all requests
+// Add log service
+builder.Services.AddSingleton(Log.Logger);
+
+// Add services from Infrastructure layer
 builder.Services.AddInfrastructureServices(configuration);
 
 var app = builder.Build();
