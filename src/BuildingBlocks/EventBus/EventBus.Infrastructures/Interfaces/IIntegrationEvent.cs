@@ -1,6 +1,6 @@
 namespace EventBus.Infrastructures.Interfaces;
 public interface IIntegrationEvent
 {
-    public Guid Id { get; }
-    public DateTime CreatedOn { get; }
+    Guid Id { get; }
+    DateTime CreatedOn { get; }
 }
