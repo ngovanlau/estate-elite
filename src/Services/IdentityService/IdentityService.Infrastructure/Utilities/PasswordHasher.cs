@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace IdentityService.Infrastructure.Securities;
+namespace IdentityService.Infrastructure.Utilities;
 
 using IdentityService.Application.Interfaces;
 
