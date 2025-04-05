@@ -45,11 +45,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add log service
-builder.Services.AddSingleton(Log.Logger);
-
 // Add services from Infrastructure layer
 builder.Services.AddInfrastructureServices(configuration);
+
+// Add serilog service
+builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
 
 var app = builder.Build();
 
