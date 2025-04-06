@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
-// Serilog configuration
+// Use Serilog for logging
 builder.Host.UseSerilog((context, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .Enrich.FromLogContext());
@@ -18,17 +18,18 @@ builder.Host.UseSerilog((context, configuration) => configuration
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
 
-builder.Services.AddSingleton(Log.Logger);
-
-// Register Event Bus and dependencies
-builder.Services.AddEventBusServices(builder.Configuration);
+// Add EventBus & dependencies
+builder.Services.AddEventBusServices(configuration);
 
 builder.Services.Configure<SmtpSetting>(builder.Configuration.GetSection("SmtpSetting"));
-builder.Services.AddTransient<IEmailService, EmailService>();
-builder.Services.AddTransient<SendConfirmationCodeEventHandler>();
 
-builder.Services.AddHealthChecks();
+// Add Email service
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+// Add event handlers
+builder.Services.AddTransient<SendConfirmationCodeEventHandler>();
 
 var app = builder.Build();
 
@@ -41,8 +42,6 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// app.UseHttpsRedirection();
-
 app.MapHealthChecks("/health");
-
+// app.UseHttpsRedirection();
 app.Run();

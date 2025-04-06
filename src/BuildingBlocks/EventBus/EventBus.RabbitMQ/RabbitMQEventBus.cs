@@ -1,6 +1,5 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Serilog;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
@@ -12,11 +11,12 @@ namespace EventBus.RabbitMQ;
 
 using Infrastructures.Interfaces;
 using Interfaces;
+using Microsoft.Extensions.Logging;
 
 public class RabbitMQEventBus : IEventBus
 {
     private readonly IRabbitMQConnection _connection;
-    private readonly ILogger _logger;
+    private readonly ILogger<RabbitMQEventBus> _logger;
     private readonly IEventBusSubscriptionsManager _manager;
     private readonly IServiceProvider _provider;
     private readonly int _retryCount;
@@ -24,7 +24,7 @@ public class RabbitMQEventBus : IEventBus
     private string _queueName;
     private const string BROKER_NAME = "EstateEliteEventBus";
 
-    private RabbitMQEventBus(IRabbitMQConnection connection, ILogger logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
+    private RabbitMQEventBus(IRabbitMQConnection connection, ILogger<RabbitMQEventBus> logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
     {
         _connection = connection;
         _logger = logger;
@@ -36,7 +36,7 @@ public class RabbitMQEventBus : IEventBus
         _manager.EventRemovedAsync += OnEventRemovedAsync;
     }
 
-    public static async Task<RabbitMQEventBus> CreateAsync(IRabbitMQConnection connection, ILogger logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
+    public static async Task<RabbitMQEventBus> CreateAsync(IRabbitMQConnection connection, ILogger<RabbitMQEventBus> logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
     {
         if (string.IsNullOrEmpty(queueName))
         {
@@ -84,12 +84,12 @@ public class RabbitMQEventBus : IEventBus
             .WaitAndRetryAsync(_retryCount, retryAttempt =>
                 TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time) =>
                     {
-                        _logger.Warning(ex, "Could not publish event: {EventId} after {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message);
+                        _logger.LogWarning(ex, "Could not publish event: {EventId} after {Timeout}s ({ExceptionMessage})", @event.Id, $"{time.TotalSeconds:n1}", ex.Message);
                     });
 
         var eventName = @event.GetType().Name;
 
-        _logger.Information("Creating RabbitMQ channel to publish event: {EventId} ({EventName})", @event.Id, eventName);
+        _logger.LogInformation("Creating RabbitMQ channel to publish event: {EventId} ({EventName})", @event.Id, eventName);
 
         using var channel = await _connection.CreateChannelAsync();
 
@@ -102,7 +102,7 @@ public class RabbitMQEventBus : IEventBus
                 DeliveryMode = DeliveryModes.Persistent
             };
 
-            _logger.Information("Publishing event to RabbitMQ: {EventId}", @event.Id);
+            _logger.LogInformation("Publishing event to RabbitMQ: {EventId}", @event.Id);
 
             await channel.BasicPublishAsync(
                 exchange: BROKER_NAME,
@@ -119,7 +119,7 @@ public class RabbitMQEventBus : IEventBus
         var eventName = _manager.GetEventKey<T>();
         await DoInternalSubscription(eventName);
 
-        _logger.Information("Subscribing to event {EventName} with {EventHandler}", eventName, typeof(TH).GetType().Name);
+        _logger.LogInformation("Subscribing to event {EventName} with {EventHandler}", eventName, typeof(TH).GetType().Name);
 
         _manager.AddSubscription<T, TH>();
         await StartBasicConsumeAsync();
@@ -144,7 +144,7 @@ public class RabbitMQEventBus : IEventBus
     {
         var eventName = _manager.GetEventKey<T>();
 
-        _logger.Information("Unsubscribing from event {EventName}", eventName);
+        _logger.LogInformation("Unsubscribing from event {EventName}", eventName);
 
         _manager.RemoveSubscription<T, TH>();
     }
@@ -166,7 +166,7 @@ public class RabbitMQEventBus : IEventBus
             await _connection.TryConnectAsync();
         }
 
-        _logger.Information("Creating RabbitMQ consumer channel");
+        _logger.LogInformation("Creating RabbitMQ consumer channel");
 
         var channel = await _connection.CreateChannelAsync();
 
@@ -176,7 +176,7 @@ public class RabbitMQEventBus : IEventBus
 
         channel.CallbackExceptionAsync += async (sender, ea) =>
         {
-            _logger.Warning(ea.Exception, "Recreating RabbitMQ consumer channel");
+            _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel");
 
             await _channel.DisposeAsync();
             _channel = await CreateConsumerChannelAsync();
@@ -188,7 +188,7 @@ public class RabbitMQEventBus : IEventBus
 
     private async Task StartBasicConsumeAsync()
     {
-        _logger.Information("Starting RabbitMQ basic consume");
+        _logger.LogInformation("Starting RabbitMQ basic consume");
 
         if (_channel != null)
         {
@@ -200,7 +200,7 @@ public class RabbitMQEventBus : IEventBus
         }
         else
         {
-            _logger.Error("StartBasicConsume can't call on _channel == null");
+            _logger.LogError("StartBasicConsume can't call on _channel == null");
         }
     }
 
@@ -222,7 +222,7 @@ public class RabbitMQEventBus : IEventBus
         }
         catch (Exception ex)
         {
-            _logger.Warning(ex, "Error Processing message \"{Message}\"", message);
+            _logger.LogWarning(ex, "Error Processing message \"{Message}\"", message);
 
             // Choose a clear error handling strategy
             // Option 1: Requeue for later retry
@@ -238,7 +238,7 @@ public class RabbitMQEventBus : IEventBus
 
     private async Task ProcessEventAsync(string eventName, string message)
     {
-        _logger.Information("Processing RabbitMQ event: {EventName}", eventName);
+        _logger.LogInformation("Processing RabbitMQ event: {EventName}", eventName);
 
         if (_manager.HasSubscriptionsForEvent(eventName))
         {
@@ -251,14 +251,14 @@ public class RabbitMQEventBus : IEventBus
                 var handler = scope.ServiceProvider.GetService(subscription.HandlerType);
                 if (handler == null)
                 {
-                    _logger.Warning("Handler not found for event: {EventName}", eventName);
+                    _logger.LogWarning("Handler not found for event: {EventName}", eventName);
                     continue;
                 }
                 var eventType = _manager.GetEventTypeByName(eventName);
                 var integrationEvent = JsonSerializer.Deserialize(message, eventType, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 if (integrationEvent == null)
                 {
-                    _logger.Warning("Integration event not found for event: {EventName}", eventName);
+                    _logger.LogWarning("Integration event not found for event: {EventName}", eventName);
                     continue;
                 }
 
@@ -270,7 +270,7 @@ public class RabbitMQEventBus : IEventBus
         }
         else
         {
-            _logger.Warning("No subscriptions for event: {EventName}", eventName);
+            _logger.LogWarning("No subscriptions for event: {EventName}", eventName);
         }
     }
 }

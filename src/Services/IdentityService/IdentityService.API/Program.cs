@@ -42,12 +42,11 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-
+builder.Services.AddHealthChecks();
 
 // Add services
 builder.Services.AddDistributedServices(configuration);
 builder.Services.AddInfrastructureServices(configuration);
-builder.Services.AddSingleton(Log.Logger);
 
 // Register Event Bus and dependencies
 builder.Services.AddEventBusServices(configuration);
@@ -89,6 +88,7 @@ try
         }
     }
 
+    app.MapHealthChecks("/health");
     app.Run();
 }
 catch (Exception ex)

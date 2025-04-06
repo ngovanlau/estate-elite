@@ -5,13 +5,12 @@ namespace FunctionalService.Services;
 using Interfaces;
 using MailKit.Net.Smtp;
 using MimeKit;
-using Serilog;
 using Settings;
 
-public class EmailService(IOptions<SmtpSetting> options, ILogger logger) : IEmailService
+public class EmailService(IOptions<SmtpSetting> options, ILogger<EmailService> logger) : IEmailService
 {
     private readonly SmtpSetting _emailSetting = options.Value;
-    private readonly ILogger _logger = logger;
+    private readonly ILogger<EmailService> _logger = logger;
 
     public async Task SendConfirmationCodeAsync(string email, string fullname, string confirmationCode, TimeSpan expiryTime)
     {
@@ -33,7 +32,7 @@ public class EmailService(IOptions<SmtpSetting> options, ILogger logger) : IEmai
 
     private async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
     {
-        _logger.Information("Preparing to send email to {Email} with subject {Subject}", toEmail, subject);
+        _logger.LogInformation("Preparing to send email to {Email} with subject {Subject}", toEmail, subject);
 
         try
         {
@@ -54,35 +53,35 @@ public class EmailService(IOptions<SmtpSetting> options, ILogger logger) : IEmai
                 // Enable logging of SMTP client details
                 client.MessageSent += (sender, args) =>
                 {
-                    _logger.Information("Email sent successfully to {Email} with message id {MessageId}",
+                    _logger.LogInformation("Email sent successfully to {Email} with message id {MessageId}",
                             toEmail, args.Message.MessageId);
                 };
 
                 // Connect to SMTP server with secure connection if required
-                _logger.Debug("Connecting to SMTP server {Server}:{Port}", _emailSetting.Server, _emailSetting.Port);
+                _logger.LogDebug("Connecting to SMTP server {Server}:{Port}", _emailSetting.Server, _emailSetting.Port);
                 await client.ConnectAsync(_emailSetting.Server, _emailSetting.Port, _emailSetting.SecurityOptions);
 
                 // Authenticate if credentials provided
                 if (!string.IsNullOrWhiteSpace(_emailSetting.Username) && !string.IsNullOrWhiteSpace(_emailSetting.Password))
                 {
-                    _logger.Debug("Authenticating with SMTP server using username {Username}", _emailSetting.Username);
+                    _logger.LogDebug("Authenticating with SMTP server using username {Username}", _emailSetting.Username);
                     await client.AuthenticateAsync(_emailSetting.Username, _emailSetting.Password);
                 }
 
                 // Send email
-                _logger.Debug("Sending email to {Email}", toEmail);
+                _logger.LogDebug("Sending email to {Email}", toEmail);
                 await client.SendAsync(message);
 
                 // Disconnect
-                _logger.Debug("Disconnect from SMTP server");
+                _logger.LogDebug("Disconnect from SMTP server");
                 await client.DisconnectAsync(true);
             }
 
-            _logger.Information("Email sent successfully to {Email}", toEmail);
+            _logger.LogInformation("Email sent successfully to {Email}", toEmail);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Failed to send email to {Email}: {ErrorMessage}", toEmail, ex.Message);
+            _logger.LogError(ex, "Failed to send email to {Email}: {ErrorMessage}", toEmail, ex.Message);
             throw;
         }
     }

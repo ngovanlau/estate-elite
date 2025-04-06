@@ -3,16 +3,16 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System.Net.Sockets;
-using Serilog;
 
 namespace EventBus.RabbitMQ;
 
 using Interfaces;
+using Microsoft.Extensions.Logging;
 
-public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int retryCount = 5) : IRabbitMQConnection
+public class RabbitMQConnection(IConnectionFactory factory, ILogger<RabbitMQConnection> logger, int retryCount = 5) : IRabbitMQConnection
 {
     private readonly IConnectionFactory _factory = factory;
-    private readonly ILogger _logger = logger;
+    private readonly ILogger<RabbitMQConnection> _logger = logger;
     private readonly int _retryCount = retryCount;
     private IConnection? _connection;
     private bool _disposed;
@@ -37,7 +37,7 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
 
     public async Task<bool> TryConnectAsync()
     {
-        _logger.Information("RabbitMQ Client is trying to connect");
+        _logger.LogInformation("RabbitMQ Client is trying to connect");
 
         try
         {
@@ -48,7 +48,7 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
                 .WaitAndRetryAsync(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                 (ex, time) =>
                 {
-                    _logger.Warning(ex, "RabbitMQ Client could not connect after {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message);
+                    _logger.LogWarning(ex, "RabbitMQ Client could not connect after {TimeOut}s ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message);
                 });
 
             _connection = await policy.ExecuteAsync(async () => await _factory.CreateConnectionAsync());
@@ -59,13 +59,13 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
                 _connection.CallbackExceptionAsync += OnCallbackExceptionAsync;
                 _connection.ConnectionBlockedAsync += OnConnectionBlockedAsync;
 
-                _logger.Information("RabbitMQ Client acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
+                _logger.LogInformation("RabbitMQ Client acquired a persistent connection to '{HostName}' and is subscribed to failure events", _connection.Endpoint.HostName);
 
                 return true;
             }
             else
             {
-                _logger.Fatal("FATAL ERROR: RabbitMQ connections could not be created and opened");
+                _logger.LogError("FATAL ERROR: RabbitMQ connections could not be created and opened");
                 return false;
             }
         }
@@ -79,7 +79,7 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
     {
         if (_disposed) return;
 
-        _logger.Warning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+        _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
 
         await TryConnectAsync();
     }
@@ -88,7 +88,7 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
     {
         if (_disposed) return;
 
-        _logger.Warning("A RabbitMQ connection threw an exception. Trying to re-connect...");
+        _logger.LogWarning("A RabbitMQ connection threw an exception. Trying to re-connect...");
 
         await TryConnectAsync();
     }
@@ -97,7 +97,7 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
     {
         if (_disposed) return;
 
-        _logger.Warning("A RabbitMQ connection is blocked. Trying to re-connect...");
+        _logger.LogWarning("A RabbitMQ connection is blocked. Trying to re-connect...");
 
         await TryConnectAsync();
     }
@@ -119,7 +119,7 @@ public class RabbitMQConnection(IConnectionFactory factory, ILogger logger, int 
         }
         catch (IOException ex)
         {
-            _logger.Fatal("FATAL ERROR: RabbitMQ connection could not be disposed: {Message}", ex.Message);
+            _logger.LogError("FATAL ERROR: RabbitMQ connection could not be disposed: {Message}", ex.Message);
         }
     }
 }
