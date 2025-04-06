@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityService.API.Controllers;
 
 using SharedKernel.Controllers;
-using Application.Requests;
+using Application.Requests.Authentications;
 
 public class AuthenticationController(IMediator mediator) : BaseController(mediator)
 {

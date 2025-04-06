@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace IdentityService.Application.Mediators;
 
 using SharedKernel.Commons;
-using Commands;
-using Requests;
+using Commands.Authentications;
+using IdentityService.Application.Requests.Authentications;
 
 public static class AuthenticatorMediator
 {

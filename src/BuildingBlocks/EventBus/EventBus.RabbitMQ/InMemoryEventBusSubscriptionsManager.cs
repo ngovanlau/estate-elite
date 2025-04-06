@@ -21,7 +21,7 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
 
     public void Clear() => _handlers.Clear();
 
-    public void AddSubscription<T, TH>() where T : IIntegrationEvent where TH : IIntegrationEventHandler<T>
+    public void AddSubscription<T, TH>() where T : IEvent where TH : IEventHandler<T>
     {
         var eventName = GetEventKey<T>();
 
@@ -49,8 +49,8 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
     }
 
     public void RemoveSubscription<T, TH>()
-        where T : IIntegrationEvent
-        where TH : IIntegrationEventHandler<T>
+        where T : IEvent
+        where TH : IEventHandler<T>
     {
         var handlerToRemove = FindSubscriptionToRemove<T, TH>();
         var eventName = GetEventKey<T>();
@@ -80,7 +80,7 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
         }
     }
 
-    public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IIntegrationEvent
+    public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : IEvent
     {
         var key = GetEventKey<T>();
         return GetHandlersForEvent(key);
@@ -96,8 +96,8 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
     }
 
     private SubscriptionInfo? FindSubscriptionToRemove<T, TH>()
-        where T : IIntegrationEvent
-        where TH : IIntegrationEventHandler<T>
+        where T : IEvent
+        where TH : IEventHandler<T>
     {
         var eventName = GetEventKey<T>();
         return FindSubscriptionToRemove<T, TH>(eventName, typeof(TH));
@@ -113,7 +113,7 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
         return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType);
     }
 
-    public bool HasSubscriptionsForEvent<T>() where T : IIntegrationEvent
+    public bool HasSubscriptionsForEvent<T>() where T : IEvent
     {
         var key = GetEventKey<T>();
         return HasSubscriptionsForEvent(key);

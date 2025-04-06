@@ -13,16 +13,16 @@ public class EmailService(IOptions<SmtpSetting> options, ILogger logger) : IEmai
     private readonly SmtpSetting _emailSetting = options.Value;
     private readonly ILogger _logger = logger;
 
-    public async Task SendConfirmationCodeAsync(string email, string username, string confirmationCode, int expiryTime)
+    public async Task SendConfirmationCodeAsync(string email, string fullname, string confirmationCode, TimeSpan expiryTime)
     {
         var subject = "Your Email Confirmation Code";
         var body = $@"
             <html>
                 <body>
-                    <h2>Welcome, {username}!</h2>
+                    <h2>Welcome, {fullname}!</h2>
                     <p>Thank you for registering. Please use the following code to confirm your email address:</p>
                     <h3 style='background-color: #f5f5f5; padding: 10px; text-align: center; font-family: monospace;'>{confirmationCode}</h3>
-                    <p>This code will expire in {expiryTime} minutes.</p>
+                    <p>This code will expire in {expiryTime.Minutes} minutes.</p>
                     <p>If you did not request this code, please ignore this email.</p>
                 </body>
             </html>

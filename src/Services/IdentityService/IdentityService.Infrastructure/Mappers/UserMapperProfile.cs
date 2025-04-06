@@ -1,8 +1,9 @@
 using AutoMapper;
-using IdentityService.Application.Dtos;
-using IdentityService.Domain.Entities;
 
 namespace IdentityService.Infrastructure.Mappers;
+
+using Application.Dtos.Authentications;
+using Domain.Entities;
 
 public class UserMapperProfile : Profile
 {

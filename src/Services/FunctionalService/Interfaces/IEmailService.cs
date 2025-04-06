@@ -4,5 +4,5 @@ namespace FunctionalService.Interfaces;
 
 public interface IEmailService
 {
-    Task SendConfirmationCodeAsync(string email, string username, string confirmCode, int expiryTime);
+    Task SendConfirmationCodeAsync(string email, string fullname, string confirmCode, TimeSpan expiryTime);
 }

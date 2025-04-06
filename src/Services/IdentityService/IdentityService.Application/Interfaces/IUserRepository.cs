@@ -1,7 +1,7 @@
 namespace IdentityService.Application.Interfaces;
 
-using Dtos;
-using Requests;
+using Dtos.Authentications;
+using Requests.Authentications;
 
 public interface IUserRepository
 {

@@ -33,6 +33,7 @@ public class RabbitMQEventBus : IEventBus
         _provider = provider;
         _retryCount = retryCount;
         _channel = default!;
+        _manager.EventRemovedAsync += OnEventRemovedAsync;
     }
 
     public static async Task<RabbitMQEventBus> CreateAsync(IRabbitMQConnection connection, ILogger logger, IServiceProvider provider, IEventBusSubscriptionsManager manager, string queueName = "", int retryCount = 5)
@@ -71,7 +72,7 @@ public class RabbitMQEventBus : IEventBus
         }
     }
 
-    public async Task PublishAsync(IIntegrationEvent @event)
+    public async Task PublishAsync(IEvent @event)
     {
         if (!_connection.IsConnected)
         {
@@ -113,7 +114,7 @@ public class RabbitMQEventBus : IEventBus
         });
     }
 
-    public async Task Subscribe<T, TH>() where T : IIntegrationEvent where TH : IIntegrationEventHandler<T>
+    public async Task Subscribe<T, TH>() where T : IEvent where TH : IEventHandler<T>
     {
         var eventName = _manager.GetEventKey<T>();
         await DoInternalSubscription(eventName);
@@ -139,7 +140,7 @@ public class RabbitMQEventBus : IEventBus
         }
     }
 
-    public void Unsubscribe<T, TH>() where T : IIntegrationEvent where TH : IIntegrationEventHandler<T>
+    public void Unsubscribe<T, TH>() where T : IEvent where TH : IEventHandler<T>
     {
         var eventName = _manager.GetEventKey<T>();
 
@@ -216,16 +217,23 @@ public class RabbitMQEventBus : IEventBus
             }
 
             await ProcessEventAsync(eventName, message);
+
+            await _channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
         }
         catch (Exception ex)
         {
             _logger.Warning(ex, "Error Processing message \"{Message}\"", message);
-        }
 
-        // Even on exception we take the message off the queue.
-        // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
-        // For more information see: https://www.rabbitmq.com/dlx.html
-        await _channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+            // Choose a clear error handling strategy
+            // Option 1: Requeue for later retry
+            await _channel.BasicNackAsync(eventArgs.DeliveryTag, false, true);
+
+            // Option 2: Send to Dead Letter Exchange if configured
+            // await _channel.BasicNackAsync(eventArgs.DeliveryTag, false, false);
+
+            // Option 3: Acknowledge and log error (removes message)
+            // await _channel.BasicAckAsync(eventArgs.DeliveryTag, multiple: false);
+        }
     }
 
     private async Task ProcessEventAsync(string eventName, string message)
@@ -254,7 +262,7 @@ public class RabbitMQEventBus : IEventBus
                     continue;
                 }
 
-                var concreteType = typeof(IIntegrationEventHandler<>).MakeGenericType(eventType);
+                var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
 
                 await Task.Yield();
                 concreteType.GetMethod("Handle")?.Invoke(handler, [integrationEvent]);

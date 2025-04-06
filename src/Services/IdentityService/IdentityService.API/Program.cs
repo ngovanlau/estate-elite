@@ -1,3 +1,5 @@
+using DistributedCache.Redis.Extensions;
+using EventBus.RabbitMQ.Extensions;
 using IdentityService.Application.Mediators;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
@@ -15,19 +17,15 @@ var assembly = Assembly.GetExecutingAssembly().GetName().Name;
 var configuration = builder.Configuration;
 
 // Serilog configuration
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.Host.UseSerilog((context, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .Enrich.FromLogContext());
 
 // Add services to the container.
 // Mediator
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-
     configuration.AddAuthenticatorMediator();
 });
 
@@ -45,11 +43,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add services from Infrastructure layer
-builder.Services.AddInfrastructureServices(configuration);
 
-// Add serilog service
-builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
+// Add services
+builder.Services.AddDistributedServices(configuration);
+builder.Services.AddInfrastructureServices(configuration);
+builder.Services.AddSingleton(Log.Logger);
+
+// Register Event Bus and dependencies
+builder.Services.AddEventBusServices(configuration);
 
 var app = builder.Build();
 

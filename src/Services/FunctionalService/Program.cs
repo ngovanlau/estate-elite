@@ -1,3 +1,6 @@
+using EventBus.RabbitMQ.Extensions;
+using FunctionalService.Configurations;
+using FunctionalService.EventHandlers;
 using FunctionalService.Interfaces;
 using FunctionalService.Services;
 using FunctionalService.Settings;
@@ -8,24 +11,29 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Serilog configuration
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(configuration)
-    .Enrich.FromLogContext()
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.Host.UseSerilog((context, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .Enrich.FromLogContext());
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddSingleton(Log.Logger);
+
+// Register Event Bus and dependencies
+builder.Services.AddEventBusServices(builder.Configuration);
+
 builder.Services.Configure<SmtpSetting>(builder.Configuration.GetSection("SmtpSetting"));
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<SendConfirmationCodeEventHandler>();
 
-// Add serilog service
-builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+// Configure event bus subscriptions
+EventBusConfiguration.ConfigureEventBus(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -33,31 +41,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.MapGet("/", () => "Functional Service");
-
-app.MapPost("/send-email", async (EmailRequest request, IEmailService emailService) =>
-{
-    try
-    {
-        await emailService.SendConfirmationCodeAsync(request.Mail, request.Usernmae, request.Code, request.ExpiryTime);
-        return Results.Ok("Email sent successfully.");
-    }
-    catch (Exception)
-    {
-        return Results.StatusCode(500);
-    }
-});
-
 // app.UseHttpsRedirection();
 
+app.MapHealthChecks("/health");
+
 app.Run();
-
-public class EmailRequest
-{
-    public string Mail { get; set; } = "";
-    public string Usernmae { get; set; } = "";
-
-    public string Code { get; set; } = "";
-
-    public int ExpiryTime { get; set; }
-}

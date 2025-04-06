@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 
-namespace IdentityService.Application.Validates;
+namespace IdentityService.Application.Validates.Authentications;
 
-using Requests;
+using Requests.Authentications;
 
 public class RegisterValidate : AbstractValidator<RegisterRequest>
 {

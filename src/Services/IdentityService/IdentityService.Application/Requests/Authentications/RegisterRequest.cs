@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace IdentityService.Application.Requests;
+namespace IdentityService.Application.Requests.Authentications;
 
 using SharedKernel.Commons;
 

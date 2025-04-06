@@ -21,9 +21,6 @@ public static class InfrastructureServicesExtensions
             )
         );
 
-        // Event bus
-        services.AddEventBusServices(configuration);
-
         // Repository
         services.AddScoped<IUserRepository, UserRepository>();
 
@@ -32,6 +29,7 @@ public static class InfrastructureServicesExtensions
 
         // Dependency injection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IConfirmationCodeGenerator, ConfirmationCodeGenerator>();
 
         return services;
     }

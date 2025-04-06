@@ -23,8 +23,7 @@ public static class EventBusServicesExtension
         // Configure RabbitMQ connection
         services.AddSingleton<IRabbitMQConnection>(sp =>
         {
-            var logger = sp.GetRequiredService<ILogger>();
-
+            var logger = Log.Logger;
             var hostName = configuration["RabbitMQ:HostName"];
             if (string.IsNullOrWhiteSpace(hostName))
             {
@@ -82,8 +81,7 @@ public static class EventBusServicesExtension
         services.AddSingleton<IEventBus, RabbitMQEventBus>(sp =>
         {
             var connection = sp.GetRequiredService<IRabbitMQConnection>();
-            var logger = sp.GetRequiredService<ILogger>();
-            var manager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
+            var logger = Log.Logger; var manager = sp.GetRequiredService<IEventBusSubscriptionsManager>();
             var serviceName = configuration["ServiceName"] ?? "UnknownService";
             var queueName = $"{serviceName}_event_bus";
 

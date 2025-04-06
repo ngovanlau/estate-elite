@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Infrastructure.Repositories;
 
-using Application.Dtos;
 using Application.Interfaces;
-using Application.Requests;
 using Data;
 using Domain.Entities;
+using Application.Dtos.Authentications;
+using Application.Requests.Authentications;
 
 public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepository
 {

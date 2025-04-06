@@ -1,4 +1,4 @@
-namespace IdentityService.Application.Dtos;
+namespace IdentityService.Application.Dtos.Authentications;
 
 public class UserDto
 {
