@@ -15,6 +15,7 @@ using Dtos.Authentications;
 using static SharedKernel.Constants.ErrorCode;
 using IdentityService.Application.Requests.Authentications;
 using IdentityService.Application.Validates.Authentications;
+using SharedKernel.Constants;
 
 public class RegisterHandler(
     IUserRepository repository,
@@ -22,7 +23,8 @@ public class RegisterHandler(
     IDistributedCache cache,
     IConfirmationCodeGenerator generator,
     IEventBus eventBus,
-    ILogger<RegisterHandler> logger) : IRequestHandler<RegisterRequest, ApiResponse>
+    ILogger<RegisterHandler> logger,
+    ConfirmationCodeSetting confirmationCodeSetting) : IRequestHandler<RegisterRequest, ApiResponse>
 {
     public async Task<ApiResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
@@ -61,15 +63,15 @@ public class RegisterHandler(
                 return res.SetError(nameof(E102), E102);
             }
 
-            var confirmationCode = generator.GenerateCode();
-            var user = User.Create(username, email, fullname, password);
+            var user = User.Create(username, email, fullname, password, request.Role);
             logger.LogInformation("User created with ID: {UserId}", user.Id);
 
             logger.LogDebug("Caching user {UserId} temporarily", user.Id);
             await cache.SetAsync(CacheKeys.ForEntity<User>(user.Id), user);
 
-            var expiryTime = TimeSpan.FromMinutes(5); // TODO: Update expiry time
-            var userConfirmationDto = new UserConfirmationDto(user.Id, confirmationCode, expiryTime);
+            var expiryTime = TimeSpan.FromMinutes(confirmationCodeSetting.ExpirationTimeInMinutes);
+            var confirmationCode = generator.GenerateCode();
+            var userConfirmationDto = new UserConfirmationDto(user.Id, confirmationCode, expiryTime, confirmationCodeSetting.MaximumAttempts);
 
             logger.LogDebug("Caching confirmation code for user {UserId} (Expiry: {ExpiryTime})",
                 user.Id, expiryTime);

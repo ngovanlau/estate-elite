@@ -3,6 +3,7 @@
 namespace IdentityService.Application.Validates.Authentications;
 
 using Requests.Authentications;
+using SharedKernel.Enums;
 
 public class RegisterValidate : AbstractValidator<RegisterRequest>
 {
@@ -30,5 +31,9 @@ public class RegisterValidate : AbstractValidator<RegisterRequest>
             .Matches(@"[a-z]").WithMessage("Password must contain at least one lowercase letter.")
             .Matches(@"[0-9]").WithMessage("Password must contain at least one number.")
             .Matches(@"[\W_]").WithMessage("Password must contain at least one special character.");
+
+        RuleFor(p => p.Role)
+            .Must(role => role == UserRole.Buyer || role == UserRole.Seller)
+            .WithMessage("Role must be either Buyer or Seller.");
     }
 }

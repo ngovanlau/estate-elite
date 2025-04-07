@@ -7,13 +7,13 @@ public static class CacheKeys
 {
     private const string Separator = ":";
 
-    public static string ForEntity<T>(object entityId) where T : class
+    public static string ForEntity<T>(Guid entityId) where T : class
         => $"entity{Separator}{typeof(T).Name.ToLowerInvariant()}{Separator}{entityId}";
 
     public static string ForCollection<T>(string? suffix = null) where T : class
         => $"collection{Separator}{typeof(T).Name.ToLowerInvariant()}{(string.IsNullOrWhiteSpace(suffix) ? string.Empty : $"{Separator}{suffix}")}";
 
-    public static string ForQuery<T>(object? queryParams = null) where T : class
+    public static string ForQuery<T>(Guid? queryParams = null) where T : class
     {
         string queryString = queryParams == null
             ? "all"
@@ -22,7 +22,7 @@ public static class CacheKeys
         return $"query{Separator}{typeof(T).Name.ToLowerInvariant()}{Separator}{queryString}";
     }
 
-    public static string ForDto<T>(object dtoId) where T : class
+    public static string ForDto<T>(Guid dtoId) where T : class
         => $"dto{Separator}{GetNameFromDto<T>}{Separator}{dtoId}";
 
     public static string ForDtoCollection<T>(string? suffix = null) where T : class

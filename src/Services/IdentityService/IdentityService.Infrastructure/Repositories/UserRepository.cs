@@ -6,18 +6,13 @@ namespace IdentityService.Infrastructure.Repositories;
 using Application.Interfaces;
 using Data;
 using Domain.Entities;
-using Application.Dtos.Authentications;
-using Application.Requests.Authentications;
 
 public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepository
 {
-    public async Task<UserDto> Create(RegisterRequest request)
+    public async Task<bool> Add(User user)
     {
-        var user = User.Create(request.Username + "", request.Email + "", request.Fullname + "", request.Password + "");
         await context.AddAsync(user);
-        await context.SaveChangesAsync();
-
-        return mapper.Map<UserDto>(user);
+        return await context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> IsUsernameExist(string username)

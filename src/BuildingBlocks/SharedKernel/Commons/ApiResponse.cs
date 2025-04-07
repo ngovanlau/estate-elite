@@ -37,9 +37,17 @@ public class ApiResponse
         return this;
     }
 
-    public ApiResponse SetError(string code, string? message, object? errors)
+    public ApiResponse SetError(string code, string? message, object? data)
     {
         SetError(code, message);
+        Data = data;
+
+        return this;
+    }
+
+    public ApiResponse SetError(string code, string? message, object? data, object? errors)
+    {
+        SetError(code, message, data);
         Errors = errors;
 
         return this;

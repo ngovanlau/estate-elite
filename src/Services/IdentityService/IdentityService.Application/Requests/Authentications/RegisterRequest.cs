@@ -3,11 +3,13 @@ using MediatR;
 namespace IdentityService.Application.Requests.Authentications;
 
 using SharedKernel.Commons;
+using SharedKernel.Enums;
 
 public class RegisterRequest : IRequest<ApiResponse>
 {
-    public string? Username { get; set; }
-    public string? Email { get; set; }
-    public string? Fullname { get; set; }
-    public string? Password { get; set; }
+    public required string Username { get; set; }
+    public required string Email { get; set; }
+    public required string Fullname { get; set; }
+    public required string Password { get; set; }
+    public UserRole Role { get; set; }
 }

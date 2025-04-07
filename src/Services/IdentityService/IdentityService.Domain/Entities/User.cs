@@ -14,4 +14,5 @@ public partial class User : AuditableEntity
     public required string PasswordHash { get; set; }
     public string Avatar { get; set; } = "";
     public string Background { get; set; } = "";
+    public bool IsActive { get; set; }
 }
