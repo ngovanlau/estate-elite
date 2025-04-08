@@ -13,4 +13,5 @@ public static class ErrorCode
     public const string E106 = "User is already active";
     public const string E107 = "Active user failed";
     public const string E108 = "You have reached the maximum number of attempts";
+    public const string E109 = "User already exists";
 }

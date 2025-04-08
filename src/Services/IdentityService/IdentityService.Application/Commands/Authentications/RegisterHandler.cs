@@ -1,21 +1,22 @@
+using DistributedCache.Redis;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace IdentityService.Application.Commands.Authentications;
 
-using DistributedCache.Redis;
+using Domain.Entities;
+using Dtos.Authentications;
 using EventBus.Infrastructures.Interfaces;
 using EventBus.RabbitMQ.Events;
-using Domain.Entities;
 using Interfaces;
+using Requests.Authentications;
 using SharedKernel.Commons;
-using SharedKernel.Extensions;
-using Dtos.Authentications;
-using static SharedKernel.Constants.ErrorCode;
-using IdentityService.Application.Requests.Authentications;
-using IdentityService.Application.Validates.Authentications;
 using SharedKernel.Constants;
+using SharedKernel.Extensions;
+using Validates.Authentications;
+using static SharedKernel.Constants.ErrorCode;
 
 public class RegisterHandler(
     IUserRepository repository,
@@ -24,8 +25,10 @@ public class RegisterHandler(
     IConfirmationCodeGenerator generator,
     IEventBus eventBus,
     ILogger<RegisterHandler> logger,
-    ConfirmationCodeSetting confirmationCodeSetting) : IRequestHandler<RegisterRequest, ApiResponse>
+    IOptions<ConfirmationCodeSetting> options) : IRequestHandler<RegisterRequest, ApiResponse>
 {
+    private ConfirmationCodeSetting confirmationCodeSetting = options.Value;
+
     public async Task<ApiResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
         var res = new ApiResponse();
@@ -44,10 +47,10 @@ public class RegisterHandler(
                 return res.SetError(nameof(E000), E000, errors);
             }
 
-            var username = request.Username + "";
-            var email = request.Email + "";
-            var fullname = request.Fullname + "";
-            var password = hasher.Hash(request.Password + "");
+            var username = request.Username;
+            var email = request.Email;
+            var fullname = request.Fullname;
+            var password = hasher.Hash(request.Password);
 
             logger.LogDebug("Checking username existence: {Username}", username);
             if (await repository.IsUsernameExist(username))
@@ -67,15 +70,23 @@ public class RegisterHandler(
             logger.LogInformation("User created with ID: {UserId}", user.Id);
 
             logger.LogDebug("Caching user {UserId} temporarily", user.Id);
-            await cache.SetAsync(CacheKeys.ForEntity<User>(user.Id), user);
+            await cache.SetAsync(CacheKeys.ForEntity<User>(user.Id), user, cancellationToken);
 
             var expiryTime = TimeSpan.FromMinutes(confirmationCodeSetting.ExpirationTimeInMinutes);
+            var expiryDate = DateTime.UtcNow.Add(expiryTime);
             var confirmationCode = generator.GenerateCode();
-            var userConfirmationDto = new UserConfirmationDto(user.Id, confirmationCode, expiryTime, confirmationCodeSetting.MaximumAttempts);
+            var userConfirmationDto = new UserConfirmationDto(
+                user.Id,
+                confirmationCode,
+                expiryDate,
+                confirmationCodeSetting.MaximumAttempts);
 
             logger.LogDebug("Caching confirmation code for user {UserId} (Expiry: {ExpiryTime})",
                 user.Id, expiryTime);
-            await cache.SetAsync(CacheKeys.ForDto<UserConfirmationDto>(userConfirmationDto.UserId), userConfirmationDto);
+            await cache.SetAsync(CacheKeys.ForDto<UserConfirmationDto>(
+                userConfirmationDto.UserId),
+                userConfirmationDto,
+                cancellationToken);
 
             logger.LogInformation("Publishing confirmation event for user {UserId}", user.Id);
             var integrationEvent = new SendConfirmationCodeEvent(email, fullname, confirmationCode, expiryTime);

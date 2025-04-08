@@ -6,6 +6,7 @@ using IdentityService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using SharedKernel.Constants;
 using SharedKernel.Middleware;
 using System.Reflection;
 
@@ -20,6 +21,7 @@ var configuration = builder.Configuration;
 builder.Host.UseSerilog((context, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .Enrich.FromLogContext());
+
 
 // Add services to the container.
 // Mediator
@@ -43,6 +45,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddHealthChecks();
+
+// Configures ConfirmationCodeSettings by binding the "ConfirmationCode" section
+// from configuration to the ConfirmationCodeSetting class.
+// This enables dependency injection via:
+// - IOptions<ConfirmationCodeSetting> (singleton, no reload)
+// - IOptionsSnapshot<ConfirmationCodeSetting> (scoped, reload per request)
+// - IOptionsMonitor<ConfirmationCodeSetting> (singleton, supports reload)
+//
+// Usage example:
+// public SomeService(IOptions<ConfirmationCodeSetting> settings)
+// {
+//    var codeLength = settings.Value.Length;
+// }
+builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
 
 // Add services
 builder.Services.AddDistributedServices(configuration);

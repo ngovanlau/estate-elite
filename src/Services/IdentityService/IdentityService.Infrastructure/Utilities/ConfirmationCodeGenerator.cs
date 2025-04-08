@@ -1,16 +1,18 @@
 namespace IdentityService.Infrastructure.Utilities;
 
 using Application.Interfaces;
+using Microsoft.Extensions.Options;
 using SharedKernel.Constants;
 
-public class ConfirmationCodeGenerator(ConfirmationCodeSetting setting) : IConfirmationCodeGenerator
+public class ConfirmationCodeGenerator(IOptions<ConfirmationCodeSetting> options) : IConfirmationCodeGenerator
 {
+    private ConfirmationCodeSetting _setting = options.Value;
     private readonly Random _random = new Random();
 
     public string GenerateCode()
     {
-        var allowedChars = setting.AllowedChars;
-        var length = setting.CodeLength;
+        var allowedChars = _setting.AllowedChars;
+        var length = _setting.CodeLength;
 
         var code = new char[length];
 

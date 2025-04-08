@@ -23,18 +23,24 @@ public static class CacheKeys
     }
 
     public static string ForDto<T>(Guid dtoId) where T : class
-        => $"dto{Separator}{GetNameFromDto<T>}{Separator}{dtoId}";
+    {
+        var name = GetNameFromDto<T>();
+        return $"dto{Separator}{name}{Separator}{dtoId}";
+    }
 
     public static string ForDtoCollection<T>(string? suffix = null) where T : class
-        => $"dto_collection{Separator}{GetNameFromDto<T>()}{(string.IsNullOrWhiteSpace(suffix) ? string.Empty : $"{Separator}{suffix}")}";
+    {
+        var name = GetNameFromDto<T>();
+        return $"dto_collection{Separator}{name}{(string.IsNullOrWhiteSpace(suffix) ? string.Empty : $"{Separator}{suffix}")}";
+    }
 
     public static string ForDtoQuery<T>(object? queryParams = null) where T : class
     {
         string queryString = queryParams == null
             ? "all"
             : Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(queryParams)));
-
-        return $"dto_query{Separator}{GetNameFromDto<T>()}{Separator}{queryString}";
+        var name = GetNameFromDto<T>();
+        return $"dto_query{Separator}{name}{Separator}{queryString}";
     }
 
     private static string GetNameFromDto<T>() where T : class
@@ -46,7 +52,4 @@ public static class CacheKeys
 
     public static string ForPattern<T>() where T : class
         => $"*{typeof(T).Name.ToLowerInvariant()}*";
-
-    public static string ForUser(string userId, string? action = null)
-        => $"user{Separator}{userId}{(string.IsNullOrWhiteSpace(action) ? string.Empty : $"{Separator}{action}")}";
 }

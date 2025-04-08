@@ -6,7 +6,7 @@ public partial class User
 {
     public static User Create(string username, string email, string fullname, string passwordHash, UserRole role = UserRole.Buyer)
     {
-        return new User
+        var res = new User
         {
             Username = username,
             Email = email,
@@ -14,5 +14,9 @@ public partial class User
             PasswordHash = passwordHash,
             Role = role,
         };
+
+        res.CreatedBy = res.Id;
+
+        return res;
     }
 }
