@@ -5,8 +5,7 @@ using IdentityService.Infrastructure.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Get assembly name
-var me = typeof(Program);
-var assembly = me.Assembly.GetName().Name;
+var assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
 // Add services to the container.
 // Mediator
