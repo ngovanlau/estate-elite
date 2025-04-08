@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Transactions;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace IdentityService.Application.Commands.Authentications;
 
@@ -8,7 +9,6 @@ using DistributedCache.Redis;
 using Domain.Entities;
 using Dtos.Authentications;
 using Interfaces;
-using Microsoft.Extensions.Caching.Distributed;
 using Requests.Authentications;
 using SharedKernel.Commons;
 using SharedKernel.Extensions;

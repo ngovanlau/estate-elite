@@ -52,4 +52,7 @@ public static class CacheKeys
 
     public static string ForPattern<T>() where T : class
         => $"*{typeof(T).Name.ToLowerInvariant()}*";
+
+    public static string ForRefreshToken(Guid userId)
+        => $"user{Separator}{userId}{Separator}refresh_token";
 }

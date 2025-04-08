@@ -9,6 +9,7 @@ using Serilog;
 using SharedKernel.Constants;
 using SharedKernel.Middleware;
 using System.Reflection;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,6 @@ var configuration = builder.Configuration;
 builder.Host.UseSerilog((context, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .Enrich.FromLogContext());
-
 
 // Add services to the container.
 // Mediator
@@ -63,9 +63,34 @@ builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("Co
 // Add services
 builder.Services.AddDistributedServices(configuration);
 builder.Services.AddInfrastructureServices(configuration);
+builder.Services.AddAuthenticationService(configuration);
 
 // Register Event Bus and dependencies
 builder.Services.AddEventBusServices(configuration);
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://trusted-domain.com")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()); // Cho phép credentials (cookie/token)
+});
+
+// Rate limit
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("ApiLimit", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.User.Identity?.Name ?? "Anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
 
 var app = builder.Build();
 
@@ -79,8 +104,13 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Service API v1");
 });
 
+app.UseCors("AllowSpecificOrigin");
+app.UseRateLimiter();
+
 // app.UseHttpsRedirection(); enable when use https
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 try
