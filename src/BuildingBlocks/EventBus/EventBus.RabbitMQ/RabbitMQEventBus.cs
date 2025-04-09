@@ -1,11 +1,11 @@
-﻿using RabbitMQ.Client;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 using RabbitMQ.Client.Exceptions;
 using System.Net.Sockets;
-using Polly;
+using System.Text;
+using System.Text.Json;
 
 namespace EventBus.RabbitMQ;
 
@@ -156,7 +156,14 @@ public class RabbitMQEventBus : IEventBus
             await _channel.DisposeAsync();
         }
 
+        if (_connection != null)
+        {
+            await _connection.DisposeAsync();
+        }
+
         _manager.Clear();
+
+        GC.SuppressFinalize(this);
     }
 
     private async Task<IChannel> CreateConsumerChannelAsync()
