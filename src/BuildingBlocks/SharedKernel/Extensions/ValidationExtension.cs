@@ -1,7 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace IdentityService.Application.Extensions;
+namespace SharedKernel.Extensions;
 
 using System.Reflection;
 

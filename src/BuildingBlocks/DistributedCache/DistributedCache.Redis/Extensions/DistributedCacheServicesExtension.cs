@@ -7,7 +7,7 @@ namespace DistributedCache.Redis.Extensions;
 
 public static class DistributedCacheServicesExtension
 {
-    public static IServiceCollection AddDistributedServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDistributedService(this IServiceCollection services, IConfiguration configuration)
     {
         var redisConnectionString = configuration.GetConnectionString("RedisConnection");
         if (string.IsNullOrWhiteSpace(redisConnectionString))

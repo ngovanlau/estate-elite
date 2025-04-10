@@ -1,14 +1,11 @@
-using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SharedKernel.Constants;
-using StackExchange.Redis;
 
-namespace IdentityService.Infrastructure.Extensions;
+namespace SharedKernel.Extensions;
 
 public static class AuthenticationExtension
 {

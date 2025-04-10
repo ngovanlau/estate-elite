@@ -8,6 +8,7 @@ using Application.Dtos.Authentications;
 using Application.Interfaces;
 using Data;
 using Domain.Entities;
+using SharedKernel.Extensions;
 
 public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepository
 {

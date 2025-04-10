@@ -1,21 +1,16 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
-using IdentityService.Application.Extensions;
 using IdentityService.Application.Mediators;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using SharedKernel.Constants;
+using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using System.Reflection;
-using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Get assembly name
-var assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
 var configuration = builder.Configuration;
 
@@ -24,30 +19,7 @@ builder.Host.UseSerilog((context, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .Enrich.FromLogContext());
 
-// Add services to the container.
-// Mediator
-builder.Services.AddMediatR(configuration =>
-{
-    configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-    configuration.AddAuthenticatorMediator();
-});
-builder.Services.AddValidation();
-
-// Controllers
-builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Identity Service API",
-        Version = "v1"
-    });
-});
-builder.Services.AddHealthChecks();
-
+// Configurations
 // Configures ConfirmationCodeSettings by binding the "ConfirmationCode" section
 // from configuration to the ConfirmationCodeSetting class.
 // This enables dependency injection via:
@@ -62,8 +34,24 @@ builder.Services.AddHealthChecks();
 // }
 builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
 
+// Add services to the container.
+// Mediator
+builder.Services.AddMediatR(configuration =>
+{
+    configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+    configuration.AddAuthenticatorMediator();
+});
+builder.Services.AddValidation();
+
+// Controllers
+builder.Services.AddControllers();
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddOpenApiService();
+builder.Services.AddHealthChecks();
+
 // Add services
-builder.Services.AddDistributedServices(configuration);
+builder.Services.AddDistributedService(configuration);
 builder.Services.AddInfrastructureServices(configuration);
 builder.Services.AddAuthenticationService(configuration);
 
@@ -71,28 +59,10 @@ builder.Services.AddAuthenticationService(configuration);
 builder.Services.AddEventBusServices(configuration);
 
 // CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("https://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
-});
+builder.Services.AddCorsService();
 
 // Rate limit
-builder.Services.AddRateLimiter(options =>
-{
-    options.AddPolicy("ApiLimit", context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.User.Identity?.Name ?? "Anonymous",
-            factory: _ => new FixedWindowRateLimiterOptions
-            {
-                AutoReplenishment = true,
-                PermitLimit = 100,
-                Window = TimeSpan.FromMinutes(1)
-            }));
-});
+builder.Services.AddRateLimiterService();
 
 var app = builder.Build();
 
