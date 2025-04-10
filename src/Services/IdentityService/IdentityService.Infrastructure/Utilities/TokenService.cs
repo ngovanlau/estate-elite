@@ -1,18 +1,18 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
-using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
 
 namespace IdentityService.Infrastructure.Utilities;
 
+using Application.Dtos.Authentications;
 using Application.Interfaces;
 using DistributedCache.Redis;
-using Domain.Entities;
 using Domain.Models;
-using Microsoft.Extensions.Logging;
 using SharedKernel.Constants;
 
 public class TokenService : ITokenService
@@ -36,23 +36,23 @@ public class TokenService : ITokenService
         _logger = logger;
     }
 
-    public string GenerateAccessToken(User user)
+    public string GenerateAccessToken(UserDto userDto)
     {
-        ArgumentNullException.ThrowIfNull(user);
+        ArgumentNullException.ThrowIfNull(userDto);
 
         var now = DateTime.UtcNow;
-        var expires = now.AddMinutes(_setting.ExpirationInMinutes);
+        var expires = now.AddMinutes(_setting.AccessTokenExpirationInMinutes);
 
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString()),
-            new Claim("FullName", user.Fullname)
+            new Claim(JwtRegisteredClaimNames.Email, userDto.Email),
+            new Claim(JwtRegisteredClaimNames.Sub, userDto.Username),
+            new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
+            new Claim(ClaimTypes.Name, userDto.Username),
+            new Claim(ClaimTypes.Email, userDto.Email),
+            new Claim(ClaimTypes.Role, userDto.Role.ToString()),
+            new Claim("FullName", userDto.Fullname)
         };
 
         var token = new JwtSecurityToken(
@@ -67,7 +67,7 @@ public class TokenService : ITokenService
         return _tokenHandler.WriteToken(token);
     }
 
-    public async Task<string> GenerateRefreshTokenAsync(Guid userId)
+    public async Task<string> GenerateRefreshTokenAsync(Guid userId, CancellationToken cancellationToken)
     {
         try
         {
@@ -84,7 +84,7 @@ public class TokenService : ITokenService
             var options = new DistributedCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromMinutes(_setting.RefreshTokenSlidingExpirationInMinutes))
                 .SetAbsoluteExpiration(TimeSpan.FromDays(_setting.RefreshTokenExpirationInDays));
-            await _cache.SetAsync(cacheKey, refreshToken, options);
+            await _cache.SetAsync(cacheKey, refreshToken, options, cancellationToken);
 
             return refreshToken.Token;
         }
@@ -95,19 +95,19 @@ public class TokenService : ITokenService
         }
     }
 
-    public async Task<bool> ValidateRefreshTokenAsync(Guid userId, string token)
+    public async Task<bool> ValidateRefreshTokenAsync(Guid userId, string token, CancellationToken cancellationToken)
     {
         try
         {
             var cacheKey = CacheKeys.ForRefreshToken(userId);
-            var (Success, Value) = await _cache.TryGetValueAsync<RefreshToken>(cacheKey);
+            var (Success, Value) = await _cache.TryGetValueAsync<RefreshToken>(cacheKey, cancellationToken);
 
             if (!Success || Value is null)
             {
                 return false;
             }
 
-            return string.Equals(token, Value.Token, StringComparison.Ordinal);
+            return token == Value.Token;
         }
         catch (Exception ex)
         {
@@ -116,12 +116,12 @@ public class TokenService : ITokenService
         }
     }
 
-    public async Task RevokeRefreshTokenAsync(Guid userId)
+    public async Task RevokeRefreshTokenAsync(Guid userId, CancellationToken cancellationToken)
     {
         try
         {
             var cacheKey = CacheKeys.ForRefreshToken(userId);
-            await _cache.RemoveAsync(cacheKey);
+            await _cache.RemoveAsync(cacheKey, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -147,7 +147,7 @@ public class TokenService : ITokenService
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
 
         if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature, StringComparison.InvariantCultureIgnoreCase))
+            !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature, StringComparison.InvariantCulture))
         {
             throw new SecurityTokenException("Invalid token");
         }

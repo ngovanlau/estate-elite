@@ -19,7 +19,7 @@ public static class CommonValidatorRules
 
     public static IRuleBuilder<T, string> MinimumLengthRule<T>(this IRuleBuilder<T, string> rule, int minimumLength, string propertyName)
     {
-        return rule.MaximumLength(minimumLength)
+        return rule.MinimumLength(minimumLength)
             .WithErrorCode(nameof(E004))
             .WithMessage(string.Format(E004, propertyName, minimumLength));
     }
@@ -35,6 +35,16 @@ public static class CommonValidatorRules
     {
         return rule.NotEmptyOrWhiteSpaceRule("Email")
             .EmailAddress().WithErrorCode(nameof(E003)).WithMessage(E003);
+    }
+
+    public static IRuleBuilder<T, string?> UsernameRule<T>(this IRuleBuilder<T, string?> rule)
+    {
+        var name = "Username";
+
+        return rule.NotEmptyOrWhiteSpaceRule(name)!
+            .MinimumLengthRule(3, name)
+            .MaximumLengthRule(30, name)
+            .Matches(RegexPatterns.Username).WithErrorCode(E007).WithMessage(E007);
     }
 
     public static IRuleBuilder<T, string> PasswordRule<T>(this IRuleBuilder<T, string> rule)

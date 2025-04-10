@@ -1,14 +1,67 @@
-
-using IdentityService.Application.Requests.Authentications;
+using FluentValidation;
 using MediatR;
-using SharedKernel.Commons;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityService.Application.Commands.Authentications;
 
-public class LoginHandler : IRequestHandler<LoginRequest, ApiResponse>
+using Dtos.Authentications;
+using Interfaces;
+using Requests.Authentications;
+using SharedKernel.Commons;
+using static SharedKernel.Constants.ErrorCode;
+
+public class LoginHandler(
+    IValidator<LoginRequest> validator,
+    IUserRepository userRepository,
+    ITokenService tokenService,
+    IPasswordHasher passwordHasher,
+    ILogger<LoginHandler> logger) : IRequestHandler<LoginRequest, ApiResponse>
 {
-    public Task<ApiResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var res = new ApiResponse();
+
+        //TODO: Rate limit for lock when send most login request 
+
+        try
+        {
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                logger.LogWarning("Login validation failed for {Username}", request.Username);
+                return res.SetError(nameof(E000), E000, validationResult.Errors);
+            }
+
+            var userDto = await userRepository.GetUserDtoByUsernameOrEmailAsync(
+                request.Username,
+                request.Email,
+                cancellationToken);
+
+            if (userDto == null)
+            {
+                logger.LogWarning("User not found - Username: {Username}, Email: {Email}",
+                    request.Username, request.Email);
+                return res.SetError(nameof(E103), E103);
+            }
+
+            if (!passwordHasher.Verify(request.Password, userDto.PasswordHash))
+            {
+                logger.LogWarning("Invalid password attempt for UserId: {UserId}", userDto.Id);
+                return res.SetError(nameof(E114), E114);
+            }
+
+            logger.LogInformation("Generating tokens for user {UserId}", userDto.Id);
+            var accessToken = tokenService.GenerateAccessToken(userDto);
+            await tokenService.RevokeRefreshTokenAsync(userDto.Id, cancellationToken);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(userDto.Id, cancellationToken);
+
+            logger.LogInformation("Login successful for user {UserId}", userDto.Id);
+            return res.SetSuccess(new TokenDto { AccessToken = accessToken, RefreshToken = refreshToken });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Login failed for {Username}", request.Username);
+            return res.SetError(nameof(E000), E000);
+        }
     }
 }

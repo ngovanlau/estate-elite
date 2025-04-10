@@ -3,10 +3,23 @@ using Microsoft.EntityFrameworkCore;
 namespace IdentityService.Infrastructure.Data;
 
 using Domain.Entities;
+using SharedKernel.Entities;
 
 public class IdentityContext(DbContextOptions<IdentityContext> options) : DbContext(options)
 {
     public DbSet<User> Users { get; set; }
+
+    public IQueryable<T> Available<T>(bool isTracking = true) where T : AuditableEntity
+    {
+        var res = base.Set<T>().Where(p => !p.IsDelete);
+
+        if (!isTracking)
+        {
+            res = res.AsNoTracking();
+        }
+
+        return res;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

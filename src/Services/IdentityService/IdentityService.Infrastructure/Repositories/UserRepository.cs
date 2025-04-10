@@ -1,12 +1,15 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.Infrastructure.Repositories;
 
+using Application.Dtos.Authentications;
 using Application.Interfaces;
 using Data;
 using Domain.Entities;
 
-public class UserRepository(IdentityContext context) : IUserRepository
+public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepository
 {
     public async Task<bool> AddAsync(User user, CancellationToken cancellationToken)
     {
@@ -22,5 +25,23 @@ public class UserRepository(IdentityContext context) : IUserRepository
     public async Task<bool> IsEmailExistAsync(string email, CancellationToken cancellationToken)
     {
         return await context.Users.AnyAsync(x => x.Email == email, cancellationToken);
+    }
+
+    public async Task<UserDto?> GetUserDtoByUsernameOrEmailAsync(
+        string? username,
+        string? email,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(username) && string.IsNullOrWhiteSpace(email))
+        {
+            return null;
+        }
+
+        var query = context.Available<User>(false)
+            .Where(u => (!string.IsNullOrWhiteSpace(username) && u.Username == username) ||
+                        (!string.IsNullOrWhiteSpace(email) && u.Email == email));
+
+        return await query.ProjectTo<UserDto>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

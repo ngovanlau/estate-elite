@@ -53,7 +53,7 @@ public class RegisterHandler(
             var password = request.Password;
             var confirmationPassword = request.ConfirmationPassword;
 
-            if (!password.Equals(confirmationPassword, StringComparison.Ordinal))
+            if (!(password == confirmationPassword))
             {
                 logger.LogWarning("Password and confirmation password do not match. User: {Username}", username);
                 return res.SetError(nameof(E110), E110);

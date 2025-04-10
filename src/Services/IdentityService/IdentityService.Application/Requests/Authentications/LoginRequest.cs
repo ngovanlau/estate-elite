@@ -6,7 +6,7 @@ using SharedKernel.Commons;
 
 public class LoginRequest : IRequest<ApiResponse>
 {
-    public string? Username;
-    public string? Email;
-    public required string Password;
+    public string? Username { get; set; }
+    public string? Email { get; set; }
+    public required string Password { get; set; }
 }

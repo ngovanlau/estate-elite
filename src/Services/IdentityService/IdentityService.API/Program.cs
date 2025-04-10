@@ -74,7 +74,7 @@ builder.Services.AddEventBusServices(configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("https://trusted-domain.com")
+        builder => builder.WithOrigins("https://localhost:3000")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());

@@ -1,10 +1,12 @@
 namespace IdentityService.Application.Interfaces;
 
-using IdentityService.Domain.Entities;
+using Domain.Entities;
+using Dtos.Authentications;
 
 public interface IUserRepository
 {
     Task<bool> AddAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> IsUsernameExistAsync(string username, CancellationToken cancellationToken = default);
     Task<bool> IsEmailExistAsync(string email, CancellationToken cancellationToken = default);
+    Task<UserDto?> GetUserDtoByUsernameOrEmailAsync(string? username, string? email, CancellationToken cancellationToken = default);
 }

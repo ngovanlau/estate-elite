@@ -2,6 +2,9 @@ namespace SharedKernel.Constants;
 
 public static class RegexPatterns
 {
-    // Password: At least 1 uppercase, 1 lowercase, 1 digit, 1 special char
+    // Requires: 1 uppercase, 1 lowercase, 1 digit, 1 special char
     public const string Password = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).+$";
+
+    // Allows: letters (a-z, A-Z), digits (0-9), underscores (_)
+    public const string Username = @"^[a-zA-Z0-9_]+$";
 }

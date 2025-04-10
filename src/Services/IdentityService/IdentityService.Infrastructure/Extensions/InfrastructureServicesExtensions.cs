@@ -6,7 +6,6 @@ namespace IdentityService.Infrastructure.Extensions;
 
 using Application.Interfaces;
 using Data;
-using EventBus.RabbitMQ.Extensions;
 using Repositories;
 using Utilities;
 
@@ -30,6 +29,7 @@ public static class InfrastructureServicesExtensions
         // Dependency injection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IConfirmationCodeGenerator, ConfirmationCodeGenerator>();
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }

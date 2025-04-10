@@ -22,4 +22,11 @@ public class AuthenticationController(IMediator mediator) : BaseController(media
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }
