@@ -27,7 +27,7 @@ public class RegisterHandler(
     ILogger<RegisterHandler> logger,
     IOptions<ConfirmationCodeSetting> options) : IRequestHandler<RegisterRequest, ApiResponse>
 {
-    private ConfirmationCodeSetting confirmationCodeSetting = options.Value;
+    private readonly ConfirmationCodeSetting confirmationCodeSetting = options.Value;
 
     public async Task<ApiResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
@@ -50,17 +50,25 @@ public class RegisterHandler(
             var username = request.Username;
             var email = request.Email;
             var fullname = request.Fullname;
-            var password = hasher.Hash(request.Password);
+            var password = request.Password;
+            var confirmationPassword = request.ConfirmationPassword;
+
+            if (!password.Equals(confirmationPassword, StringComparison.Ordinal))
+            {
+                logger.LogWarning("Password and confirmation password do not match. User: {Username}", username);
+                return res.SetError(nameof(E110), E110);
+            }
+            password = hasher.Hash(password);
 
             logger.LogDebug("Checking username existence: {Username}", username);
-            if (await repository.IsUsernameExist(username))
+            if (await repository.IsUsernameExistAsync(username))
             {
                 logger.LogWarning("Username {Username} already exists", username);
                 return res.SetError(nameof(E101), E101);
             }
 
             logger.LogDebug("Checking email existence: {Email}", email);
-            if (await repository.IsEmailExist(email))
+            if (await repository.IsEmailExistAsync(email))
             {
                 logger.LogWarning("Email {Email} is already registered", email);
                 return res.SetError(nameof(E102), E102);

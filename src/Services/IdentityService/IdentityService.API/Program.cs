@@ -1,5 +1,6 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
+using IdentityService.Application.Extensions;
 using IdentityService.Application.Mediators;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
@@ -30,6 +31,7 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     configuration.AddAuthenticatorMediator();
 });
+builder.Services.AddValidation();
 
 // Controllers
 builder.Services.AddControllers();
@@ -75,7 +77,7 @@ builder.Services.AddCors(options =>
         builder => builder.WithOrigins("https://trusted-domain.com")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials()); // Cho phép credentials (cookie/token)
+            .AllowCredentials());
 });
 
 // Rate limit

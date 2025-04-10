@@ -4,7 +4,7 @@ using IdentityService.Domain.Entities;
 
 public interface IUserRepository
 {
-    Task<bool> Add(User user);
-    Task<bool> IsUsernameExist(string username);
-    Task<bool> IsEmailExist(string email);
+    Task<bool> AddAsync(User user, CancellationToken cancellationToken = default);
+    Task<bool> IsUsernameExistAsync(string username, CancellationToken cancellationToken = default);
+    Task<bool> IsEmailExistAsync(string email, CancellationToken cancellationToken = default);
 }

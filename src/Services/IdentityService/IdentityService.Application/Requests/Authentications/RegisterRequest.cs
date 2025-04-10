@@ -11,5 +11,6 @@ public class RegisterRequest : IRequest<ApiResponse>
     public required string Email { get; set; }
     public required string Fullname { get; set; }
     public required string Password { get; set; }
+    public required string ConfirmationPassword { get; set; }
     public UserRole Role { get; set; }
 }
