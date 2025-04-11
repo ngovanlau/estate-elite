@@ -10,7 +10,7 @@ public partial class User
         {
             Username = username,
             Email = email,
-            Fullname = fullname,
+            FullName = fullname,
             PasswordHash = passwordHash,
             Role = role,
         };

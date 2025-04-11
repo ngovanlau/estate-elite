@@ -12,6 +12,11 @@ public class RegisterValidate : AbstractValidator<RegisterRequest>
     {
         RuleFor(p => p.Username).Cascade(CascadeMode.Stop).UsernameRule();
 
+        RuleFor(p => p.FullName).Cascade(CascadeMode.Stop)
+            .NotEmptyOrWhiteSpaceRule("FullName")
+            .MinimumLengthRule(3, "FullName")
+            .MaximumLengthRule(30, "FullName");
+
         RuleFor(p => p.Email).Cascade(CascadeMode.Stop).EmailRule();
 
         RuleFor(p => p.Password).Cascade(CascadeMode.Stop).PasswordRule();

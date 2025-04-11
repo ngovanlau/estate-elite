@@ -7,9 +7,12 @@ using static SharedKernel.Constants.ErrorCode;
 
 public static class CommonValidatorRules
 {
-    public static IRuleBuilder<T, string?> NotEmptyOrWhiteSpaceRule<T>(this IRuleBuilder<T, string?> rule, string propertyName)
+    public static IRuleBuilder<T, TProperty> NotEmptyOrWhiteSpaceRule<T, TProperty>(this IRuleBuilder<T, TProperty> rule, string propertyName) where TProperty : class?
     {
-        return rule.Must(x => !string.IsNullOrWhiteSpace(x)).WithErrorCode(nameof(E001)).WithMessage(string.Format(E001, propertyName));
+        return rule
+            .Must(x => x is string str && !string.IsNullOrWhiteSpace(str))
+            .WithErrorCode(nameof(E001))
+            .WithMessage(string.Format(E001, propertyName));
     }
 
     public static IRuleBuilder<T, string?> NotNullRule<T>(this IRuleBuilder<T, string?> rule, string propertyName)

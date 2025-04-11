@@ -49,7 +49,7 @@ public class RegisterHandler(
 
             var username = request.Username;
             var email = request.Email;
-            var fullname = request.Fullname;
+            var fullname = request.FullName;
             var password = request.Password;
             var confirmationPassword = request.ConfirmationPassword;
 
