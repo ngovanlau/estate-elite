@@ -11,7 +11,7 @@ public class ConfirmValidate : AbstractValidator<ConfirmRequest>
     {
         RuleFor(p => p.UserId)
             .NotEmpty()
-            .WithErrorCode(nameof(E008))
-            .WithMessage(string.Format(E008, "UserId"));
+            .WithErrorCode(nameof(E001))
+            .WithMessage(string.Format(E001, "UserId"));
     }
 }

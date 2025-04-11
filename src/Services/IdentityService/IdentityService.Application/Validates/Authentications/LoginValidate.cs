@@ -26,7 +26,7 @@ public class LoginValidate : AbstractValidator<LoginRequest>
                 .Cascade(CascadeMode.Stop)
                 .UsernameRule()
                 .MustAsync((username, cancellationToken) => _repository.IsUsernameExistAsync(username!, cancellationToken))
-                .WithErrorCode(nameof(E111)).WithMessage(E111);
+                .WithErrorCode(nameof(E008)).WithMessage(string.Format(E008, "User"));
         });
 
         When(p => p.Email != null, () =>
@@ -35,7 +35,7 @@ public class LoginValidate : AbstractValidator<LoginRequest>
                 .Cascade(CascadeMode.Stop)
                 .EmailRule()
                 .MustAsync((email, cancellationToken) => _repository.IsEmailExistAsync(email!, cancellationToken))
-                .WithErrorCode(nameof(E112)).WithMessage(E112);
+                .WithErrorCode(nameof(E008)).WithMessage(string.Format(E008, "User"));
         });
 
         RuleFor(p => p.Password).PasswordRule();

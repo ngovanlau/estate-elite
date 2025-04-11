@@ -43,7 +43,7 @@ public class ConfirmHandler(
             if (!userSuccess || user == null)
             {
                 logger.LogWarning("User not found in cache: {UserId}", request.UserId);
-                return res.SetError(nameof(E103), E103);
+                return res.SetError(nameof(E008), string.Format(E008, "User"));
             }
 
             if (user.IsActive)

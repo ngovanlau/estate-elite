@@ -43,7 +43,7 @@ public class LoginHandler(
             {
                 logger.LogWarning("User not found - Username: {Username}, Email: {Email}",
                     request.Username, request.Email);
-                return res.SetError(nameof(E103), E103);
+                return res.SetError(nameof(E008), string.Format(E008, "User"));
             }
 
             if (!passwordHasher.Verify(request.Password, userDto.PasswordHash))

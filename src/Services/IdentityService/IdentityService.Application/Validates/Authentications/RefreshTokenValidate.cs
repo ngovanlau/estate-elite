@@ -9,6 +9,8 @@ public class RefreshTokenValidate : AbstractValidator<RefreshTokenRequest>
 {
     public RefreshTokenValidate()
     {
-        RuleFor(p => p.RefreshToken).NotEmpty().WithErrorCode(nameof(E008)).WithMessage(string.Format(E008, "RefreshToken"));
+        RuleFor(p => p.AccessToken).NotEmpty().WithErrorCode(nameof(E001)).WithMessage(string.Format(E001, "AccessToken"));
+
+        RuleFor(p => p.RefreshToken).NotEmpty().WithErrorCode(nameof(E001)).WithMessage(string.Format(E001, "RefreshToken"));
     }
 }

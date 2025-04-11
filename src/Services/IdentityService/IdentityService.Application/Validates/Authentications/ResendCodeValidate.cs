@@ -13,6 +13,6 @@ public sealed class ResendCodeValidate : AbstractValidator<ResendCodeRequest>
 {
     public ResendCodeValidate()
     {
-        RuleFor(p => p.UserId).NotEmpty().WithErrorCode(nameof(E008)).WithMessage(string.Format(E008, "UserId"));
+        RuleFor(p => p.UserId).NotEmpty().WithErrorCode(nameof(E001)).WithMessage(string.Format(E001, "UserId"));
     }
 }

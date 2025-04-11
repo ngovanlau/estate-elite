@@ -36,4 +36,11 @@ public class AuthenticationController(IMediator mediator) : BaseController(media
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }

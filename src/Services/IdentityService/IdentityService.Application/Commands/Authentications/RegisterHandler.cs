@@ -106,7 +106,7 @@ public class RegisterHandler(
         {
             logger.LogError(ex, "An error occurred while processing registration for username: {Username}",
                 request.Username);
-            return res.SetError(nameof(E000), "An unexpected error occurred during registration.");
+            return res.SetError(nameof(E000), E000);
         }
     }
 }
