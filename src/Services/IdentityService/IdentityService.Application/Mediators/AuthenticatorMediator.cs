@@ -14,5 +14,6 @@ public static class AuthenticatorMediator
         configuration.AddBehavior<IRequestHandler<RegisterRequest, ApiResponse>, RegisterHandler>(life);
         configuration.AddBehavior<IRequestHandler<ConfirmRequest, ApiResponse>, ConfirmHandler>(life);
         configuration.AddBehavior<IRequestHandler<LoginRequest, ApiResponse>, LoginHandler>(life);
+        configuration.AddBehavior<IRequestHandler<ResendCodeRequest, ApiResponse>, ResendCodeHandler>(life);
     }
 }

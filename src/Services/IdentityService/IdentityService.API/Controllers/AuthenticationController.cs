@@ -29,4 +29,11 @@ public class AuthenticationController(IMediator mediator) : BaseController(media
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpPost("resend-code")]
+    public async Task<IActionResult> ResendCode([FromBody] ResendCodeRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }

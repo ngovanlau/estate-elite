@@ -10,6 +10,7 @@ public static class ErrorCode
     public const string E005 = "{0} must be at most {1} characters long";
     public const string E006 = "Password must contain at least 1 uppercase, 1 lowercase, 1 digit, and 1 special character";
     public const string E007 = "Username must allows: letters (a-z, A-Z), digits (0-9), underscores (_)";
+    public const string E008 = "{0} not empty";
 
     // Identity service
     public const string E101 = "Username already exists";
@@ -26,4 +27,6 @@ public static class ErrorCode
     public const string E112 = "Email not found";
     public const string E113 = "Either Username or Email must be provided";
     public const string E114 = "Incorrect password";
+    public const string E115 = "User is already active or not found";
+    public const string E116 = "OTP code is still valid";
 }

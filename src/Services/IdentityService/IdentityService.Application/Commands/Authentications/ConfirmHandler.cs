@@ -8,14 +8,15 @@ namespace IdentityService.Application.Commands.Authentications;
 using DistributedCache.Redis;
 using Domain.Entities;
 using Dtos.Authentications;
+using FluentValidation;
 using Interfaces;
 using Requests.Authentications;
 using SharedKernel.Commons;
 using SharedKernel.Extensions;
-using Validates.Authentications;
 using static SharedKernel.Constants.ErrorCode;
 
 public class ConfirmHandler(
+    IValidator<ConfirmRequest> validator,
     IUserRepository userRepository,
     IDistributedCache cache,
     ILogger<ConfirmHandler> logger) : IRequestHandler<ConfirmRequest, ApiResponse>
@@ -28,23 +29,22 @@ public class ConfirmHandler(
         {
             logger.LogInformation("Processing confirmation request for user ID: {UserId}", request.UserId);
 
-            var validate = new ConfirmValidate().Validate(request);
-            if (!validate.IsValid)
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
             {
-                var errors = validate.Errors.ToDic();
+                var errors = validationResult.Errors.ToDic();
                 logger.LogWarning("Confirmation validation failed for user ID: {UserId}. Errors: {@Errors}",
                     request.UserId, errors);
                 return res.SetError(nameof(E000), E000, errors);
             }
 
             var userKey = CacheKeys.ForEntity<User>(request.UserId);
-            var userResult = await cache.TryGetValueAsync<User>(userKey, cancellationToken);
-            if (!userResult.Success || userResult.Value == null)
+            var (userSuccess, user) = await cache.TryGetValueAsync<User>(userKey, cancellationToken);
+            if (!userSuccess || user == null)
             {
                 logger.LogWarning("User not found in cache: {UserId}", request.UserId);
                 return res.SetError(nameof(E103), E103);
             }
-            var user = userResult.Value;
 
             if (user.IsActive)
             {
@@ -59,18 +59,10 @@ public class ConfirmHandler(
             }
 
             var codeKey = CacheKeys.ForDto<UserConfirmationDto>(request.UserId);
-            var codeResult = await cache.TryGetValueAsync<UserConfirmationDto>(codeKey, cancellationToken);
-            if (!codeResult.Success || codeResult.Value == null)
+            var (dtoSuccess, confirmationDto) = await cache.TryGetValueAsync<UserConfirmationDto>(codeKey, cancellationToken);
+            if (!dtoSuccess || confirmationDto == null)
             {
                 logger.LogWarning("Confirmation code not found for user: {UserId}", request.UserId);
-                return res.SetError(nameof(E104), E104);
-            }
-            var confirmationDto = codeResult.Value;
-
-            if (confirmationDto.ExpiryDate < DateTime.UtcNow)
-            {
-                logger.LogWarning("Confirmation code expired for user: {UserId}, Expiry: {ExpiryDate}",
-                    request.UserId, confirmationDto.ExpiryDate);
                 return res.SetError(nameof(E104), E104);
             }
 

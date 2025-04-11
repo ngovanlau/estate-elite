@@ -8,6 +8,7 @@ using Dtos.Authentications;
 using Interfaces;
 using Requests.Authentications;
 using SharedKernel.Commons;
+using SharedKernel.Extensions;
 using static SharedKernel.Constants.ErrorCode;
 
 public class LoginHandler(
@@ -28,8 +29,9 @@ public class LoginHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                logger.LogWarning("Login validation failed for {Username}", request.Username);
-                return res.SetError(nameof(E000), E000, validationResult.Errors);
+                var errors = validationResult.Errors.ToDic();
+                logger.LogWarning("Login validation failed for {Username}. Errors: {@Errors}", request.Username, errors);
+                return res.SetError(nameof(E000), E000, errors);
             }
 
             var userDto = await userRepository.GetUserDtoByUsernameOrEmailAsync(

@@ -66,11 +66,11 @@ namespace IdentityService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid?>("ModifiedBy")
+                    b.Property<Guid>("ModifiedBy")
+                        .HasMaxLength(50)
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("ModifiedOn")
-                        .HasMaxLength(50)
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PasswordHash")

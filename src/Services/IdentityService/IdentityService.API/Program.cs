@@ -1,6 +1,7 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using IdentityService.Application.Mediators;
+using IdentityService.Application.Validates;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;

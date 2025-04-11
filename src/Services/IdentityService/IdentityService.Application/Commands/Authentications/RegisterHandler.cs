@@ -10,15 +10,16 @@ using Domain.Entities;
 using Dtos.Authentications;
 using EventBus.Infrastructures.Interfaces;
 using EventBus.RabbitMQ.Events;
+using FluentValidation;
 using Interfaces;
 using Requests.Authentications;
 using SharedKernel.Commons;
 using SharedKernel.Constants;
 using SharedKernel.Extensions;
-using Validates.Authentications;
 using static SharedKernel.Constants.ErrorCode;
 
 public class RegisterHandler(
+    IValidator<RegisterRequest> validator,
     IUserRepository repository,
     IPasswordHasher hasher,
     IDistributedCache cache,
@@ -38,10 +39,10 @@ public class RegisterHandler(
             logger.LogInformation("Starting registration process for username: {Username}", request.Username);
 
             // Validate
-            var validate = new RegisterValidate().Validate(request);
-            if (!validate.IsValid)
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+            if (!validationResult.IsValid)
             {
-                var errors = validate.Errors.ToDic();
+                var errors = validationResult.Errors.ToDic();
                 logger.LogWarning("Registration validation failed for username: {Username}. Errors: {@Errors}",
                     request.Username, errors);
                 return res.SetError(nameof(E000), E000, errors);
@@ -61,7 +62,7 @@ public class RegisterHandler(
             password = hasher.Hash(password);
 
             logger.LogDebug("Checking username existence: {Username}", username);
-            if (await repository.IsUsernameExistAsync(username))
+            if (await repository.IsUsernameExistAsync(username, cancellationToken))
             {
                 logger.LogWarning("Username {Username} already exists", username);
                 return res.SetError(nameof(E101), E101);
@@ -81,23 +82,21 @@ public class RegisterHandler(
             await cache.SetAsync(CacheKeys.ForEntity<User>(user.Id), user, cancellationToken);
 
             var expiryTime = TimeSpan.FromMinutes(confirmationCodeSetting.ExpirationTimeInMinutes);
-            var expiryDate = DateTime.UtcNow.Add(expiryTime);
-            var confirmationCode = generator.GenerateCode();
-            var userConfirmationDto = new UserConfirmationDto(
-                user.Id,
-                confirmationCode,
-                expiryDate,
-                confirmationCodeSetting.MaximumAttempts);
+            var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(expiryTime);
+            var userConfirmationDto = new UserConfirmationDto
+            {
+                UserId = user.Id,
+                ConfirmationCode = generator.GenerateCode(),
+                AttemptCount = confirmationCodeSetting.MaximumAttempts
+            };
 
             logger.LogDebug("Caching confirmation code for user {UserId} (Expiry: {ExpiryTime})",
                 user.Id, expiryTime);
-            await cache.SetAsync(CacheKeys.ForDto<UserConfirmationDto>(
-                userConfirmationDto.UserId),
-                userConfirmationDto,
-                cancellationToken);
+            var codeKey = CacheKeys.ForDto<UserConfirmationDto>(userConfirmationDto.UserId);
+            await cache.SetAsync(codeKey, userConfirmationDto, options, cancellationToken);
 
             logger.LogInformation("Publishing confirmation event for user {UserId}", user.Id);
-            var integrationEvent = new SendConfirmationCodeEvent(email, fullname, confirmationCode, expiryTime);
+            var integrationEvent = new SendConfirmationCodeEvent(email, fullname, userConfirmationDto.ConfirmationCode, expiryTime);
             await eventBus.PublishAsync(integrationEvent);
 
             logger.LogInformation("Registration completed successfully for user {UserId}", user.Id);

@@ -21,7 +21,6 @@ builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 });
-builder.Services.AddValidation();
 
 // Controllers
 builder.Services.AddControllers();
