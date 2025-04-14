@@ -22,11 +22,12 @@ public static class DbContextExtension
             .IsRequired()
             .HasMaxLength(50);
 
-        entity.Property(p => p.ModifiedBy)
+        entity.Property(p => p.CreatedOn)
             .IsRequired();
 
         entity.Property(p => p.ModifiedBy)
             .HasMaxLength(50);
+
         entity.Property(p => p.ModifiedOn);
 
         entity.Property(p => p.IsDelete)

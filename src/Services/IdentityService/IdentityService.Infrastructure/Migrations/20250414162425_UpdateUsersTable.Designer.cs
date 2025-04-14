@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityService.Infrastructure.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20250411143721_UpdateUsersTable")]
+    [Migration("20250414162425_UpdateUsersTable")]
     partial class UpdateUsersTable
     {
         /// <inheritdoc />
@@ -69,7 +69,7 @@ namespace IdentityService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 

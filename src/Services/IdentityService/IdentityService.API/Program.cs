@@ -40,7 +40,10 @@ builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("Co
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+
+    // Add mediator
     configuration.AddAuthenticatorMediator();
+    configuration.AddUserMediator();
 });
 builder.Services.AddValidation();
 

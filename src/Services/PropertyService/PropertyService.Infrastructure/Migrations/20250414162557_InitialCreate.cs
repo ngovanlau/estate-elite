@@ -32,7 +32,7 @@ namespace PropertyService.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
                     IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -58,7 +58,7 @@ namespace PropertyService.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
                     IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -77,7 +77,7 @@ namespace PropertyService.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
                     IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -96,7 +96,7 @@ namespace PropertyService.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
                     IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -121,7 +121,7 @@ namespace PropertyService.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
                     IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
@@ -159,7 +159,7 @@ namespace PropertyService.Infrastructure.Migrations
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
                     IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
                 },
                 constraints: table =>

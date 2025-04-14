@@ -9,7 +9,7 @@ using SharedKernel.Commons;
 
 public static class UserMediator
 {
-    public static void AddAuthenticatorMediator(this MediatRServiceConfiguration configuration, ServiceLifetime life = ServiceLifetime.Scoped)
+    public static void AddUserMediator(this MediatRServiceConfiguration configuration, ServiceLifetime life = ServiceLifetime.Scoped)
     {
         configuration.AddBehavior<IRequestHandler<UploadRequest, ApiResponse>, UploadHandler>(life);
     }

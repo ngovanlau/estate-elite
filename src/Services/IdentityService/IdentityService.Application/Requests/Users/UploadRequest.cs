@@ -11,5 +11,10 @@ public class UploadRequest : IRequest<ApiResponse>
     public required IFormFile Image { get; set; }
 
     [JsonIgnore]
-    public bool IsAvatar { get; set; }
+    public bool IsAvatar { get; private set; }
+
+    public void SetIsAvatar(bool value)
+    {
+        IsAvatar = value;
+    }
 }

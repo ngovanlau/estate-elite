@@ -66,7 +66,7 @@ namespace IdentityService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 

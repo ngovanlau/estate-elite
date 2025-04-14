@@ -72,7 +72,7 @@ public class ResendCodeHandler(
             var userKey = CacheKeys.ForEntity<User>(userId);
             logger.LogDebug("Retrieving user details for ID: {UserId}", userId);
             var (UserSuccess, user) = await cache.TryGetValueAsync<User>(userKey, cancellationToken);
-            if (!UserSuccess || user is null || !user.IsActive)
+            if (!UserSuccess || user is null || user.IsActive)
             {
                 logger.LogError("User is already active or not found in cache for ID: {UserId}", userId);
                 return res.SetError(nameof(E115), E115);

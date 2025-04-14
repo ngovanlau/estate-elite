@@ -64,7 +64,7 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasPrecision(18, 9)
                         .HasColumnType("numeric(18,9)");
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 
@@ -149,7 +149,7 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 
@@ -211,7 +211,7 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 
@@ -294,7 +294,7 @@ namespace PropertyService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 
@@ -367,7 +367,7 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 
@@ -425,7 +425,7 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<Guid>("ModifiedBy")
+                    b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
                         .HasColumnType("uuid");
 

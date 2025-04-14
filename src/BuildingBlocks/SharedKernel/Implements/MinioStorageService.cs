@@ -21,8 +21,9 @@ public class MinioStorageService : IFileStorageService
         bucketName = _setting.BucketName;
         _logger = logger;
 
+        var endpoint = new Uri(_setting.Endpoint);
         _client = new MinioClient()
-            .WithEndpoint(_setting.Endpoint)
+            .WithEndpoint(endpoint.Host, endpoint.Port)
             .WithCredentials(_setting.AccessKey, _setting.SecretKey)
             .WithSSL(_setting.UseSSL)
             .Build();
@@ -119,7 +120,7 @@ public class MinioStorageService : IFileStorageService
             var response = await _client.PutObjectAsync(putObjectArgs, cancellationToken);
             _logger.LogInformation("File '{ObjectName}' uploaded successfully to bucket '{BucketName}'", objectName, bucketName);
 
-            return response.ObjectName;
+            return $"{_setting.Endpoint}/{_setting.BucketName}/{response.ObjectName}";
         }
         catch (Exception ex)
         {

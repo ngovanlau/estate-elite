@@ -17,7 +17,7 @@ public static class ErrorCode
     // Identity service
     public const string E101 = "Username already exists";
     public const string E102 = "Email already exists";
-    public const string E103 = "User not found"; //TODO
+    public const string E103 = "Token has expired";
     public const string E104 = "OTP code has expired";
     public const string E105 = "OTP code is invalid, you have {0} attempts remaining";
     public const string E106 = "User is already active";

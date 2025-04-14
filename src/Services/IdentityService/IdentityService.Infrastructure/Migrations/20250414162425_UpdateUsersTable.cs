@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -35,18 +34,6 @@ namespace IdentityService.Infrastructure.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "text",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "ModifiedBy",
-                schema: "identity",
-                table: "Users",
-                type: "uuid",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
-                oldClrType: typeof(Guid),
-                oldType: "uuid",
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<bool>(
@@ -153,16 +140,6 @@ namespace IdentityService.Infrastructure.Migrations
                 oldType: "character varying(20)",
                 oldMaxLength: 20,
                 oldNullable: true);
-
-            migrationBuilder.AlterColumn<Guid>(
-                name: "ModifiedBy",
-                schema: "identity",
-                table: "Users",
-                type: "uuid",
-                nullable: true,
-                oldClrType: typeof(Guid),
-                oldType: "uuid",
-                oldMaxLength: 50);
 
             migrationBuilder.AlterColumn<bool>(
                 name: "IsDelete",

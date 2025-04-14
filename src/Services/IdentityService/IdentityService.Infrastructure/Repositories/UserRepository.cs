@@ -45,4 +45,14 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
         return await query.ProjectTo<UserDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await context.Available<User>(false).FirstOrDefaultAsync(p => p.Id == userId, cancellationToken);
+    }
+
+    public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default)
+    {
+        return await context.SaveChangesAsync(cancellationToken) > 0;
+    }
 }
