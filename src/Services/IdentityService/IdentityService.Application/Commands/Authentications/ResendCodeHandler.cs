@@ -14,9 +14,9 @@ using Interfaces;
 using Domain.Entities;
 using Requests.Authentications;
 using SharedKernel.Commons;
-using SharedKernel.Constants;
 using SharedKernel.Extensions;
 using static SharedKernel.Constants.ErrorCode;
+using SharedKernel.Settings;
 
 public class ResendCodeHandler(
     IValidator<ResendCodeRequest> validator,

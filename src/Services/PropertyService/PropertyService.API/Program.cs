@@ -4,7 +4,6 @@ using Serilog;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using System.Reflection;
-using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +31,7 @@ builder.Services.AddHealthChecks();
 // Add services
 builder.Services.AddDistributedService(configuration);
 builder.Services.AddAuthenticationService(configuration);
+builder.Services.AddMinioService(configuration);
 
 // Register Event Bus and dependencies
 builder.Services.AddEventBusServices(configuration);

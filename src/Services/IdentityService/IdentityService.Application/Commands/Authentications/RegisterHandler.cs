@@ -14,8 +14,8 @@ using FluentValidation;
 using Interfaces;
 using Requests.Authentications;
 using SharedKernel.Commons;
-using SharedKernel.Constants;
 using SharedKernel.Extensions;
+using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
 
 public class RegisterHandler(

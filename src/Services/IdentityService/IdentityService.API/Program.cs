@@ -6,9 +6,9 @@ using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using SharedKernel.Constants;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
+using SharedKernel.Settings;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +55,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddDistributedService(configuration);
 builder.Services.AddInfrastructureServices(configuration);
 builder.Services.AddAuthenticationService(configuration);
+builder.Services.AddMinioService(configuration);
 
 // Register Event Bus and dependencies
 builder.Services.AddEventBusServices(configuration);

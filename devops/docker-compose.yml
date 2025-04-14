@@ -24,7 +24,6 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
-    restart: always
     networks:
       - app_network
     healthcheck:
@@ -32,6 +31,28 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: minio-container
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - app_network
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 5
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:management
@@ -46,7 +67,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - app_network
-    restart: always
+    restart: unless-stopped
 
   identity-service-1:
     image: identity-service-image
@@ -103,5 +124,6 @@ networks:
 volumes:
   postgres_data:
   redis-data:
+  minio_data:
   rabbitmq_data:
     driver: local

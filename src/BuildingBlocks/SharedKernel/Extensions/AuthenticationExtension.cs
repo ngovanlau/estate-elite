@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SharedKernel.Constants;
+using SharedKernel.Implements;
+using SharedKernel.Interfaces;
+using SharedKernel.Settings;
 
 namespace SharedKernel.Extensions;
 
@@ -47,6 +50,10 @@ public static class AuthenticationExtension
             options.AddPolicy("RequireSellerRole", policy => policy.RequireRole(RoleName.Seller));
             options.AddPolicy("RequireAminRole", policy => policy.RequireRole(RoleName.Admin));
         });
+
+        // Defines a contract for accessing current authenticated user's claims
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         return services;
     }

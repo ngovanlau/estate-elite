@@ -11,6 +11,8 @@ public static class ErrorCode
     public const string E006 = "Password must contain at least 1 uppercase, 1 lowercase, 1 digit, and 1 special character";
     public const string E007 = "Username must allows: letters (a-z, A-Z), digits (0-9), underscores (_)";
     public const string E008 = "{0} not found";
+    public const string E009 = "File size must not exceed {0}";
+    public const string E010 = "Only image files are allowed (JPG, PNG, GIF, JPEG)";
 
     // Identity service
     public const string E101 = "Username already exists";
