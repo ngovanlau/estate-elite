@@ -25,4 +25,12 @@ public class UserController(IMediator mediator) : BaseController(mediator)
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpGet("current-user")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var request = new CurrentUserRequest();
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }

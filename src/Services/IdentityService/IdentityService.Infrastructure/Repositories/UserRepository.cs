@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace IdentityService.Infrastructure.Repositories;
 
 using Application.Dtos.Authentications;
+using Application.Dtos.Users;
 using Application.Interfaces;
 using Data;
 using Domain.Entities;
@@ -48,11 +49,20 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
 
     public async Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await context.Available<User>(false).FirstOrDefaultAsync(p => p.Id == userId, cancellationToken);
+        return await context.Available<User>().FirstOrDefaultAsync(p => p.Id == userId, cancellationToken);
     }
 
     public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default)
     {
         return await context.SaveChangesAsync(cancellationToken) > 0;
+    }
+
+    public async Task<CurrentUserDto?> GetCurrentUserDtoByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        return await context.Available<User>(false)
+            .Include(u => u.SellerProfile)
+            .Where(u => u.Id == userId)
+            .ProjectTo<CurrentUserDto>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

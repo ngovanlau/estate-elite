@@ -1,7 +1,7 @@
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Transactions;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace IdentityService.Application.Commands.Authentications;
 
