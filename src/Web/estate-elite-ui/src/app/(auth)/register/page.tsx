@@ -1,0 +1,258 @@
+// app/register/page.tsx
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Eye, EyeOff, Building, Mail, Lock, User, Phone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+export default function RegisterPage() {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const router = useRouter();
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle registration logic here
+    console.log('Registration attempt');
+    // router.push("/login");
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col md:flex-row">
+      {/* Left side - Image */}
+      <div className="relative hidden bg-blue-600 md:block md:w-1/2">
+        <div className="absolute inset-0 z-10 bg-gradient-to-br from-blue-600/90 to-blue-800/90"></div>
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
+          <div className="max-w-md space-y-6 px-10 text-white">
+            <Building className="h-16 w-16" />
+            <h2 className="text-3xl font-bold">RealEstate Pro</h2>
+            <p className="text-xl">
+              Khởi đầu hành trình kinh doanh bất động sản của bạn ngay hôm nay
+            </p>
+            <div className="pt-6">
+              <p className="font-medium">Lợi ích khi đăng ký:</p>
+              <ul className="mt-2 list-inside list-disc space-y-2">
+                <li>Tiếp cận hàng ngàn khách hàng tiềm năng</li>
+                <li>Công cụ quản lý bất động sản hiện đại</li>
+                <li>Hỗ trợ kỹ thuật 24/7</li>
+                <li>Báo cáo phân tích thị trường</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right side - Registration form */}
+      <div className="flex w-full items-center justify-center bg-gray-50 p-6 md:w-1/2">
+        <div className="w-full max-w-md">
+          <div className="mb-6 flex justify-center md:hidden">
+            <div className="flex items-center gap-2">
+              <Building className="h-8 w-8 text-blue-600" />
+              <h1 className="text-2xl font-bold text-blue-600">RealEstate Pro</h1>
+            </div>
+          </div>
+
+          <Card className="w-full border-0 shadow-md">
+            <form onSubmit={handleRegister}>
+              <CardHeader>
+                <CardTitle className="text-center text-2xl font-semibold">Đăng ký</CardTitle>
+                <CardDescription className="text-center">
+                  Tạo tài khoản mới để trải nghiệm dịch vụ bất động sản chuyên nghiệp
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">Họ</Label>
+                    <div className="relative">
+                      <User className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="firstName"
+                        placeholder="Nguyễn"
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Tên</Label>
+                    <Input
+                      id="lastName"
+                      placeholder="Văn A"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="name@example.com"
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Số điện thoại</Label>
+                  <div className="relative">
+                    <Phone className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="0912345678"
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="role">Bạn là</Label>
+                  <Select required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn vai trò của bạn" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="agent">Môi giới bất động sản</SelectItem>
+                      <SelectItem value="owner">Chủ sở hữu bất động sản</SelectItem>
+                      <SelectItem value="company">Doanh nghiệp bất động sản</SelectItem>
+                      <SelectItem value="customer">Khách hàng tìm mua/thuê</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Mật khẩu</Label>
+                  <div className="relative">
+                    <Lock className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      className="pr-10 pl-10"
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-0 right-0 h-full px-3 py-2"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+                  <div className="relative">
+                    <Lock className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="••••••••"
+                      className="pr-10 pl-10"
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-0 right-0 h-full px-3 py-2"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-2">
+                  <Checkbox
+                    id="terms"
+                    className="mt-1"
+                    required
+                  />
+                  <Label
+                    htmlFor="terms"
+                    className="text-sm"
+                  >
+                    Tôi đồng ý với{' '}
+                    <Link
+                      href="/terms"
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      điều khoản sử dụng
+                    </Link>{' '}
+                    và{' '}
+                    <Link
+                      href="/privacy"
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      chính sách bảo mật
+                    </Link>{' '}
+                    của RealEstate Pro
+                  </Label>
+                </div>
+              </CardContent>
+
+              <CardFooter className="flex flex-col gap-4">
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  Đăng ký
+                </Button>
+
+                <div className="text-center text-sm">
+                  Đã có tài khoản?{' '}
+                  <Link
+                    href="/login"
+                    className="font-medium text-blue-600 hover:text-blue-800"
+                  >
+                    Đăng nhập
+                  </Link>
+                </div>
+              </CardFooter>
+            </form>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
