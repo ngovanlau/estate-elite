@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { IdentityService } from '@/services/identity-service';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -26,12 +27,19 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin =  async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
     console.log('Login attempt with:', { email, password, rememberMe });
     // For demonstration purposes
     // router.push("/dashboard");
+
+    const response = await IdentityService.login({
+      email,
+      password
+    })
+
+    console.log(response);
   };
 
   return (

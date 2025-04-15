@@ -1,5 +1,5 @@
-import { Header } from '@/components/Layout/Header';
-import { Footer } from '@/components/Layout/Footer';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
