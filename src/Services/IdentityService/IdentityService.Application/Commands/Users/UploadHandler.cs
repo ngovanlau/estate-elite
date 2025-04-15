@@ -1,8 +1,8 @@
+using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using FluentValidation;
-using Microsoft.AspNetCore.Http;
 
 namespace IdentityService.Application.Commands.Users;
 
@@ -91,16 +91,24 @@ public class UploadHandler(
 
     private async Task<string> UploadImageAsync(IFormFile image, string targetProperty, CancellationToken cancellationToken = default)
     {
+        var userId = currentUserService.Id;
+
+        logger.LogInformation("Starting image upload: FileName={FileName}, TargetProperty={TargetProperty}, UserId={UserId}",
+            image.FileName, targetProperty, userId);
+
         var fileExtension = Path.GetExtension(image.FileName);
-        var objectName = $"{targetProperty}/{currentUserService.Id}{fileExtension}";
-
-        logger.LogDebug("Uploading: FileName={FileName}, ObjectName={ObjectName}",
-            image.FileName, objectName);
-
-        using var stream = image.OpenReadStream();
+        var objectName = $"{targetProperty}/{userId}{fileExtension}";
 
         try
         {
+            var prefix = $"{targetProperty}/{userId}";
+            logger.LogDebug("Attempting to delete existing files with prefix: '{prefix}'", prefix);
+            await fileStorageService.DeleteFilesByPrefixAsync(prefix, cancellationToken);
+
+            logger.LogDebug("Uploading: FileName={FileName}, ObjectName={ObjectName}, Size={Size}KB, ContentType={ContentType}",
+                image.FileName, objectName, image.Length / 1024, image.ContentType);
+
+            using var stream = image.OpenReadStream();
             var url = await fileStorageService.UploadFileAsync(
                 objectName,
                 stream,
@@ -109,12 +117,15 @@ public class UploadHandler(
                 cancellationToken
             );
 
-            logger.LogDebug("Upload completed: Url={Url}", url);
+            logger.LogInformation("Upload completed successfully: FileName={FileName}, ObjectName={ObjectName}, Url={Url}",
+                image.FileName, objectName, url);
+
             return url;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "File upload failed: FileName={FileName}", image.FileName);
+            logger.LogError(ex, "File upload failed: FileName={FileName}, ObjectName={ObjectName}, Size={Size}KB, Error={Error}",
+                image.FileName, objectName, image.Length / 1024, ex.Message);
             throw;
         }
     }

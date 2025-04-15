@@ -40,7 +40,8 @@ public class RefreshTokenHandler(
                 return res.SetError(nameof(E117), E117);
             }
 
-            if (!Guid.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            var userIdClaim = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!Guid.TryParse(userIdClaim, out var userId))
             {
                 logger.LogWarning("Invalid access token: User ID claim missing or malformed");
                 return res.SetError(nameof(E117), E117);

@@ -1,5 +1,5 @@
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 
@@ -7,6 +7,7 @@ namespace SharedKernel.Implements;
 
 using Interfaces;
 using Settings;
+using System.Reactive.Linq;
 
 public class MinioStorageService : IFileStorageService
 {
@@ -75,6 +76,116 @@ public class MinioStorageService : IFileStorageService
             throw;
         }
     }
+
+    public async Task DeleteFilesByPrefixAsync(string prefix, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(prefix))
+        {
+            throw new ArgumentException("Prefix cannot be null or empty", nameof(prefix));
+        }
+
+        try
+        {
+            _logger.LogInformation("Starting to delete files with prefix '{Prefix}' in bucket '{BucketName}'", prefix, bucketName);
+
+            if (!await BucketExistedAsync(cancellationToken))
+            {
+                _logger.LogInformation("Bucket '{BucketName}' does not exist. Creating new bucket", bucketName);
+                await CreateBucketAsync(cancellationToken);
+            }
+
+            var listObjectsArgs = new ListObjectsArgs()
+                .WithBucket(bucketName)
+                .WithPrefix(prefix)
+                .WithRecursive(true);
+
+            var deleteCount = 0;
+            const int batchSize = 1000; // MinIO recommends max 1000 objects per delete request
+            var currentBatch = new List<string>(batchSize);
+
+            var observable = _client.ListObjectsEnumAsync(listObjectsArgs, cancellationToken);
+            await foreach (var item in observable)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                currentBatch.Add(item.Key);
+
+                if (currentBatch.Count >= batchSize)
+                {
+                    await DeleteBatchAsync(currentBatch, cancellationToken);
+                    deleteCount += currentBatch.Count;
+                    currentBatch.Clear();
+                }
+            }
+
+            if (currentBatch.Any())
+            {
+                await DeleteBatchAsync(currentBatch, cancellationToken);
+                deleteCount += currentBatch.Count;
+            }
+
+            if (deleteCount == 0)
+            {
+                _logger.LogInformation("No files found with prefix '{Prefix}' in bucket '{BucketName}'", prefix, bucketName);
+            }
+            else
+            {
+                _logger.LogInformation("Successfully deleted {Count} objects with prefix '{Prefix}'", deleteCount, prefix);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting files with prefix '{Prefix}'", prefix);
+            throw;
+        }
+    }
+
+    private async Task DeleteBatchAsync(List<string> objectsToDelete, CancellationToken cancellationToken)
+    {
+        if (!objectsToDelete.Any())
+        {
+            return;
+        }
+
+        try
+        {
+            var removeObjectsArgs = new RemoveObjectsArgs()
+                .WithBucket(bucketName)
+                .WithObjects(objectsToDelete);
+
+            var deleteErrors = await _client.RemoveObjectsAsync(removeObjectsArgs, cancellationToken);
+
+            int errorCount = 0;
+            foreach (var deleteError in deleteErrors)
+            {
+                if (deleteError != null)
+                {
+                    errorCount++;
+                    _logger.LogError("Failed to delete object '{ObjectName}': {ErrorMessage}",
+                        deleteError.Key, deleteError.Message);
+                }
+            }
+
+            if (errorCount > 0)
+            {
+                _logger.LogWarning("Completed batch deletion with {ErrorCount} errors out of {TotalCount} objects",
+                    errorCount, objectsToDelete.Count);
+            }
+            else
+            {
+                _logger.LogDebug("Successfully deleted batch of {Count} objects", objectsToDelete.Count);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during batch deletion of {Count} objects", objectsToDelete.Count);
+            throw;
+        }
+    }
+
 
     public async Task<Stream> GetFileAsync(string objectName, CancellationToken cancellationToken)
     {
