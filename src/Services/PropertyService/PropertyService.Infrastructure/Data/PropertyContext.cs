@@ -7,6 +7,15 @@ using SharedKernel.Extensions;
 
 public class PropertyContext(DbContextOptions<PropertyContext> options) : DbContext(options)
 {
+    DbSet<Address> Addresses { get; set; }
+    DbSet<Image> Images { get; set; }
+    DbSet<Project> Projects { get; set; }
+    DbSet<Property> Properties { get; set; }
+    DbSet<PropertyType> PropertyTypes { get; set; }
+    DbSet<PropertyUtility> PropertyUtilities { get; set; }
+    DbSet<Utility> Utilities { get; set; }
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
