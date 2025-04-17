@@ -1,14 +1,17 @@
-import { identityService } from "@/lib/axios";
-import { LoginRequest } from "@/types/request/identity-request";
-import { ApiResponse } from "@/types/response/base-reponse";
-import { LoginResponseData } from "@/types/response/identity-reponse";
+import { LoginRequest } from '@/types/request/identity-request';
+import { ApiResponse } from '@/types/response/base-response';
+import { TokenResponseData } from '@/types/response/identity-response';
+import BaseService from './base-service';
+import { environment } from '@/lib/environment';
 
-export const IdentityService = {
-    login: async (request: LoginRequest): Promise<ApiResponse<LoginResponseData>> => {
-        const response = await identityService.post<ApiResponse<LoginResponseData>>(
-            "api/authentication/login", 
-            request
-        );
-        return response.data;
-    }
-};
+class IdentityService extends BaseService {
+  public constructor() {
+    super(environment.identityServiceApi + '/api/');
+  }
+
+  public login = (request: LoginRequest): Promise<ApiResponse<TokenResponseData>> => {
+    return this.instance.post('authentication/login', request);
+  };
+}
+
+export default new IdentityService();

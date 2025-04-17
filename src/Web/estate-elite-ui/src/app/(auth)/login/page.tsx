@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleLogin =  async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle login logic here
     console.log('Login attempt with:', { email, password, rememberMe });
@@ -36,8 +36,8 @@ export default function LoginPage() {
 
     const response = await IdentityService.login({
       email,
-      password
-    })
+      password,
+    });
 
     console.log(response);
   };
