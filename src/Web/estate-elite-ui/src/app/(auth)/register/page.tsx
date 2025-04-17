@@ -24,6 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import Image from 'next/image';
+import Background from '@/public/images/background-login-register.jpg';
+import styles from './styles.module.scss';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -38,32 +41,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex justify-center">
       {/* Left side - Image */}
-      <div className="relative hidden bg-blue-600 md:block md:w-1/2">
-        <div className="absolute inset-0 z-10 bg-gradient-to-br from-blue-600/90 to-blue-800/90"></div>
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <div className="max-w-md space-y-6 px-10 text-white">
-            <Building className="h-16 w-16" />
-            <h2 className="text-3xl font-bold">RealEstate Pro</h2>
-            <p className="text-xl">
-              Khởi đầu hành trình kinh doanh bất động sản của bạn ngay hôm nay
-            </p>
-            <div className="pt-6">
-              <p className="font-medium">Lợi ích khi đăng ký:</p>
-              <ul className="mt-2 list-inside list-disc space-y-2">
-                <li>Tiếp cận hàng ngàn khách hàng tiềm năng</li>
-                <li>Công cụ quản lý bất động sản hiện đại</li>
-                <li>Hỗ trợ kỹ thuật 24/7</li>
-                <li>Báo cáo phân tích thị trường</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      <div className="relative hidden md:block md:w-1/2">
+        <Image
+          src={Background}
+          alt="background"
+          fill
+          sizes="100vw"
+          className={styles.image}
+        />
       </div>
 
       {/* Right side - Registration form */}
-      <div className="flex w-full items-center justify-center bg-gray-50 p-6 md:w-1/2">
+      <div className="flex w-full items-center justify-center p-6 md:w-1/2">
         <div className="w-full max-w-md">
           <div className="mb-6 flex justify-center md:hidden">
             <div className="flex items-center gap-2">

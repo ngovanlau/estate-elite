@@ -1,6 +1,6 @@
-import { LoginRequest } from '@/types/request/identity-request';
+import { ConfirmRequest, LoginRequest, RegisterRequest } from '@/types/request/identity-request';
 import { ApiResponse } from '@/types/response/base-response';
-import { TokenResponseData } from '@/types/response/identity-response';
+import { CurrentUserData, TokenData } from '@/types/response/identity-response';
 import BaseService from './base-service';
 import { environment } from '@/lib/environment';
 
@@ -9,9 +9,34 @@ class IdentityService extends BaseService {
     super(environment.identityServiceApi + '/api/');
   }
 
-  public login = (request: LoginRequest): Promise<ApiResponse<TokenResponseData>> => {
+  public register = (request: RegisterRequest): Promise<ApiResponse<string>> => {
+    return this.instance.post('authentication/register', request);
+  };
+
+  public confirm = (request: ConfirmRequest): Promise<ApiResponse<boolean | number>> => {
+    return this.instance.post('authentication/confirm', request);
+  };
+
+  public resendCode = (id: string): Promise<ApiResponse<string>> => {
+    return this.instance.post('authentication/confirm', id);
+  };
+
+  public login = (request: LoginRequest): Promise<ApiResponse<TokenData>> => {
     return this.instance.post('authentication/login', request);
+  };
+
+  public uploadAvatar = (image: FormData): Promise<ApiResponse<string>> => {
+    return this.instance.patchForm('user/upload-avatar', image);
+  };
+
+  public uploadBackground = (image: FormData): Promise<ApiResponse<string>> => {
+    return this.instance.patchForm('user/upload-background', image);
+  };
+
+  public getCurrentUser = (): Promise<ApiResponse<CurrentUserData>> => {
+    return this.instance.get('user/current-user');
   };
 }
 
-export default new IdentityService();
+const identityService = new IdentityService();
+export default identityService;

@@ -2,7 +2,6 @@
 
 public class CurrentSellerProfileDto
 {
-    public Guid UserId { get; set; }
     public required string CompanyName { get; set; }
     public string? LicenseNumber { get; set; }
     public required string TaxIdentificationNumber { get; set; }

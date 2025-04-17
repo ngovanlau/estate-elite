@@ -10,7 +10,7 @@ using SharedKernel.Controllers;
 [Authorize]
 public class UserController(IMediator mediator) : BaseController(mediator)
 {
-    [HttpPost("upload-avatar")]
+    [HttpPatch("upload-avatar")]
     public async Task<IActionResult> UploadAvatar([FromForm] UploadRequest request)
     {
         request.SetIsAvatar(true);
@@ -18,7 +18,7 @@ public class UserController(IMediator mediator) : BaseController(mediator)
         return Ok(response);
     }
 
-    [HttpPost("upload-background")]
+    [HttpPatch("upload-background")]
     public async Task<IActionResult> UploadBackground([FromForm] UploadRequest request)
     {
         request.SetIsAvatar(false);
