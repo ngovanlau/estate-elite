@@ -2,13 +2,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Building, Mail, Lock, User, Phone } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   Card,
   CardContent,
@@ -27,11 +25,11 @@ import {
 import Image from 'next/image';
 import Background from '@/public/images/background-login-register.jpg';
 import styles from './styles.module.scss';
+import { USER_ROLE } from '@/lib/enum';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const router = useRouter();
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +39,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex min-h-screen flex-col md:flex-row">
       {/* Left side - Image */}
       <div className="relative hidden md:block md:w-1/2">
         <Image
@@ -55,14 +53,7 @@ export default function RegisterPage() {
 
       {/* Right side - Registration form */}
       <div className="flex w-full items-center justify-center p-6 md:w-1/2">
-        <div className="w-full max-w-md">
-          <div className="mb-6 flex justify-center md:hidden">
-            <div className="flex items-center gap-2">
-              <Building className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-blue-600">RealEstate Pro</h1>
-            </div>
-          </div>
-
+        <div className="w-full max-w-fit">
           <Card className="w-full border-0 shadow-md">
             <form onSubmit={handleRegister}>
               <CardHeader>
@@ -72,25 +63,25 @@ export default function RegisterPage() {
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-4">
+              <CardContent className="mt-4 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">Họ</Label>
+                    <Label htmlFor="firstName">Họ và tên</Label>
                     <div className="relative">
                       <User className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
                       <Input
-                        id="firstName"
-                        placeholder="Nguyễn"
+                        id="fullName"
+                        placeholder="Ngo Van Lau"
                         className="pl-10"
                         required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Tên</Label>
+                    <Label htmlFor="lastName">Username</Label>
                     <Input
-                      id="lastName"
-                      placeholder="Văn A"
+                      id="username"
+                      placeholder="username"
                       required
                     />
                   </div>
@@ -110,33 +101,33 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Số điện thoại</Label>
-                  <div className="relative">
-                    <Phone className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="0912345678"
-                      className="pl-10"
-                      required
-                    />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Số điện thoại</Label>
+                    <div className="relative">
+                      <Phone className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="0912345678"
+                        className="pl-10"
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="role">Bạn là</Label>
-                  <Select required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Chọn vai trò của bạn" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="agent">Môi giới bất động sản</SelectItem>
-                      <SelectItem value="owner">Chủ sở hữu bất động sản</SelectItem>
-                      <SelectItem value="company">Doanh nghiệp bất động sản</SelectItem>
-                      <SelectItem value="customer">Khách hàng tìm mua/thuê</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <Label htmlFor="role">Bạn là</Label>
+                    <Select required>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Chọn vai trò của bạn" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={USER_ROLE.BUYER}>Khách hàng tìm mua/thuê</SelectItem>
+                        <SelectItem value={USER_ROLE.SELLER}>Chủ sở hữu bất động sản</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -192,37 +183,9 @@ export default function RegisterPage() {
                     </Button>
                   </div>
                 </div>
-
-                <div className="flex items-start space-x-2">
-                  <Checkbox
-                    id="terms"
-                    className="mt-1"
-                    required
-                  />
-                  <Label
-                    htmlFor="terms"
-                    className="text-sm"
-                  >
-                    Tôi đồng ý với{' '}
-                    <Link
-                      href="/terms"
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      điều khoản sử dụng
-                    </Link>{' '}
-                    và{' '}
-                    <Link
-                      href="/privacy"
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      chính sách bảo mật
-                    </Link>{' '}
-                    của RealEstate Pro
-                  </Label>
-                </div>
               </CardContent>
 
-              <CardFooter className="flex flex-col gap-4">
+              <CardFooter className="mt-4 flex flex-col gap-4">
                 <Button
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700"

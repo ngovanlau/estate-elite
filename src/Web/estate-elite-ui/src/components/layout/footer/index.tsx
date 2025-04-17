@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="mb-4 text-lg font-bold">BatDongSan</h3>
+            <h3 className="mb-4 text-lg font-bold">Estate Elite</h3>
             <p className="text-gray-600">
               Nền tảng mua bán, cho thuê bất động sản hàng đầu Việt Nam
             </p>
@@ -75,17 +75,17 @@ export function Footer() {
           <div>
             <h4 className="mb-4 font-semibold">Liên hệ</h4>
             <address className="text-gray-600 not-italic">
-              <p>123 Đường ABC, Quận XYZ</p>
-              <p>Thành phố HCM, Việt Nam</p>
-              <p className="mt-2">Email: info@batdongsan.example</p>
-              <p>Điện thoại: (123) 456-7890</p>
+              <p> 154/7A, Hoàng Ngân, Phường 16, Quận 8</p>
+              <p>Thành phố Hồ Chí Minh, Việt Nam</p>
+              <p className="mt-2">Email: ngovanlau2003@gmail.com</p>
+              <p>Điện thoại: (+84) 393-131-096</p>
             </address>
           </div>
         </div>
 
         <div className="mt-8 border-t border-gray-200 pt-6">
           <p className="text-center text-gray-500">
-            © {new Date().getFullYear()} BatDongSan. Tất cả quyền được bảo lưu.
+            © {new Date().getFullYear()} Estate Elite. Tất cả quyền được bảo lưu.
           </p>
         </div>
       </div>

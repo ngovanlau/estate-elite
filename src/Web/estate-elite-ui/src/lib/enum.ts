@@ -5,3 +5,8 @@ export enum USER_ROLE {
   SELLER = 'Seller',
   ADMIN = 'Admin',
 }
+
+export enum LISTING_TYPE {
+  SALE = 'Sale',
+  RENT = 'Rent',
+}

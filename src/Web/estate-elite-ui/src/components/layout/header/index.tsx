@@ -17,13 +17,13 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-background/95 sticky top-0 z-50 w-full border-b backdrop-blur">
+    <header className="bg-background/95 sticky top-0 z-50 w-full border-b px-6 backdrop-blur">
       <div className="container flex h-16 items-center justify-between">
         <Link
           href="/"
           className="flex items-center space-x-2"
         >
-          <span className="text-xl font-bold">BatDongSan</span>
+          <span className="text-2xl font-bold">Estate Elite</span>
         </Link>
 
         <NavigationMenu>
@@ -48,11 +48,10 @@ export function Header() {
             <NavigationMenuItem>
               <NavigationMenuTrigger>Dịch vụ</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[200px] gap-3 p-4">
+                <ul className="grid w-[200px] gap-3">
                   <li>
                     <Link
                       href="/services/buy"
-                      legacyBehavior
                       passHref
                     >
                       <NavigationMenuLink className="hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none">
@@ -63,7 +62,6 @@ export function Header() {
                   <li>
                     <Link
                       href="/services/rent"
-                      legacyBehavior
                       passHref
                     >
                       <NavigationMenuLink className="hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none">
@@ -78,7 +76,6 @@ export function Header() {
             <NavigationMenuItem>
               <Link
                 href="/about"
-                legacyBehavior
                 passHref
               >
                 <NavigationMenuLink

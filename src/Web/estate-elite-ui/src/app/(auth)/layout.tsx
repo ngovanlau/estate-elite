@@ -8,7 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           href="/"
           className="flex items-center"
         >
-          <span className="text-xl font-bold">BatDongSan</span>
+          <span className="text-2xl font-bold">Estate Elite</span>
         </Link>
       </header>
 
