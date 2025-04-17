@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import AreaCategory from '../_components/area-category';
 import PropertyCard from '../_components/property-card';
+import { AreaCategory } from '../_components/area-category';
 
 export default function HomePage() {
   return (

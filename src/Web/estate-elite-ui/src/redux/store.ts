@@ -1,8 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './slices/counter-slice';
 
 export const makeStore = () => {
   return configureStore({
-    reducer: {},
+    reducer: {
+      counter: counterReducer,
+    },
     devTools: process.env.NODE_ENV !== 'production',
   });
 };

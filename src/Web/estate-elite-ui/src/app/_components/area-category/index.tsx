@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 
-const AreaCategory = () => {
+export const AreaCategory = () => {
   return (
     <Card className="overflow-hidden">
       <div className="h-40 bg-slate-200">{/* Area image would go here */}</div>
@@ -11,5 +11,3 @@ const AreaCategory = () => {
     </Card>
   );
 };
-
-export default AreaCategory;

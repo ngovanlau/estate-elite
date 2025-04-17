@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-const News = () => {
+export const News = () => {
   return (
     <Card>
       <div className="aspect-video overflow-hidden rounded-t-lg bg-slate-200">
@@ -19,5 +19,3 @@ const News = () => {
     </Card>
   );
 };
-
-export default News;
