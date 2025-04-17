@@ -1,20 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Building,
-  Home,
-  LineChart,
   Users,
-  Settings,
   Calendar,
-  MessageSquare,
   DollarSign,
   Search,
   Bell,
-  ChevronDown,
   ThumbsUp,
-  Map,
   FileText,
   Plus,
   Maximize,
@@ -37,69 +30,60 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet';
 import Image from 'next/image';
 
 // Navigation Items for the sidebar
-const sidebarNavItems = [
-  {
-    title: 'Dashboard',
-    icon: Home,
-    href: '/dashboard',
-    variant: 'default',
-  },
-  {
-    title: 'Properties',
-    icon: Building,
-    href: '/dashboard/properties',
-    variant: 'ghost',
-  },
-  {
-    title: 'Analytics',
-    icon: LineChart,
-    href: '/dashboard/analytics',
-    variant: 'ghost',
-  },
-  {
-    title: 'Clients',
-    icon: Users,
-    href: '/dashboard/clients',
-    variant: 'ghost',
-  },
-  {
-    title: 'Calendar',
-    icon: Calendar,
-    href: '/dashboard/calendar',
-    variant: 'ghost',
-  },
-  {
-    title: 'Messages',
-    icon: MessageSquare,
-    href: '/dashboard/messages',
-    variant: 'ghost',
-    notification: 5,
-  },
-  {
-    title: 'Map View',
-    icon: Map,
-    href: '/dashboard/map',
-    variant: 'ghost',
-  },
-  {
-    title: 'Settings',
-    icon: Settings,
-    href: '/dashboard/settings',
-    variant: 'ghost',
-  },
-];
+// const sidebarNavItems = [
+//   {
+//     title: 'Dashboard',
+//     icon: Home,
+//     href: '/dashboard',
+//     variant: 'default',
+//   },
+//   {
+//     title: 'Properties',
+//     icon: Building,
+//     href: '/dashboard/properties',
+//     variant: 'ghost',
+//   },
+//   {
+//     title: 'Analytics',
+//     icon: LineChart,
+//     href: '/dashboard/analytics',
+//     variant: 'ghost',
+//   },
+//   {
+//     title: 'Clients',
+//     icon: Users,
+//     href: '/dashboard/clients',
+//     variant: 'ghost',
+//   },
+//   {
+//     title: 'Calendar',
+//     icon: Calendar,
+//     href: '/dashboard/calendar',
+//     variant: 'ghost',
+//   },
+//   {
+//     title: 'Messages',
+//     icon: MessageSquare,
+//     href: '/dashboard/messages',
+//     variant: 'ghost',
+//     notification: 5,
+//   },
+//   {
+//     title: 'Map View',
+//     icon: Map,
+//     href: '/dashboard/map',
+//     variant: 'ghost',
+//   },
+//   {
+//     title: 'Settings',
+//     icon: Settings,
+//     href: '/dashboard/settings',
+//     variant: 'ghost',
+//   },
+// ];
 
 // Property listings data
 const propertyListings = [
@@ -216,12 +200,12 @@ const stats = [
 ];
 
 export default function DashboardPage() {
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  // const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Sidebar for desktop */}
-      <aside className="hidden w-64 flex-col border-r border-gray-200 bg-white md:flex dark:border-gray-700 dark:bg-gray-800">
+      {/* <aside className="hidden w-64 flex-col border-r border-gray-200 bg-white md:flex dark:border-gray-700 dark:bg-gray-800">
         <div className="p-6">
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">RealEstate Pro</h2>
           <p className="text-gray-500 dark:text-gray-400">Management Dashboard</p>
@@ -279,10 +263,10 @@ export default function DashboardPage() {
             </DropdownMenu>
           </div>
         </div>
-      </aside>
+      </aside> */}
 
       {/* Mobile sidebar */}
-      <Sheet
+      {/* <Sheet
         open={isMobileNavOpen}
         onOpenChange={setIsMobileNavOpen}
       >
@@ -337,7 +321,7 @@ export default function DashboardPage() {
             </div>
           </SheetFooter>
         </SheetContent>
-      </Sheet>
+      </Sheet> */}
 
       {/* Main content */}
       <div className="flex-1">
@@ -348,7 +332,7 @@ export default function DashboardPage() {
               variant="ghost"
               size="icon"
               className="md:hidden"
-              onClick={() => setIsMobileNavOpen(true)}
+              // onClick={() => setIsMobileNavOpen(true)}
             >
               <Building className="h-6 w-6" />
               <span className="sr-only">Toggle menu</span>

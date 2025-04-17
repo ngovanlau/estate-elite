@@ -10,3 +10,5 @@ export enum LISTING_TYPE {
   SALE = 'Sale',
   RENT = 'Rent',
 }
+
+export enum PROJECT_STATUS {}
