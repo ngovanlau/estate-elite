@@ -4,23 +4,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 
-import { Control, FieldPath, FieldValues } from 'react-hook-form';
+import { FieldPath, FieldValues } from 'react-hook-form';
+import { FormFieldProps } from '@/lib/types';
 
-type PasswordFieldProps<T extends FieldValues> = {
-  control: Control<T>;
-  name?: FieldPath<T>;
-};
-
-export const PasswordField = <T extends FieldValues>({
-  control,
-  name = 'password' as FieldPath<T>,
-}: PasswordFieldProps<T>) => {
+export const PasswordField = <T extends FieldValues>({ control }: FormFieldProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <FormField
       control={control}
-      name={name}
+      name={'password' as FieldPath<T>}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Mật khẩu</FormLabel>

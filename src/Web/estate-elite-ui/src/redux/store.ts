@@ -1,11 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from './slices/counter-slice';
+import authReducer from './slices/auth-slice';
+import { authMiddleware, rehydrateAuthState } from './middlewares/auth-middleware';
 
 export const makeStore = () => {
+  // Khôi phục trạng thái từ cookie (nếu có)
+  const preloadedState = typeof window !== 'undefined' ? rehydrateAuthState() : undefined;
+
   return configureStore({
     reducer: {
-      counter: counterReducer,
+      auth: authReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }).concat(authMiddleware),
+    preloadedState,
     devTools: process.env.NODE_ENV !== 'production',
   });
 };

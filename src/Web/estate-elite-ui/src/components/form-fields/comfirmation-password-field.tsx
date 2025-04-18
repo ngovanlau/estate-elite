@@ -3,7 +3,7 @@ import { Eye, EyeOff, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { RegisterFormFieldProps } from '@/lib/type';
+import { RegisterFormFieldProps } from '@/lib/types';
 
 export const ConfirmPasswordField = ({ control }: RegisterFormFieldProps) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

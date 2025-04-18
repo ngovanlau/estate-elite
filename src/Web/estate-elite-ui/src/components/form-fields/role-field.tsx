@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/select';
 import { USER_ROLE } from '@/lib/enum';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { RegisterFormFieldProps } from '@/lib/type';
+import { RegisterFormFieldProps } from '@/lib/types';
 
 export const RoleField = ({ control }: RegisterFormFieldProps) => (
   <FormField

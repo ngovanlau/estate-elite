@@ -22,7 +22,7 @@ import { z } from 'zod';
 import { USER_ROLE } from '@/lib/enum';
 import { RoleField } from '../../../../components/form-fields/role-field';
 import { ConfirmPasswordField } from '../../../../components/form-fields/comfirmation-password-field';
-import { RegisterFormValues } from '../../../../lib/type';
+import { RegisterFormValues } from '../../../../lib/types';
 
 type RegisterFormProps = {
   onSubmit: (values: RegisterFormValues) => void;

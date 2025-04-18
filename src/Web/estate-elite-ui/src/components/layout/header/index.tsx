@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -19,69 +19,46 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { useState, useEffect, JSX } from 'react';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { logout, selectIsAuthenticated, selectUser } from '@/redux/slices/auth-slice';
 
-// Define user interface
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  phone?: string;
-  role: 'user' | 'agent' | 'admin';
-  createdAt: string;
-  updatedAt: string;
-}
-const regularUser: User = {
-  id: '1234567890',
-  name: 'Nguyễn Văn A',
-  email: 'nguyenvana@example.com',
-  avatar: '/api/placeholder/150/150',
-  phone: '0912345678',
-  role: 'user',
-  createdAt: '2023-12-01T08:30:00Z',
-  updatedAt: '2024-04-15T14:22:00Z',
-};
-
-export function Header(): JSX.Element {
+export function Header() {
   const pathname = usePathname();
-  // State với proper typing
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
-  const [user, setUser] = useState<User | null>(regularUser);
+  const router = useRouter();
+  const currentUser = useAppSelector(selectUser);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const dispatch = useAppDispatch();
 
   // Effect để kiểm tra trạng thái đăng nhập
-  useEffect(() => {
-    const checkAuth = (): void => {
-      try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const parsedUser: User = JSON.parse(storedUser);
-          setIsLoggedIn(true);
-          setUser(parsedUser);
-        }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-        // Đảm bảo xử lý lỗi trong strict mode
-        localStorage.removeItem('user');
-        setIsLoggedIn(false);
-        setUser(null);
-      }
-    };
+  // useEffect(() => {
+  //   const checkAuth = (): void => {
+  //     try {
+  //       const storedUser = localStorage.getItem('user');
+  //       if (storedUser) {
+  //         const parsedUser: User = JSON.parse(storedUser);
+  //         setIsLoggedIn(true);
+  //         setUser(parsedUser);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error checking authentication:', error);
+  //       // Đảm bảo xử lý lỗi trong strict mode
+  //       localStorage.removeItem('user');
+  //       setIsLoggedIn(false);
+  //       setUser(null);
+  //     }
+  //   };
 
-    checkAuth();
-  }, []);
+  //   checkAuth();
+  // }, []);
 
   const handleLogout = (): void => {
-    localStorage.removeItem('user');
-    setIsLoggedIn(false);
-    setUser(null);
-    // Chuyển hướng đến trang đăng nhập hoặc trang chủ
-    window.location.href = '/';
+    dispatch(logout());
+    router.push('/');
   };
 
   return (
     <header className="bg-background/95 sticky top-0 z-50 w-full border-b px-6 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="flex h-16 w-full items-center justify-between">
         <Link
           href="/"
           className="flex items-center space-x-2"
@@ -142,19 +119,24 @@ export function Header(): JSX.Element {
         </NavigationMenu>
 
         <div className="flex items-center gap-4">
-          {isLoggedIn && user ? (
+          {isAuthenticated && currentUser ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex cursor-pointer items-center gap-2">
-                  <span className="hidden text-sm font-medium sm:inline-block">{user.name}</span>
+                <button
+                  type="button"
+                  className="flex cursor-pointer items-center gap-2"
+                >
+                  <span className="hidden text-sm font-medium sm:inline-block">
+                    {currentUser?.fullName}
+                  </span>
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={user.avatar || '/api/placeholder/32/32'}
+                      src={currentUser?.avatar || '/api/placeholder/32/32'}
                       alt="Avatar"
                     />
-                    <AvatarFallback>{user.name.charAt(0) || 'U'}</AvatarFallback>
+                    <AvatarFallback>{currentUser?.fullName.charAt(0) || 'U'}</AvatarFallback>
                   </Avatar>
-                </div>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"

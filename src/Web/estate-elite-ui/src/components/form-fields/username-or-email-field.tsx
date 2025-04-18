@@ -1,7 +1,7 @@
 import { User } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { LoginFormFieldProps } from '@/lib/type';
+import { LoginFormFieldProps } from '@/lib/types';
 
 export const UsernameOrEmailField = ({ control }: LoginFormFieldProps) => (
   <FormField
