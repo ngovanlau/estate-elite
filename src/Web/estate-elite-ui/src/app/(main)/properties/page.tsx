@@ -1,7 +1,7 @@
 // src/app/properties/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -138,8 +138,6 @@ export default function PropertyListingPage() {
   const [sortOption, setSortOption] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  setProperties(sampleProperties);
-
   // Xử lý lọc và sắp xếp dữ liệu
   const filteredProperties = properties
     .filter((property) => {
@@ -176,6 +174,10 @@ export default function PropertyListingPage() {
     }
   };
 
+  useEffect(() => {
+    setProperties(sampleProperties);
+  }, []);
+
   return (
     <div className="container mx-auto py-8">
       <h1 className="mb-8 text-3xl font-bold">Danh sách bất động sản</h1>
@@ -201,7 +203,7 @@ export default function PropertyListingPage() {
               <SelectValue placeholder="Loại giao dịch" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tất cả</SelectItem>
+              <SelectItem value="all">Tất cả</SelectItem>
               <SelectItem value="sale">Bán</SelectItem>
               <SelectItem value="rent">Cho thuê</SelectItem>
             </SelectContent>
@@ -215,7 +217,7 @@ export default function PropertyListingPage() {
               <SelectValue placeholder="Loại BĐS" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tất cả</SelectItem>
+              <SelectItem value="all">Tất cả</SelectItem>
               <SelectItem value="apartment">Căn hộ</SelectItem>
               <SelectItem value="house">Nhà phố</SelectItem>
               <SelectItem value="villa">Biệt thự</SelectItem>
@@ -231,7 +233,7 @@ export default function PropertyListingPage() {
               <SelectValue placeholder="Vị trí" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tất cả</SelectItem>
+              <SelectItem value="all">Tất cả</SelectItem>
               <SelectItem value="Quận 2">Quận 2</SelectItem>
               <SelectItem value="Quận Bình Thạnh">Quận Bình Thạnh</SelectItem>
               <SelectItem value="Phú Quốc">Phú Quốc</SelectItem>
@@ -304,6 +306,7 @@ export default function PropertyListingPage() {
                 <Image
                   src={property.image}
                   alt={property.title}
+                  fill
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 {property.featured && (

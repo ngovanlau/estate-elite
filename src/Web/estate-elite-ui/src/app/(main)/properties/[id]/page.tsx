@@ -1,29 +1,16 @@
 // src/app/(main)/properties/[id]/page.tsx
 import { PropertyDetails } from './_components/property-details';
-import { Metadata } from 'next';
 
-interface PageParams {
-  id: string;
-}
+export default async function PropertyDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: slug } = await params;
 
-export async function generateMetadata({ params }: { params: PageParams }): Promise<Metadata> {
-  return {
-    title: `Bất động sản ID: ${params.id}`,
-    description: 'Chi tiết bất động sản',
-  };
-}
-
-export default function PropertyDetailPage({ params }: { params: PageParams }) {
-  // Đây là dữ liệu mẫu, trong thực tế sẽ lấy từ API hoặc database dựa vào params.id
   const propertyData = {
-    id: params.id,
+    id: slug,
     title: 'Căn hộ cao cấp tại trung tâm Quận 1',
     address: 'Đường Nguyễn Huệ, Quận 1, TP. HCM',
     price: 5500000000,
     description: `Căn hộ cao cấp với thiết kế hiện đại, view toàn cảnh thành phố. Tọa lạc tại vị trí đắc địa ngay trung tâm Quận 1, thuận tiện di chuyển đến các điểm giải trí, mua sắm và ăn uống.
-
 Căn hộ được thiết kế với không gian mở, tối ưu ánh sáng tự nhiên. Các phòng đều được trang bị nội thất cao cấp, thiết bị điện tử hiện đại đến từ các thương hiệu hàng đầu.
-
 Khu căn hộ được trang bị đầy đủ tiện ích như: hồ bơi, phòng gym, spa, khu vui chơi trẻ em, nhà hàng, siêu thị, và bảo vệ 24/7.`,
     images: [
       '/api/placeholder/800/600',
