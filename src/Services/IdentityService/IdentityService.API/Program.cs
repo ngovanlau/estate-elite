@@ -4,12 +4,14 @@ using IdentityService.Application.Mediators;
 using IdentityService.Application.Validates;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using SharedKernel.Settings;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,10 @@ builder.Host.UseSerilog((context, configuration) => configuration
 //    var codeLength = settings.Value.Length;
 // }
 builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 // Add services to the container.
 // Mediator

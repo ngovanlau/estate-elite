@@ -1,3 +1,5 @@
+import { USER_ROLE } from '@/lib/enum';
+
 export interface LoginRequest {
   username?: string;
   email?: string;
@@ -13,6 +15,7 @@ export interface RegisterRequest {
   username: string;
   email: string;
   fullname: string;
+  role: USER_ROLE;
   password: string;
   confirmationPassword: string;
 }

@@ -27,6 +27,7 @@ import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '@/lib/constant';
 import { useAppDispatch } from '@/lib/hooks';
 import { loginFailure, loginStart, loginSuccess } from '@/redux/slices/auth-slice';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
@@ -71,6 +72,13 @@ export const LoginForm = () => {
           })
         );
       } else {
+        form.setError('password', {
+          type: 'onBlur',
+          message: 'Mật khẩu không chính xác',
+        });
+
+        toast.error('Đăng nhập thất bại');
+
         throw new Error(
           'message' in getCurrentUserResponse
             ? getCurrentUserResponse.message

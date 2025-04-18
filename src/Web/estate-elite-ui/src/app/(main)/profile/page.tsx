@@ -46,8 +46,8 @@ import {
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 const userTypes = ['buyer', 'seller', 'developer'] as const;
 type UserType = (typeof userTypes)[number];
@@ -179,9 +179,7 @@ export default function ProfilePage() {
     setTimeout(() => {
       console.log(values);
       setIsLoading(false);
-      toast('Thông tin đã được cập nhật', {
-        description: 'Thông tin cá nhân của bạn đã được lưu thành công.',
-      });
+      toast.success('Thông tin cá nhân của bạn đã được lưu thành công.t');
     }, 1000);
   }
 
@@ -191,9 +189,7 @@ export default function ProfilePage() {
     setTimeout(() => {
       console.log(values);
       setIsLoading(false);
-      toast('Thông tin doanh nghiệp đã được cập nhật', {
-        description: 'Thông tin doanh nghiệp của bạn đã được lưu thành công.',
-      });
+      toast.success('Thông tin doanh nghiệp của bạn đã được lưu thành công.');
     }, 1000);
   }
 
@@ -203,9 +199,7 @@ export default function ProfilePage() {
     setTimeout(() => {
       console.log(values);
       setIsLoading(false);
-      toast('Mật khẩu đã được cập nhật', {
-        description: 'Mật khẩu của bạn đã được thay đổi thành công.',
-      });
+      toast.success('Mật khẩu của bạn đã được thay đổi thành công.');
       passwordForm.reset();
     }, 1000);
   }
@@ -217,9 +211,7 @@ export default function ProfilePage() {
       reader.onload = (e) => {
         if (e.target?.result) {
           setAvatarSrc(e.target.result as string);
-          toast('Cập nhật avatar', {
-            description: 'Avatar của bạn đã được cập nhật thành công.',
-          });
+          toast.success('Avatar của bạn đã được cập nhật thành công.');
         }
       };
       reader.readAsDataURL(file);
@@ -233,9 +225,7 @@ export default function ProfilePage() {
       reader.onload = (e) => {
         if (e.target?.result) {
           setBackgroundSrc(e.target.result as string);
-          toast('Cập nhật ảnh bìa', {
-            description: 'Ảnh bìa của bạn đã được cập nhật thành công.',
-          });
+          toast.success('Ảnh bìa của bạn đã được cập nhật thành công.');
         }
       };
       reader.readAsDataURL(file);
@@ -249,9 +239,7 @@ export default function ProfilePage() {
       // Giả lập API call
       setTimeout(() => {
         setIsLoading(false);
-        toast('Tài liệu đã được tải lên', {
-          description: 'Giấy phép kinh doanh của bạn đã được gửi để xác minh.',
-        });
+        toast.success('Giấy phép kinh doanh của bạn đã được gửi để xác minh.');
       }, 1500);
     }
   }
@@ -261,9 +249,7 @@ export default function ProfilePage() {
     // Giả lập API call
     setTimeout(() => {
       setIsLoading(false);
-      toast('Yêu cầu đặt lại mật khẩu', {
-        description: 'Email với hướng dẫn đặt lại mật khẩu đã được gửi đến email của bạn.',
-      });
+      toast.success('Email với hướng dẫn đặt lại mật khẩu đã được gửi đến email của bạn.');
     }, 1000);
   }
 
@@ -273,9 +259,7 @@ export default function ProfilePage() {
     setTimeout(() => {
       setIsLoading(false);
       setIsVerified(true);
-      toast('Tài khoản đã xác minh', {
-        description: 'Tài khoản của bạn đã được xác minh thành công.',
-      });
+      toast.success('Tài khoản của bạn đã được xác minh thành công.');
     }, 1500);
   }
 

@@ -30,7 +30,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -103,9 +103,7 @@ export default function AddPropertyPage() {
     );
 
     if (validFiles.length !== imageFiles.length) {
-      toast.error('Một số hình ảnh không hợp lệ', {
-        description: 'Chỉ chấp nhận file .jpg, .jpeg, .png, .webp và kích thước <= 5MB',
-      });
+      toast.error('Một số hình ảnh không hợp lệ');
     }
 
     // Cập nhật giá trị trong form
@@ -163,13 +161,7 @@ export default function AddPropertyPage() {
       });
     }
 
-    toast.success('Đã gửi form', {
-      description: 'Thông tin bất động sản đã được gửi',
-      action: {
-        label: 'Hoàn tác',
-        onClick: () => console.log('Undo'),
-      },
-    });
+    toast.success('Thông tin bất động sản đã được gửi');
 
     // Simulate redirect
     setTimeout(() => {

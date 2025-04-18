@@ -17,8 +17,8 @@ class IdentityService extends BaseService {
     return this.instance.post('authentication/confirm', request);
   };
 
-  public resendCode = (id: string): Promise<ApiResponse<string>> => {
-    return this.instance.post('authentication/confirm', id);
+  public resendCode = (userId: string): Promise<ApiResponse<string>> => {
+    return this.instance.post('authentication/resend-code', { userId });
   };
 
   public login = (request: LoginRequest): Promise<ApiResponse<TokenData>> => {

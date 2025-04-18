@@ -7,27 +7,38 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import identityService from '@/services/identity-service';
 import { Label } from '@radix-ui/react-label';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 interface OTPDialogProps {
+  userId: string;
   isDialogOpen: boolean;
   handleCloseDialog: () => void;
 }
 
 const OtpDialog: React.FC<OTPDialogProps> = ({
+  userId,
   isDialogOpen,
   handleCloseDialog,
 }: OTPDialogProps) => {
   const [otp, setOtp] = useState<string>('');
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [countdown, setCountdown] = useState<number>(5 * 60);
+  const router = useRouter();
 
   const handleVerifyOtp = async (): Promise<void> => {
-    // Thêm logic xác thực OTP
     setIsVerifying(true);
     try {
-      // await verifyOTP(otp);
+      const response = await identityService.confirm({
+        userId,
+        code: otp,
+      });
+
+      if (response.succeeded && response.data) {
+        router.push('/login');
+      }
     } catch (error) {
       console.error('Xác thực thất bại:', error);
     } finally {
@@ -37,9 +48,8 @@ const OtpDialog: React.FC<OTPDialogProps> = ({
 
   const handleResendOtp = async (): Promise<void> => {
     try {
-      // Gọi API gửi lại OTP
-      // await resendOTPAPI();
-      setCountdown(300); // 5 phút = 300 giây
+      await identityService.resendCode(userId);
+      setCountdown(300);
     } catch (error) {
       console.error('Lỗi khi gửi lại OTP:', error);
     }
@@ -66,7 +76,14 @@ const OtpDialog: React.FC<OTPDialogProps> = ({
       open={isDialogOpen}
       onOpenChange={handleCloseDialog}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onInteractOutside={(e) => {
+          // Ngăn không cho Dialog đóng khi click bên ngoài
+          e.preventDefault();
+        }}
+        onEscapeKeyDown={(e) => e.preventDefault()} // Ngăn đóng bằng phím ESC
+      >
         <DialogHeader>
           <DialogTitle>Xác thực tài khoản</DialogTitle>
           <DialogDescription>Vui lòng nhập mã OTP đã được gửi đến email của bạn</DialogDescription>

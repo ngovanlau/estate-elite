@@ -8,16 +8,27 @@ import { RegisterForm } from './_components/register-form';
 import OtpDialog from './_components/otp-dialog';
 import { registerFormSchema } from './_components/validation';
 import { z } from 'zod';
+import identityService from '@/services/identity-service';
 
 export default function RegisterPage() {
+  const [userId, setUserId] = useState<string>('');
   const [isOtpDialogOpen, setIsOtpDialogOpen] = useState<boolean>(false);
 
   async function handleRegister(values: z.infer<typeof registerFormSchema>) {
     try {
-      console.log(values);
-      // Gọi API đăng ký tài khoản ở đây
-      // Sau khi đăng ký thành công, mở modal OTP
-      setIsOtpDialogOpen(true);
+      const response = await identityService.register({
+        username: values.username,
+        fullname: values.fullName,
+        email: values.email,
+        role: values.role,
+        password: values.password,
+        confirmationPassword: values.confirmationPassword,
+      });
+
+      if (response.succeeded && response.data) {
+        setUserId(response.data);
+        setIsOtpDialogOpen(true);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -49,6 +60,7 @@ export default function RegisterPage() {
 
       {isOtpDialogOpen && (
         <OtpDialog
+          userId={userId}
           isDialogOpen={isOtpDialogOpen}
           handleCloseDialog={handleCloseOtpDialog}
         />
