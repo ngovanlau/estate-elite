@@ -21,6 +21,7 @@ public static class InfrastructureServicesExtensions
 
         // Repository
         services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
+        services.AddScoped<IUtilityRepository, UtilityRepository>();
 
         // Auto mapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

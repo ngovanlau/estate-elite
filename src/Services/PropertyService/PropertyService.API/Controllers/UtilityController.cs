@@ -4,16 +4,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PropertyService.API.Controllers;
 
-using PropertyService.Application.Requests.PropertyTypes;
+using PropertyService.Application.Requests.Utilities;
 using SharedKernel.Constants;
 using SharedKernel.Controllers;
 
-public class PropertyTypeController(IMediator mediator) : BaseController(mediator)
+public class UtilityController(IMediator mediator) : BaseController(mediator)
 {
     [HttpGet, Authorize(Policy = Policy.RequireSellerRole)]
-    public async Task<IActionResult> GetPropertyType()
+    public async Task<IActionResult> GetUtility()
     {
-        var request = new GetPropertyTypeRequest();
+        var request = new GetUtilityRequest();
         var response = await _mediator.Send(request);
         return Ok(response);
     }
