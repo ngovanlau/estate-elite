@@ -149,7 +149,7 @@ export function Header() {
                   <Link href="/favorites">Bất động sản yêu thích</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/my-properties">Bất động sản của tôi</Link>
+                  <Link href="/dashboard">Bảng điều khiển</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
