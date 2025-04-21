@@ -11,4 +11,15 @@
     <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands/" />
+    <Folder Include="Validates/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
+    <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
+    <ProjectReference Include="../PropertyService.Domain/PropertyService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

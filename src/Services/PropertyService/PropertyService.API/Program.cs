@@ -1,6 +1,7 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using Microsoft.EntityFrameworkCore;
+using PropertyService.Application.Mediators;
 using PropertyService.Infrastructure.Data;
 using PropertyService.Infrastructure.Extensions;
 using Serilog;
@@ -22,6 +23,9 @@ builder.Host.UseSerilog((context, configuration) => configuration
 builder.Services.AddMediatR(configuration =>
 {
     configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+
+    // Add mediator
+    configuration.AddPropertyTypeMediator();
 });
 
 // Controllers
