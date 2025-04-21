@@ -6,7 +6,7 @@ import Background from '@/public/images/background-login-register.jpg';
 import styles from './styles.module.scss';
 import { RegisterForm } from './_components/register-form';
 import OtpDialog from './_components/otp-dialog';
-import { registerFormSchema } from './_components/validation';
+import { registerFormSchema } from './_components/_validation';
 import { z } from 'zod';
 import identityService from '@/services/identity-service';
 

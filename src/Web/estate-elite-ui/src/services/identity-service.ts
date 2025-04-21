@@ -25,12 +25,12 @@ class IdentityService extends BaseService {
     return this.instance.post('authentication/login', request);
   };
 
-  public uploadAvatar = (image: FormData): Promise<ApiResponse<string>> => {
-    return this.instance.patchForm('user/upload-avatar', image);
+  public uploadAvatar = (formData: FormData): Promise<ApiResponse<string>> => {
+    return this.instance.patchForm('user/upload-avatar', formData);
   };
 
-  public uploadBackground = (image: FormData): Promise<ApiResponse<string>> => {
-    return this.instance.patchForm('user/upload-background', image);
+  public uploadBackground = (formData: FormData): Promise<ApiResponse<string>> => {
+    return this.instance.patchForm('user/upload-background', formData);
   };
 
   public getCurrentUser = (): Promise<ApiResponse<CurrentUserData>> => {

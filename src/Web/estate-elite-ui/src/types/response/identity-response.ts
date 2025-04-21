@@ -15,6 +15,7 @@ export interface CurrentUserData {
   address?: string;
   avatar?: string;
   background?: string;
+  createdOn: Date;
   sellerProfile?: SellerProfile;
 }
 
@@ -22,7 +23,8 @@ interface SellerProfile {
   companyName: string;
   licenseNumber?: string;
   taxIdentificationNumber: string;
-  professionalLicense: string;
-  biography: string;
+  professionalLicense?: string;
+  biography?: string;
+  establishedYear: number;
   isVerified: boolean;
 }

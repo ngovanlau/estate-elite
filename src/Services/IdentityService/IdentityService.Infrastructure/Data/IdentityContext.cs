@@ -80,6 +80,10 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
                 .IsRequired()
                 .HasMaxLength(20);
 
+            entity.Property(e => e.EstablishedYear)
+                .IsRequired()
+                .HasAnnotation("Range", new[] { 1900 });
+
             entity.Property(e => e.IsVerified)
                 .IsRequired()
                 .HasDefaultValue(false);

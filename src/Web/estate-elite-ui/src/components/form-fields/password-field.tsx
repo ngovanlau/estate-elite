@@ -4,19 +4,32 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 
-import { FieldPath, FieldValues } from 'react-hook-form';
-import { FormFieldProps } from '@/lib/types';
+import { Control, FieldPath, FieldValues } from 'react-hook-form';
 
-export const PasswordField = <T extends FieldValues>({ control }: FormFieldProps<T>) => {
+type PasswordField<T extends FieldValues> = {
+  control: Control<T>;
+  name?: FieldPath<T>;
+  label?: string;
+  required?: boolean;
+};
+
+export const PasswordField = <T extends FieldValues>({
+  control,
+  name = 'password' as FieldPath<T>,
+  label,
+  required = false,
+}: PasswordField<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <FormField
       control={control}
-      name={'password' as FieldPath<T>}
+      name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Mật khẩu</FormLabel>
+          <FormLabel>
+            {label} {required && <span className="text-red-500">*</span>}
+          </FormLabel>
           <FormControl>
             <div className="relative">
               <Lock className="absolute top-3 left-3 h-4 w-4 text-gray-400" />

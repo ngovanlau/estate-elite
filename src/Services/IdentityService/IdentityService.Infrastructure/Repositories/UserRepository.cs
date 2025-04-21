@@ -65,4 +65,14 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
             .ProjectTo<CurrentUserDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public User Attach(User entity)
+    {
+        var entry = context.Users.Attach(entity);
+
+        // Mark the entity as modified to ensure changes are saved
+        entry.State = EntityState.Modified;
+
+        return entity;
+    }
 }

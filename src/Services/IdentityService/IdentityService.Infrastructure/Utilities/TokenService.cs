@@ -50,7 +50,7 @@ public class TokenService : ITokenService
             new Claim(ClaimTypes.Name, userDto.Username),
             new Claim(ClaimTypes.Email, userDto.Email),
             new Claim(ClaimTypes.Role, userDto.Role.ToString()),
-            new Claim("FullName", userDto.Fullname)
+            new Claim("FullName", userDto.FullName)
         };
 
         var token = new JwtSecurityToken(

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { Control, FieldValues } from 'react-hook-form';
-import { registerFormSchema } from '../app/(auth)/register/_components/validation';
-import { loginFormSchema } from '@/app/(auth)/login/_components/validation';
+import { registerFormSchema } from '../app/(auth)/register/_components/_validation';
+import { loginFormSchema } from '@/app/(auth)/login/_components/_validation';
 
 // Tạo generic type cho form field props
 export interface FormFieldProps<T extends FieldValues> {

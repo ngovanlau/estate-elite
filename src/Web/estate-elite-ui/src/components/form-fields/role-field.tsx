@@ -7,12 +7,13 @@ import {
 } from '@/components/ui/select';
 import { USER_ROLE } from '@/lib/enum';
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { RegisterFormFieldProps } from '@/lib/types';
+import { FieldPath, FieldValues } from 'react-hook-form';
+import { FormFieldProps } from '@/lib/types';
 
-export const RoleField = ({ control }: RegisterFormFieldProps) => (
+export const RoleField = <T extends FieldValues>({ control }: FormFieldProps<T>) => (
   <FormField
     control={control}
-    name="role"
+    name={'role' as FieldPath<T>}
     render={({ field }) => (
       <FormItem>
         <FormLabel>Bạn là</FormLabel>

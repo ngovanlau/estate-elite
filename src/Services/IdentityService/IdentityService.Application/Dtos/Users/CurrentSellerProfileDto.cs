@@ -6,6 +6,7 @@ public class CurrentSellerProfileDto
     public string? LicenseNumber { get; set; }
     public required string TaxIdentificationNumber { get; set; }
     public string? ProfessionalLicense { get; set; }
+    public int EstablishedYear { get; set; }
     public string? Biography { get; set; }
     public bool IsVerified { get; set; }
 }

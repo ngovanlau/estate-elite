@@ -1,5 +1,5 @@
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME, USER_KEY } from '@/lib/constant';
-import { removeCookie } from '@/lib/cookies';
+import { removeCookie, setCookie } from '@/lib/cookies';
 import { CurrentUserData } from '@/types/response/identity-response';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -74,6 +74,8 @@ export const authSlice = createSlice({
     // Action cập nhật thông tin người dùng
     updateUser: (state, action: PayloadAction<CurrentUserData>) => {
       state.currentUser = action.payload;
+
+      setCookie(USER_KEY, JSON.stringify(state.currentUser));
     },
   },
 });

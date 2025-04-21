@@ -3,8 +3,9 @@ namespace IdentityService.Application.Interfaces;
 using Domain.Entities;
 using Dtos.Authentications;
 using Dtos.Users;
+using SharedKernel.Interfaces;
 
-public interface IUserRepository
+public interface IUserRepository : IRepository<User>
 {
     Task<bool> AddAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> IsUsernameExistAsync(string username, CancellationToken cancellationToken = default);

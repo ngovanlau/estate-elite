@@ -16,7 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PasswordField } from '../../../../components/form-fields/password-field';
 import { z } from 'zod';
 import { UsernameOrEmailField } from '@/components/form-fields/username-or-email-field';
-import { loginFormSchema } from './validation';
+import { loginFormSchema } from './_validation';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
@@ -57,6 +57,14 @@ export const LoginForm = () => {
         setCookie(ACCESS_TOKEN_NAME, loginResponse.data.accessToken);
         setCookie(REFRESH_TOKEN_NAME, loginResponse.data.refreshToken);
       } else {
+        if (loginResponse.code === 'E114') {
+          form.setError('password', {
+            message: 'Mật khẩu không chính xác',
+          });
+        } else {
+          toast.error('Đăng nhập thất bại');
+        }
+
         throw new Error('message' in loginResponse ? loginResponse.message : 'Đăng nhập thất bại');
       }
 
@@ -87,8 +95,6 @@ export const LoginForm = () => {
       }
 
       router.push('/');
-
-      return true;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Đăng nhập thất bại';
       dispatch(loginFailure(errorMessage));

@@ -6,8 +6,10 @@ using Microsoft.Extensions.Logging;
 
 namespace IdentityService.Application.Commands.Users;
 
+using AutoMapper;
 using DistributedCache.Redis;
 using Domain.Entities;
+using IdentityService.Application.Dtos.Users;
 using Interfaces;
 using Requests.Users;
 using SharedKernel.Commons;
@@ -21,6 +23,7 @@ public class UploadHandler(
     IUserRepository userRepository,
     IFileStorageService fileStorageService,
     IDistributedCache cache,
+    IMapper mapper,
     ILogger<UploadHandler> logger) : IRequestHandler<UploadRequest, ApiResponse>
 {
     public async Task<ApiResponse> Handle(UploadRequest request, CancellationToken cancellationToken)
@@ -53,6 +56,10 @@ public class UploadHandler(
                 logger.LogDebug("Cache miss: Fetching user from repository");
                 user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
             }
+            else
+            {
+                user = userRepository.Attach(user);
+            }
 
             if (user is null)
             {
@@ -74,6 +81,10 @@ public class UploadHandler(
                 await cache.SetAsync(cacheKey, user, cancellationToken);
                 logger.LogInformation("Upload successful: Type={Type}, UserId={UserId}",
                     request.IsAvatar ? "avatar" : "background", userId);
+
+                var dtoKey = CacheKeys.ForDto<CurrentUserDto>(userId);
+                await cache.RemoveAsync(cacheKey, cancellationToken);
+                await cache.SetAsync(dtoKey, mapper.Map<CurrentUserDto>(user), cancellationToken);
             }
             else
             {
@@ -97,11 +108,11 @@ public class UploadHandler(
             image.FileName, targetProperty, userId);
 
         var fileExtension = Path.GetExtension(image.FileName);
-        var objectName = $"{targetProperty}/{userId}{fileExtension}";
+        var objectName = $"{userId}/{targetProperty}/{StringExtension.GenerateHashId(32)}{fileExtension}";
 
         try
         {
-            var prefix = $"{targetProperty}/{userId}";
+            var prefix = $"{userId}/{targetProperty}";
             logger.LogDebug("Attempting to delete existing files with prefix: '{prefix}'", prefix);
             await fileStorageService.DeleteFilesByPrefixAsync(prefix, cancellationToken);
 

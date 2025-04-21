@@ -14,6 +14,8 @@ public partial class SellerProfile
     // Professional Details
     public string? Biography { get; set; }
 
+    public int EstablishedYear { get; set; }
+
     // Verification Status
     public bool IsVerified { get; set; }
     public DateTime? VerifiedDate { get; set; }

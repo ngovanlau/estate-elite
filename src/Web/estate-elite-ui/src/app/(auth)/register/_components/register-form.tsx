@@ -13,8 +13,8 @@ import {
 import { Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerFormSchema } from './validation';
-import { NameField } from '../../../../components/form-fields/name-field';
+import { registerFormSchema } from './_validation';
+import { FullNameField } from '../../../../components/form-fields/full-name-field';
 import { UsernameField } from '../../../../components/form-fields/username-field';
 import { EmailField } from '../../../../components/form-fields/email-field';
 import { PasswordField } from '../../../../components/form-fields/password-field';
@@ -54,7 +54,7 @@ export const RegisterForm = ({ onSubmit }: RegisterFormProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <NameField control={form.control} />
+              <FullNameField control={form.control} />
               <UsernameField control={form.control} />
             </div>
 
