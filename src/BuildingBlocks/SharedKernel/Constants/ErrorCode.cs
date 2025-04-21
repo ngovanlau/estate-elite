@@ -25,7 +25,7 @@ public static class ErrorCode
     public const string E108 = "You have reached the maximum number of attempts";
     public const string E109 = "User already exists";
     public const string E110 = "The confirmation password does not match the password";
-    public const string E111 = "Username not found"; //TODO
+    public const string E111 = "Phone number not valid";
     public const string E112 = "Email not found"; //TODO
     public const string E113 = "Either Username or Email must be provided";
     public const string E114 = "Incorrect password";

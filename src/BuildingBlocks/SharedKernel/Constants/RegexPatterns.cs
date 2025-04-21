@@ -7,4 +7,6 @@ public static class RegexPatterns
 
     // Allows: letters (a-z, A-Z), digits (0-9), underscores (_)
     public const string Username = @"^[a-zA-Z0-9_]+$";
+
+    public const string Phone = @"^(0|\+84)\d{9,10}$";
 }

@@ -88,7 +88,8 @@ public class UploadHandler(
             }
             else
             {
-                logger.LogWarning("Failed to save changes: UserId={UserId}", userId);
+                logger.LogError("Failed to save changes: UserId={UserId}", userId);
+                return res.SetError(nameof(E000), E000);
             }
 
             return res.SetSuccess(url);

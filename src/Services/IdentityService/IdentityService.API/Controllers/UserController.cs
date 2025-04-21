@@ -33,4 +33,11 @@ public class UserController(IMediator mediator) : BaseController(mediator)
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpPatch("update-user")]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }

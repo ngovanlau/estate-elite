@@ -14,5 +14,6 @@ public static class UserMediator
     {
         configuration.AddBehavior<IRequestHandler<UploadRequest, ApiResponse>, UploadHandler>(life);
         configuration.AddBehavior<IRequestHandler<CurrentUserRequest, ApiResponse>, CurrentUserHandler>(life);
+        configuration.AddBehavior<IRequestHandler<UpdateUserRequest, ApiResponse>, UpdateUserHandler>(life);
     }
 }
