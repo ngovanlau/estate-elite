@@ -7,14 +7,15 @@ using SharedKernel.Extensions;
 
 public class PropertyContext(DbContextOptions<PropertyContext> options) : DbContext(options)
 {
-    DbSet<Address> Addresses { get; set; }
-    DbSet<Image> Images { get; set; }
-    DbSet<Project> Projects { get; set; }
-    DbSet<Property> Properties { get; set; }
-    DbSet<PropertyType> PropertyTypes { get; set; }
-    DbSet<PropertyUtility> PropertyUtilities { get; set; }
-    DbSet<Utility> Utilities { get; set; }
-
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Image> Images { get; set; }
+    public DbSet<Project> Projects { get; set; }
+    public DbSet<Property> Properties { get; set; }
+    public DbSet<PropertyType> PropertyTypes { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<PropertyRoom> PropertyRooms { get; set; }
+    public DbSet<Utility> Utilities { get; set; }
+    public DbSet<PropertyUtility> PropertyUtilities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -197,10 +198,6 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .IsRequired()
                 .HasMaxLength(5000);
 
-            entity.Property(e => e.ShortDescription)
-                .IsRequired()
-                .HasMaxLength(500);
-
             entity.Property(e => e.ListingType)
                 .IsRequired()
                 .HasConversion<string>();
@@ -249,17 +246,30 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Relationship with PropertyUtility (many-to-many)
-            entity.HasMany(e => e.Utilities)
+            entity.HasMany(e => e.Rooms)
                 .WithMany(p => p.Properties)
-                .UsingEntity<PropertyUtility>(
-                    j => j.HasOne(pu => pu.Utility)
+                .UsingEntity<PropertyRoom>(
+                    j => j.HasOne(pu => pu.Room)
                           .WithMany()
-                          .HasForeignKey(pu => pu.UtilityId)
+                          .HasForeignKey(pu => pu.RoomId)
                           .OnDelete(DeleteBehavior.Restrict),
                     j => j.HasOne(pu => pu.Property)
                           .WithMany()
                           .HasForeignKey(pu => pu.PropertyId)
                           .OnDelete(DeleteBehavior.Restrict)
+                );
+
+            entity.HasMany(e => e.Utilities)
+                .WithMany(p => p.Properties)
+                .UsingEntity<PropertyUtility>(
+                    j => j.HasOne(pu => pu.Utility)
+                        .WithMany()
+                        .HasForeignKey(pu => pu.UtilityId)
+                        .OnDelete(DeleteBehavior.Restrict),
+                    j => j.HasOne(pu => pu.Property)
+                        .WithMany()
+                        .HasForeignKey(pu => pu.PropertyId)
+                        .OnDelete(DeleteBehavior.Restrict)
                 );
 
             // Indexes
@@ -287,16 +297,47 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .HasMaxLength(100);
         });
 
-        modelBuilder.Entity<PropertyUtility>(entity =>
+        modelBuilder.Entity<Room>(entity =>
         {
             // Table name
-            entity.ToTable("PropertyUtilities");
+            entity.ToTable("Rooms");
 
-            // Primary key
-            entity.HasKey(e => new { e.PropertyId, e.UtilityId });
+            // Audit properties (assuming these are in AuditableEntity)
+            entity.ConfigureAuditProperties();
 
             // Required properties
-            entity.Property(e => e.Count);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // Relationship with PropertyUtility (many-to-many)
+            entity.HasMany(e => e.Properties)
+                .WithMany(p => p.Rooms)
+                .UsingEntity<PropertyRoom>(
+                    j => j.HasOne(pu => pu.Property)
+                          .WithMany()
+                          .HasForeignKey(pu => pu.PropertyId)
+                          .OnDelete(DeleteBehavior.Restrict),
+                    j => j.HasOne(pu => pu.Room)
+                          .WithMany()
+                          .HasForeignKey(pu => pu.RoomId)
+                          .OnDelete(DeleteBehavior.Restrict)
+                );
+
+            // Index
+            entity.HasIndex(e => e.Name);
+        });
+
+        modelBuilder.Entity<PropertyRoom>(entity =>
+        {
+            // Table name
+            entity.ToTable("PropertyRooms");
+
+            // Primary key
+            entity.HasKey(e => new { e.PropertyId, e.RoomId });
+
+            // Required properties
+            entity.Property(e => e.Quantity);
 
             // Relationships
             entity.HasOne(e => e.Property)
@@ -304,9 +345,9 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .HasForeignKey(e => e.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(e => e.Utility)
+            entity.HasOne(e => e.Room)
                 .WithMany()
-                .HasForeignKey(e => e.UtilityId)
+                .HasForeignKey(e => e.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -322,10 +363,6 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(100);
-
-            entity.Property(e => e.Description)
-                .IsRequired()
-                .HasMaxLength(500);
 
             // Relationship with PropertyUtility (many-to-many)
             entity.HasMany(e => e.Properties)

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
@@ -31,6 +31,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import toast from 'react-hot-toast';
+import { InputField } from '@/components/form-fields/input-field';
+import { LISTING_TYPE } from '@/lib/enum';
+import { District, Province, Ward } from '@/types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -45,6 +48,7 @@ const propertySchema = z.object({
   address: z.string().min(5, { message: 'Địa chỉ phải có ít nhất 5 ký tự' }),
   city: z.string().min(1, { message: 'Vui lòng chọn thành phố' }),
   district: z.string().min(1, { message: 'Vui lòng chọn quận/huyện' }),
+  ward: z.string().min(1, { message: 'Vui lòng chọn phường/xã' }),
   bedrooms: z.string().optional(),
   bathrooms: z.string().optional(),
   features: z.array(z.string()).optional(),
@@ -64,6 +68,12 @@ const propertySchema = z.object({
 export default function AddPropertyPage() {
   const router = useRouter();
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [selectedCity, setSelectedCity] = useState<string>();
+  const [selectedDistrict, setSelectedDistrict] = useState<string>();
+  const [selectedWard, setSelectedWard] = useState<string>();
+  const [districts, setDistricts] = useState<District[]>([]);
+  const [wards, setWards] = useState<Ward[]>([]);
 
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
@@ -79,6 +89,47 @@ export default function AddPropertyPage() {
       images: [],
     },
   });
+
+  // Lắng nghe sự thay đổi của field city
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'city') {
+        setSelectedCity(value.city);
+      }
+      if (name === 'district') {
+        setSelectedDistrict(value.district);
+      }
+      if (name === 'ward') {
+        setSelectedWard(value.ward);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
+
+  // Cập nhật districts khi city thay đổi
+  useEffect(() => {
+    if (selectedCity) {
+      const province = provinces.find((p) => p.Name === selectedCity);
+      setDistricts(province?.District || []);
+
+      // Reset district và ward khi city thay đổi
+      form.setValue('district', '');
+      form.setValue('ward', '');
+      setWards([]);
+    }
+  }, [selectedCity, provinces, form]);
+
+  // Cập nhật wards khi district thay đổi
+  useEffect(() => {
+    if (selectedDistrict && districts.length > 0) {
+      const district = districts.find((d) => d.Name === selectedDistrict);
+      setWards(district?.Ward || []);
+
+      // Reset ward khi district thay đổi
+      form.setValue('ward', '');
+    }
+  }, [selectedDistrict, districts, form]);
 
   const features = [
     { id: 'air-conditioning', label: 'Điều hòa' },
@@ -169,6 +220,26 @@ export default function AddPropertyPage() {
     }, 1500);
   };
 
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await fetch('/api/provinces');
+        if (!response.ok) {
+          throw new Error('Failed to fetch provinces');
+        }
+        const data = await response.json();
+        setProvinces(data);
+      } catch (error) {
+        console.error('Error fetching provinces:', error);
+        toast.error('Không thể tải danh sách tỉnh/thành phố');
+      } finally {
+        // setIsLoading(false);s
+      }
+    };
+
+    fetchProvinces();
+  }, []);
+
   return (
     <div className="container mx-auto py-6">
       <Card className="w-full">
@@ -187,21 +258,12 @@ export default function AddPropertyPage() {
               <div className="space-y-6">
                 <div className="text-lg font-medium">Thông tin cơ bản</div>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <FormField
+                  <InputField
                     control={form.control}
                     name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tiêu đề</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Nhập tiêu đề bất động sản"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label="Tiêu đề"
+                    placeholder="Tiêu đề"
+                    required
                   />
 
                   <FormField
@@ -248,8 +310,8 @@ export default function AddPropertyPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="sale">Bán</SelectItem>
-                            <SelectItem value="rent">Cho thuê</SelectItem>
+                            <SelectItem value={LISTING_TYPE.SALE}>Bán</SelectItem>
+                            <SelectItem value={LISTING_TYPE.RENT}>Cho thuê</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -372,23 +434,6 @@ export default function AddPropertyPage() {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <FormField
                     control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Địa chỉ</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Số nhà, tên đường"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
                     name="city"
                     render={({ field }) => (
                       <FormItem>
@@ -403,11 +448,14 @@ export default function AddPropertyPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="hanoi">Hà Nội</SelectItem>
-                            <SelectItem value="hochiminh">TP. Hồ Chí Minh</SelectItem>
-                            <SelectItem value="danang">Đà Nẵng</SelectItem>
-                            <SelectItem value="haiphong">Hải Phòng</SelectItem>
-                            <SelectItem value="nhatrang">Nha Trang</SelectItem>
+                            {provinces.map((province) => (
+                              <SelectItem
+                                key={province.Code}
+                                value={province.Name}
+                              >
+                                {province.FullName}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -422,6 +470,7 @@ export default function AddPropertyPage() {
                       <FormItem>
                         <FormLabel>Quận/Huyện</FormLabel>
                         <Select
+                          disabled={selectedCity === undefined}
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
@@ -431,13 +480,66 @@ export default function AddPropertyPage() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="quan1">Quận 1</SelectItem>
-                            <SelectItem value="quan2">Quận 2</SelectItem>
-                            <SelectItem value="quan3">Quận 3</SelectItem>
-                            <SelectItem value="quan4">Quận 4</SelectItem>
-                            <SelectItem value="quan5">Quận 5</SelectItem>
+                            {districts.map((district) => (
+                              <SelectItem
+                                key={district.Code}
+                                value={district.Name}
+                              >
+                                {district.FullName}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="ward"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phường/Xã</FormLabel>
+                        <Select
+                          disabled={selectedDistrict === undefined}
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Chọn phường/xã" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {wards.map((ward) => (
+                              <SelectItem
+                                key={ward.Code}
+                                value={ward.Name}
+                              >
+                                {ward.FullName}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Địa chỉ</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={selectedWard === undefined}
+                            placeholder="Số nhà, tên đường"
+                            {...field}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

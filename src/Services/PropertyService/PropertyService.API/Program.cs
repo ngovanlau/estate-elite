@@ -1,5 +1,8 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
+using Microsoft.EntityFrameworkCore;
+using PropertyService.Infrastructure.Data;
+using PropertyService.Infrastructure.Extensions;
 using Serilog;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
@@ -32,6 +35,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddDistributedService(configuration);
 builder.Services.AddAuthenticationService(configuration);
 builder.Services.AddMinioService(configuration);
+builder.Services.AddInfrastructureServices(configuration);
 
 // Register Event Bus and dependencies
 builder.Services.AddEventBusServices(configuration);
@@ -63,4 +67,37 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("Starting IdentityService microservice");
+
+    // Apply any pending migrations at startup
+    using (var scope = app.Services.CreateScope())
+    {
+        try
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<PropertyContext>();
+            Log.Information("Applying database migrations...");
+            await dbContext.Database.MigrateAsync(); // Automatically apply migrations
+            Log.Information("Database migrations applied successfully");
+            await DbInitializer.InitializeAsync(dbContext);
+            Log.Information("Database initialize data successfully");
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "An error occurred while applying database migrations");
+            throw;
+        }
+    }
+
+    app.MapHealthChecks("/health");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

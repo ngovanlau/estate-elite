@@ -86,13 +86,30 @@ namespace PropertyService.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Rooms",
+                schema: "property",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Utilities",
                 schema: "property",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -144,7 +161,6 @@ namespace PropertyService.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: false),
-                    ShortDescription = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     ListingType = table.Column<string>(type: "text", nullable: false),
                     RentPeriod = table.Column<string>(type: "text", nullable: true),
                     Area = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
@@ -182,13 +198,40 @@ namespace PropertyService.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PropertyRooms",
+                schema: "property",
+                columns: table => new
+                {
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoomId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PropertyRooms", x => new { x.PropertyId, x.RoomId });
+                    table.ForeignKey(
+                        name: "FK_PropertyRooms_Properties_PropertyId",
+                        column: x => x.PropertyId,
+                        principalSchema: "property",
+                        principalTable: "Properties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PropertyRooms_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalSchema: "property",
+                        principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PropertyUtilities",
                 schema: "property",
                 columns: table => new
                 {
                     PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UtilityId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Count = table.Column<int>(type: "integer", nullable: false)
+                    UtilityId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -324,10 +367,22 @@ namespace PropertyService.Infrastructure.Migrations
                 column: "Title");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PropertyRooms_RoomId",
+                schema: "property",
+                table: "PropertyRooms",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PropertyUtilities_UtilityId",
                 schema: "property",
                 table: "PropertyUtilities",
                 column: "UtilityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_Name",
+                schema: "property",
+                table: "Rooms",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Utilities_Name",
@@ -348,7 +403,15 @@ namespace PropertyService.Infrastructure.Migrations
                 schema: "property");
 
             migrationBuilder.DropTable(
+                name: "PropertyRooms",
+                schema: "property");
+
+            migrationBuilder.DropTable(
                 name: "PropertyUtilities",
+                schema: "property");
+
+            migrationBuilder.DropTable(
+                name: "Rooms",
                 schema: "property");
 
             migrationBuilder.DropTable(

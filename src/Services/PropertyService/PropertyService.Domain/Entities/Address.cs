@@ -12,5 +12,5 @@ public class Address : AuditableEntity
     public string? StreetNumber { get; set; }
     public decimal Latitude { get; set; }
     public decimal Longitude { get; set; }
-    public required string GooglePlaceId { get; set; }
+    public string? GooglePlaceId { get; set; }
 }

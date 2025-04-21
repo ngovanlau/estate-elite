@@ -1,8 +1,9 @@
-﻿using SharedKernel.Entities;
+
+using SharedKernel.Entities;
 
 namespace PropertyService.Domain.Entities;
 
-public class Utility : AuditableEntity
+public class Room : AuditableEntity
 {
     public required string Name { get; set; }
 

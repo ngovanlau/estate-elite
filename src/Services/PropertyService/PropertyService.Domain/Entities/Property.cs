@@ -7,7 +7,6 @@ public class Property : AuditableEntity
 {
     public required string Title { get; set; }
     public required string Description { get; set; }
-    public required string ShortDescription { get; set; }
     public ListingType ListingType { get; set; }
     public RentPeriod? RentPeriod { get; set; }
     public decimal Area { get; set; }
@@ -24,5 +23,6 @@ public class Property : AuditableEntity
     public Guid AddressId { get; set; }
     public required Address Address { get; set; }
 
+    public ICollection<Room> Rooms { get; set; } = default!;
     public ICollection<Utility> Utilities { get; set; } = default!;
 }

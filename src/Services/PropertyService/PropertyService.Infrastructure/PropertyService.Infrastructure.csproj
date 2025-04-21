@@ -13,12 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data/" />
+    <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
+    <ProjectReference Include="..\PropertyService.Domain\PropertyService.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
-    <ProjectReference Include="..\PropertyService.Domain\PropertyService.Domain.csproj" />
+    <Folder Include="Extensions/" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ using PropertyService.Infrastructure.Data;
 namespace PropertyService.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertyContext))]
-    [Migration("20250414162557_InitialCreate")]
+    [Migration("20250421164341_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -317,11 +317,6 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<string>("RentPeriod")
                         .HasColumnType("text");
 
-                    b.Property<string>("ShortDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
@@ -350,6 +345,24 @@ namespace PropertyService.Infrastructure.Migrations
                     b.HasIndex("Title");
 
                     b.ToTable("Properties", "property");
+                });
+
+            modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRoom", b =>
+                {
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PropertyId", "RoomId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("PropertyRooms", "property");
                 });
 
             modelBuilder.Entity("PropertyService.Domain.Entities.PropertyType", b =>
@@ -395,14 +408,48 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("UtilityId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Count")
-                        .HasColumnType("integer");
-
                     b.HasKey("PropertyId", "UtilityId");
 
                     b.HasIndex("UtilityId");
 
                     b.ToTable("PropertyUtilities", "property");
+                });
+
+            modelBuilder.Entity("PropertyService.Domain.Entities.Room", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Rooms", "property");
                 });
 
             modelBuilder.Entity("PropertyService.Domain.Entities.Utility", b =>
@@ -417,11 +464,6 @@ namespace PropertyService.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("IsDelete")
                         .ValueGeneratedOnAdd()
@@ -475,6 +517,25 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRoom", b =>
+                {
+                    b.HasOne("PropertyService.Domain.Entities.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PropertyService.Domain.Entities.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("PropertyService.Domain.Entities.PropertyUtility", b =>
