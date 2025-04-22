@@ -169,6 +169,11 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .HasForeignKey(e => e.AddressId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            entity.HasMany(e => e.Images)
+                .WithOne()
+                .HasForeignKey(e => e.EntityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Indexes
             entity.HasIndex(e => e.Name);
             entity.HasIndex(e => e.DeveloperId);
@@ -240,6 +245,11 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .WithMany()
                 .HasForeignKey(e => e.AddressId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(e => e.Images)
+                .WithOne()
+                .HasForeignKey(e => e.EntityId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relationship with PropertyUtility (many-to-many)
             entity.HasMany(e => e.Rooms)

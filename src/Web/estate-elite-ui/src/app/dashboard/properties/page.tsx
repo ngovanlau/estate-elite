@@ -68,7 +68,7 @@ export default function PropertyManagement() {
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Quản Lý Bất Động Sản</h1>
-        <Button onClick={() => router.push('/add')}>
+        <Button onClick={() => router.push('properties/add')}>
           <Plus className="mr-2 h-4 w-4" /> Thêm bất động sản
         </Button>
       </div>

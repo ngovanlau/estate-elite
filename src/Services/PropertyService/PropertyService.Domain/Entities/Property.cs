@@ -25,4 +25,5 @@ public class Property : AuditableEntity
 
     public ICollection<Room> Rooms { get; set; } = default!;
     public ICollection<Utility> Utilities { get; set; } = default!;
+    public ICollection<Image> Images { get; set; } = default!;
 }

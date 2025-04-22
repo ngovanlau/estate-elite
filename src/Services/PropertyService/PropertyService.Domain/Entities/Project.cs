@@ -15,4 +15,5 @@ public class Project : AuditableEntity
 
     public Guid AddressId { get; set; }
     public required Address Address { get; set; }
+    public ICollection<Image> Images { get; set; } = default!;
 }
