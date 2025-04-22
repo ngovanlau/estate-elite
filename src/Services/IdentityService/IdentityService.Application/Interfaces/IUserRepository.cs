@@ -12,6 +12,5 @@ public interface IUserRepository : IRepository<User>
     Task<bool> IsEmailExistAsync(string email, CancellationToken cancellationToken = default);
     Task<UserDto?> GetUserDtoByUsernameOrEmailAsync(string? username, string? email, CancellationToken cancellationToken = default);
     Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default);
-    Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default);
     Task<CurrentUserDto?> GetCurrentUserDtoByIdAsync(Guid userId, CancellationToken cancellationToken = default);
 }

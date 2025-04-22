@@ -5,11 +5,11 @@ using SharedKernel.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 
-public class PropertyRepository(PropertyContext context) : Repository<Property>(context), IPropertyRepository
+public class ImageRepository(PropertyContext context) : Repository<Image>(context), IImageRepository
 {
-    public async Task<bool> AddProperty(Property property, CancellationToken cancellationToken)
+    public async Task<bool> AddImagesAsync(List<Image> images, CancellationToken cancellationToken)
     {
-        await context.Properties.AddAsync(property, cancellationToken);
+        await context.AddRangeAsync(images, cancellationToken);
         return await SaveChangeAsync(cancellationToken);
     }
 }

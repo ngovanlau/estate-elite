@@ -13,13 +13,14 @@ public class MinioStorageService : IFileStorageService
 {
     private readonly MinioSetting _setting;
     private readonly IMinioClient _client;
-    private readonly string bucketName;
+    private readonly string _bucketName;
     private readonly ILogger<MinioStorageService> _logger;
+    public string BucketName => _bucketName;
 
     public MinioStorageService(IOptions<MinioSetting> options, ILogger<MinioStorageService> logger)
     {
         _setting = options.Value;
-        bucketName = _setting.BucketName;
+        _bucketName = _setting.BucketName;
         _logger = logger;
 
         var endpoint = new Uri(_setting.Endpoint);
@@ -34,12 +35,12 @@ public class MinioStorageService : IFileStorageService
     {
         try
         {
-            var bucketExistsArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var bucketExistsArgs = new BucketExistsArgs().WithBucket(_bucketName);
             return await _client.BucketExistsAsync(bucketExistsArgs, cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error checking if bucket '{BucketName}' exists", bucketName);
+            _logger.LogError(ex, "Error checking if bucket '{BucketName}' exists", _bucketName);
             throw;
         }
     }
@@ -48,13 +49,13 @@ public class MinioStorageService : IFileStorageService
     {
         try
         {
-            var makeBucketArgs = new MakeBucketArgs().WithBucket(bucketName);
+            var makeBucketArgs = new MakeBucketArgs().WithBucket(_bucketName);
             await _client.MakeBucketAsync(makeBucketArgs, cancellationToken);
-            _logger.LogInformation("Bucket '{BucketName}' created successfully", bucketName);
+            _logger.LogInformation("Bucket '{BucketName}' created successfully", _bucketName);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating bucket '{BucketName}'", bucketName);
+            _logger.LogError(ex, "Error creating bucket '{BucketName}'", _bucketName);
             throw;
         }
     }
@@ -64,15 +65,15 @@ public class MinioStorageService : IFileStorageService
         try
         {
             var removeObjectArgs = new RemoveObjectArgs()
-                .WithBucket(bucketName)
+                .WithBucket(_bucketName)
                 .WithObject(objectName);
 
             await _client.RemoveObjectAsync(removeObjectArgs, cancellationToken);
-            _logger.LogInformation("File '{ObjectName}' deleted successfully from bucket '{BucketName}'", objectName, bucketName);
+            _logger.LogInformation("File '{ObjectName}' deleted successfully from bucket '{BucketName}'", objectName, _bucketName);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error deleting file '{ObjectName}' from bucket '{BucketName}'", objectName, bucketName);
+            _logger.LogError(ex, "Error deleting file '{ObjectName}' from bucket '{BucketName}'", objectName, _bucketName);
             throw;
         }
     }
@@ -86,16 +87,16 @@ public class MinioStorageService : IFileStorageService
 
         try
         {
-            _logger.LogInformation("Starting to delete files with prefix '{Prefix}' in bucket '{BucketName}'", prefix, bucketName);
+            _logger.LogInformation("Starting to delete files with prefix '{Prefix}' in bucket '{BucketName}'", prefix, _bucketName);
 
             if (!await BucketExistedAsync(cancellationToken))
             {
-                _logger.LogInformation("Bucket '{BucketName}' does not exist. Creating new bucket", bucketName);
+                _logger.LogInformation("Bucket '{BucketName}' does not exist. Creating new bucket", _bucketName);
                 await CreateBucketAsync(cancellationToken);
             }
 
             var listObjectsArgs = new ListObjectsArgs()
-                .WithBucket(bucketName)
+                .WithBucket(_bucketName)
                 .WithPrefix(prefix)
                 .WithRecursive(true);
 
@@ -129,7 +130,7 @@ public class MinioStorageService : IFileStorageService
 
             if (deleteCount == 0)
             {
-                _logger.LogInformation("No files found with prefix '{Prefix}' in bucket '{BucketName}'", prefix, bucketName);
+                _logger.LogInformation("No files found with prefix '{Prefix}' in bucket '{BucketName}'", prefix, _bucketName);
             }
             else
             {
@@ -153,7 +154,7 @@ public class MinioStorageService : IFileStorageService
         try
         {
             var removeObjectsArgs = new RemoveObjectsArgs()
-                .WithBucket(bucketName)
+                .WithBucket(_bucketName)
                 .WithObjects(objectsToDelete);
 
             var deleteErrors = await _client.RemoveObjectsAsync(removeObjectsArgs, cancellationToken);
@@ -194,19 +195,19 @@ public class MinioStorageService : IFileStorageService
             var memoryStream = new MemoryStream();
 
             var getObjectArgs = new GetObjectArgs()
-                .WithBucket(bucketName)
+                .WithBucket(_bucketName)
                 .WithObject(objectName)
                 .WithCallbackStream(async stream => await stream.CopyToAsync(memoryStream));
 
             await _client.GetObjectAsync(getObjectArgs, cancellationToken);
 
             memoryStream.Position = 0;
-            _logger.LogInformation("File '{ObjectName}' retrieved successfully from bucket '{BucketName}'", objectName, bucketName);
+            _logger.LogInformation("File '{ObjectName}' retrieved successfully from bucket '{BucketName}'", objectName, _bucketName);
             return memoryStream;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving file '{ObjectName}' from bucket '{BucketName}'", objectName, bucketName);
+            _logger.LogError(ex, "Error retrieving file '{ObjectName}' from bucket '{BucketName}'", objectName, _bucketName);
             throw;
         }
     }
@@ -217,25 +218,25 @@ public class MinioStorageService : IFileStorageService
         {
             if (!await BucketExistedAsync(cancellationToken))
             {
-                _logger.LogInformation("Bucket '{BucketName}' does not exist. Creating new bucket", bucketName);
+                _logger.LogInformation("Bucket '{BucketName}' does not exist. Creating new bucket", _bucketName);
                 await CreateBucketAsync(cancellationToken);
             }
 
             var putObjectArgs = new PutObjectArgs()
-                .WithBucket(bucketName)
+                .WithBucket(_bucketName)
                 .WithObject(objectName)
                 .WithStreamData(data)
                 .WithObjectSize(size)
                 .WithContentType(contentType);
 
             var response = await _client.PutObjectAsync(putObjectArgs, cancellationToken);
-            _logger.LogInformation("File '{ObjectName}' uploaded successfully to bucket '{BucketName}'", objectName, bucketName);
+            _logger.LogInformation("File '{ObjectName}' uploaded successfully to bucket '{BucketName}'", objectName, _bucketName);
 
             return $"{_setting.Endpoint}/{_setting.BucketName}/{response.ObjectName}";
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error uploading file '{ObjectName}' to bucket '{BucketName}'", objectName, bucketName);
+            _logger.LogError(ex, "Error uploading file '{ObjectName}' to bucket '{BucketName}'", objectName, _bucketName);
             throw;
         }
     }

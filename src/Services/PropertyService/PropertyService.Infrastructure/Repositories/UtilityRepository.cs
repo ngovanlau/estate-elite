@@ -3,26 +3,17 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
-using PropertyService.Application.Interfaces;
 using SharedKernel.Extensions;
 using PropertyService.Application.Dtos.Utilities;
+using SharedKernel.Implements;
+using PropertyService.Application.Interfaces;
 
 namespace PropertyService.Infrastructure.Repositories;
 
 public class UtilityRepository(
     PropertyContext context,
-    IMapper mapper) : IUtilityRepository
+    IMapper mapper) : Repository<Utility>(context), IUtilityRepository
 {
-    public Utility Attach(Utility entity)
-    {
-        var entry = context.Utilities.Attach(entity);
-
-        // Mark the entity as modified to ensure changes are saved
-        entry.State = EntityState.Modified;
-
-        return entity;
-    }
-
     public async Task<List<UtilityDto>> GetAllUtilityDtoAsync(CancellationToken cancellationToken)
     {
         return await context.Available<Utility>(false)
@@ -30,13 +21,10 @@ public class UtilityRepository(
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Utility?> GetUtilityByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<List<Utility>> GetUtilityByIdsAsync(List<Guid> ids, CancellationToken cancellationToken)
     {
-        return await context.Available<Utility>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
-    }
-
-    public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken)
-    {
-        return await context.SaveChangesAsync(cancellationToken) > 0;
+        return await context.Available<Utility>(false)
+            .Where(p => ids.Contains(p.Id))
+            .ToListAsync(cancellationToken);
     }
 }

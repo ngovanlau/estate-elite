@@ -7,5 +7,5 @@ using SharedKernel.Interfaces;
 public interface IUtilityRepository : IRepository<Utility>
 {
     Task<List<UtilityDto>> GetAllUtilityDtoAsync(CancellationToken cancellationToken = default);
-    Task<Utility?> GetUtilityByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<List<Utility>> GetUtilityByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default);
 }

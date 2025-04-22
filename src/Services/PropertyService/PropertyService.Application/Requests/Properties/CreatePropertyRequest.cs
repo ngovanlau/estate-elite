@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace PropertyService.Application.Requests.Properties;
 
+using Microsoft.AspNetCore.Http;
 using SharedKernel.Commons;
 using SharedKernel.Converters;
 using SharedKernel.Enums;
@@ -25,8 +26,9 @@ public sealed record CreatePropertyRequest : IRequest<ApiResponse>
     public decimal Price { get; init; }
     public Guid PropertyTypeId { get; init; }
     public required AddressDto Address { get; init; }
-    public IReadOnlyCollection<RoomDto>? Rooms { get; init; }
-    public IReadOnlyCollection<Guid>? UtilityIds { get; init; }
+    public List<RoomDto>? Rooms { get; init; }
+    public List<Guid>? UtilityIds { get; init; }
+    public required List<IFormFile> Images { get; init; }
 }
 
 public sealed record AddressDto

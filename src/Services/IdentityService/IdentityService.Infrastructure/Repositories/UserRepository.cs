@@ -6,12 +6,13 @@ namespace IdentityService.Infrastructure.Repositories;
 
 using Application.Dtos.Authentications;
 using Application.Dtos.Users;
-using Application.Interfaces;
 using Data;
 using Domain.Entities;
+using IdentityService.Application.Interfaces;
 using SharedKernel.Extensions;
+using SharedKernel.Implements;
 
-public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepository
+public class UserRepository(IdentityContext context, IMapper mapper) : Repository<User>(context), IUserRepository
 {
     public async Task<bool> AddAsync(User user, CancellationToken cancellationToken)
     {
@@ -52,11 +53,6 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
         return await context.Available<User>().FirstOrDefaultAsync(p => p.Id == userId, cancellationToken);
     }
 
-    public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default)
-    {
-        return await context.SaveChangesAsync(cancellationToken) > 0;
-    }
-
     public async Task<CurrentUserDto?> GetCurrentUserDtoByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await context.Available<User>(false)
@@ -64,15 +60,5 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
             .Where(u => u.Id == userId)
             .ProjectTo<CurrentUserDto>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
-    }
-
-    public User Attach(User entity)
-    {
-        var entry = context.Users.Attach(entity);
-
-        // Mark the entity as modified to ensure changes are saved
-        entry.State = EntityState.Modified;
-
-        return entity;
     }
 }

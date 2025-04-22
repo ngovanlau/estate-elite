@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using PropertyService.Application.Requests.Properties;
 using SharedKernel.Enums;
+using SharedKernel.Validators;
 
 namespace PropertyService.Application.Validates.Properties;
 
@@ -51,5 +52,7 @@ public class CreatePropertyRequestValidator : AbstractValidator<CreatePropertyRe
         RuleFor(x => x.UtilityIds)
             .NotNull().WithMessage("Utilities list cannot be null")
             .When(x => x.UtilityIds != null && x.UtilityIds.Any());
+
+        RuleForEach(x => x.Images).Cascade(CascadeMode.Stop).ImageRule();
     }
 }

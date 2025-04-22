@@ -4,25 +4,16 @@ using AutoMapper.QueryableExtensions;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
 using PropertyService.Application.Dtos.PropertyTypes;
-using PropertyService.Application.Interfaces;
 using SharedKernel.Extensions;
+using SharedKernel.Implements;
+using PropertyService.Application.Interfaces;
 
 namespace PropertyService.Infrastructure.Repositories;
 
 public class PropertyTypeRepository(
     PropertyContext context,
-    IMapper mapper) : IPropertyTypeRepository
+    IMapper mapper) : Repository<PropertyType>(context), IPropertyTypeRepository
 {
-    public PropertyType Attach(PropertyType entity)
-    {
-        var entry = context.PropertyTypes.Attach(entity);
-
-        // Mark the entity as modified to ensure changes are saved
-        entry.State = EntityState.Modified;
-
-        return entity;
-    }
-
     public async Task<List<PropertyTypeDto>> GetAllPropertyTypeDtoAsync(CancellationToken cancellationToken)
     {
         return await context.Available<PropertyType>(false)
@@ -30,8 +21,8 @@ public class PropertyTypeRepository(
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken)
+    public async Task<PropertyType?> GetPropertyTypeByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await context.SaveChangesAsync(cancellationToken) > 0;
+        return await context.Available<PropertyType>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 }

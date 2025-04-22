@@ -2,6 +2,7 @@ using FluentValidation;
 
 namespace SharedKernel.Validators;
 
+using Microsoft.AspNetCore.Http;
 using SharedKernel.Constants;
 using static SharedKernel.Constants.ErrorCode;
 
