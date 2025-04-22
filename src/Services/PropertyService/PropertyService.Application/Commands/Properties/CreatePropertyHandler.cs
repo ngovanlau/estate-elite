@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
@@ -24,7 +23,6 @@ public class CreatePropertyHandler(
     IRoomRepository roomRepository,
     IUtilityRepository utilityRepository,
     IImageRepository imageRepository,
-    IDistributedCache cache,
     ILogger<CreatePropertyHandler> logger) : IRequestHandler<CreatePropertyRequest, ApiResponse>
 {
     public async Task<ApiResponse> Handle(CreatePropertyRequest request, CancellationToken cancellationToken)

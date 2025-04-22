@@ -37,7 +37,7 @@ public sealed record AddressDto
     public required string Province { get; init; }
     public required string District { get; init; }
     public required string Ward { get; init; }
-    public string? Details { get; init; }
+    public required string Details { get; init; }
 }
 
 public sealed record RoomDto

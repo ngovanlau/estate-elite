@@ -11,4 +11,10 @@ export enum LISTING_TYPE {
   RENT = 'Rent',
 }
 
+export enum RENT_PERIOD {
+  DAY = 'Day',
+  MONTH = 'Month',
+  YEAR = 'Year',
+}
+
 export enum PROJECT_STATUS {}

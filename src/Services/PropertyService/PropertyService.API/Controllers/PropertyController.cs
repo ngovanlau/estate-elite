@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace PropertyService.API.Controllers;
 
 using PropertyService.Application.Requests.Properties;
-using PropertyService.Application.Requests.PropertyTypes;
 using SharedKernel.Constants;
 using SharedKernel.Controllers;
 
