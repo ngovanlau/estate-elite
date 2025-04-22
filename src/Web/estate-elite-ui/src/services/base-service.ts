@@ -2,7 +2,7 @@ import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '@/lib/constant';
 import { getCookie, removeCookie, setCookie } from '@/lib/cookies';
 import { environment } from '@/lib/environment';
 import { ApiResponse } from '@/types/response/base-response';
-import { TokenData } from '@/types/response/identity-response';
+import { Token } from '@/types/response/identity-response';
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -202,10 +202,10 @@ export default class BaseService {
         throw new Error('No refresh token available');
       }
 
-      const response = await this.instance.post<unknown, ApiResponse<TokenData>>(
-        ROUTES.REFRESH_TOKEN,
-        { accessToken, refreshToken }
-      );
+      const response = await this.instance.post<unknown, ApiResponse<Token>>(ROUTES.REFRESH_TOKEN, {
+        accessToken,
+        refreshToken,
+      });
 
       if (!response.succeeded) {
         throw new Error(response.message || 'Failed to refresh token');

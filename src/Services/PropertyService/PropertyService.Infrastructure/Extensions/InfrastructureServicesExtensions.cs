@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PropertyService.Infrastructure.Extensions;
 
+using Application.Interfaces;
 using Data;
-using PropertyService.Application.Interfaces;
-using PropertyService.Infrastructure.Repositories;
+using Repositories;
 
 public static class InfrastructureServicesExtensions
 {
@@ -22,6 +22,7 @@ public static class InfrastructureServicesExtensions
         // Repository
         services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
         services.AddScoped<IUtilityRepository, UtilityRepository>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
 
         // Auto mapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

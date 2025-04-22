@@ -60,6 +60,7 @@ export const InputField = <T extends FieldValues>({
             <div className="relative">
               {CustomIcon && <CustomIcon className="absolute top-3 left-3 h-4 w-4 text-gray-400" />}
               <Input
+                min="0"
                 placeholder={placeholder}
                 className={CustomIcon ? 'pl-10' : ''}
                 disabled={disabled}

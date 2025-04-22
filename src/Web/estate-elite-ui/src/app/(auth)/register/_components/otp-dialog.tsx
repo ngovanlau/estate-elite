@@ -11,6 +11,7 @@ import identityService from '@/services/identity-service';
 import { Label } from '@radix-ui/react-label';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 interface OTPDialogProps {
   userId: string;
@@ -37,6 +38,7 @@ const OtpDialog: React.FC<OTPDialogProps> = ({
       });
 
       if (response.succeeded && response.data) {
+        toast.success('Bạn đã đăng kí tài khoản thành công.');
         router.push('/login');
       }
     } catch (error) {

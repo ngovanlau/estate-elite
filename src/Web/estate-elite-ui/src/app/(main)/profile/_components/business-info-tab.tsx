@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { businessFormSchema } from './_validation';
 import { useAppSelector } from '@/lib/hooks';
 import { selectUser } from '@/redux/slices/auth-slice';
-import { BiographyField } from '@/components/form-fields/biography-field';
+import { TextareaField } from '@/components/form-fields/textarea-field';
 import { InputField } from '@/components/form-fields/input-field';
 
 export function BusinessInfoTab() {
@@ -96,7 +96,13 @@ export function BusinessInfoTab() {
               />
             </div>
 
-            <BiographyField control={businessForm.control} />
+            <TextareaField
+              control={businessForm.control}
+              name="biography"
+              label="Giới thiệu"
+              placeholder="Viết một vài dòng về công ty"
+              className="resize-none"
+            />
 
             {/* TODO
             <div>

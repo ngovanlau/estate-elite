@@ -1,11 +1,11 @@
 import { USER_ROLE } from '@/lib/enum';
 
-export interface TokenData {
+export interface Token {
   accessToken: string;
   refreshToken: string;
 }
 
-export interface CurrentUserData {
+export interface CurrentUser {
   id: string;
   username: string;
   email: string;

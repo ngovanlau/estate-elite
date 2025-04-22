@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { selectUser, updateUser } from '@/redux/slices/auth-slice';
 import dayjs from '@/lib/plugins/dayjs';
 import identityService from '@/services/identity-service';
-import { CurrentUserData } from '@/types/response/identity-response';
+import { CurrentUser } from '@/types/response/identity-response';
 // import DefaultAvatar from '@/public/images/default-avatar.png';
 
 export function ProfileSidebar() {
@@ -51,7 +51,7 @@ export function ProfileSidebar() {
         updateUser({
           ...currentUser,
           avatar: response?.data,
-        } as CurrentUserData)
+        } as CurrentUser)
       );
 
       toast.success('Ảnh avatar của bạn đã được cập nhật thành công.');

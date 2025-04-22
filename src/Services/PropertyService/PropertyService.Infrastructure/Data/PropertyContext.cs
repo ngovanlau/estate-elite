@@ -51,11 +51,8 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .HasMaxLength(100);
 
             // Optional properties
-            entity.Property(e => e.Street)
+            entity.Property(e => e.Details)
                 .HasMaxLength(200);
-
-            entity.Property(e => e.StreetNumber)
-                .HasMaxLength(20);
 
             // Configure decimal properties with precision and scale
             entity.Property(e => e.Latitude)
@@ -65,7 +62,6 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .HasPrecision(18, 9);
 
             entity.Property(e => e.GooglePlaceId)
-                .IsRequired()
                 .HasMaxLength(100);
 
             // Index for geolocation queries

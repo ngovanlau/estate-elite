@@ -11,7 +11,7 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         {/* Sidebar - 1/3 width on medium screens and above */}
-          <ProfileSidebar />
+        <ProfileSidebar />
 
         {/* Content - 2/3 width on medium screens and above */}
         <TabContent />

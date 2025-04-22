@@ -27,6 +27,7 @@ builder.Services.AddMediatR(configuration =>
     // Add mediator
     configuration.AddPropertyTypeMediator();
     configuration.AddUtilityMediator();
+    configuration.AddRoomMediator();
 });
 
 // Controllers

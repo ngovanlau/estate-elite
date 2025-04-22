@@ -14,7 +14,7 @@ export const UsernameField = ({ control }: RegisterFormFieldProps) => (
           <div className="relative">
             <User className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="username"
+              placeholder="Username"
               className="pr-10 pl-10"
               {...field}
             />

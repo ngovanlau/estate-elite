@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Breadcrumb>
           </div>
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 px-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

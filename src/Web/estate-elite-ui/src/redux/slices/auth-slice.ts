@@ -1,10 +1,10 @@
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME, USER_KEY } from '@/lib/constant';
 import { removeCookie, setCookie } from '@/lib/cookies';
-import { CurrentUserData } from '@/types/response/identity-response';
+import { CurrentUser } from '@/types/response/identity-response';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface AuthState {
-  currentUser: CurrentUserData | null;
+  currentUser: CurrentUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
@@ -35,7 +35,7 @@ export const authSlice = createSlice({
     loginSuccess: (
       state,
       action: PayloadAction<{
-        currentUser: CurrentUserData;
+        currentUser: CurrentUser;
         accessToken: string;
         refreshToken: string;
       }>
@@ -72,7 +72,7 @@ export const authSlice = createSlice({
     },
 
     // Action cập nhật thông tin người dùng
-    updateUser: (state, action: PayloadAction<CurrentUserData>) => {
+    updateUser: (state, action: PayloadAction<CurrentUser>) => {
       state.currentUser = action.payload;
 
       setCookie(USER_KEY, JSON.stringify(state.currentUser));

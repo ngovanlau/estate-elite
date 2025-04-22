@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    externalDir: true, // Cho phép import từ bên ngoài
+  },
   // other Next.js config options...
 };
 

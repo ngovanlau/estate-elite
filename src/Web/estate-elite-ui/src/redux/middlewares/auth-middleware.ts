@@ -1,6 +1,6 @@
 import { getCookie, removeCookie } from '@/lib/cookies';
 import { setCookie } from '@/lib/cookies';
-import { CurrentUserData } from '@/types/response/identity-response';
+import { CurrentUser } from '@/types/response/identity-response';
 import { Middleware } from '@reduxjs/toolkit';
 import { loginSuccess, logout } from '../slices/auth-slice';
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME, USER_KEY } from '@/lib/constant';
@@ -33,7 +33,7 @@ export const rehydrateAuthState = () => {
     const refreshToken = getCookie(REFRESH_TOKEN_NAME);
 
     const userString = getCookie(USER_KEY);
-    const currentUser: CurrentUserData = userString ? JSON.parse(userString) : undefined;
+    const currentUser: CurrentUser = userString ? JSON.parse(userString) : undefined;
 
     if (accessToken && refreshToken && currentUser) {
       return {

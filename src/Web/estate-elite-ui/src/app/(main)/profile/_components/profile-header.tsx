@@ -9,7 +9,7 @@ import DefaultBackground from '@/public/images/default-background.jpg';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { selectUser, updateUser } from '@/redux/slices/auth-slice';
 import identityService from '@/services/identity-service';
-import { CurrentUserData } from '@/types/response/identity-response';
+import { CurrentUser } from '@/types/response/identity-response';
 
 export function ProfileHeader() {
   const background = useAppSelector(selectUser)?.background;
@@ -49,7 +49,7 @@ export function ProfileHeader() {
           updateUser({
             ...currentUser,
             background: response.data,
-          } as CurrentUserData)
+          } as CurrentUser)
         );
       }
 

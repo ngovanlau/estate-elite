@@ -15,7 +15,7 @@ export const FullNameField = <T extends FieldValues>({ control }: FormFieldProps
           <div className="relative">
             <User className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder=""
+              placeholder="Họ và tên"
               className="pr-10 pl-10"
               {...field}
             />

@@ -1,6 +1,6 @@
 import { ConfirmRequest, LoginRequest, RegisterRequest } from '@/types/request/identity-request';
 import { ApiResponse } from '@/types/response/base-response';
-import { CurrentUserData, TokenData } from '@/types/response/identity-response';
+import { CurrentUser, Token } from '@/types/response/identity-response';
 import BaseService from './base-service';
 import { environment } from '@/lib/environment';
 
@@ -21,7 +21,7 @@ class IdentityService extends BaseService {
     return this.instance.post('authentication/resend-code', { userId });
   };
 
-  public login = (request: LoginRequest): Promise<ApiResponse<TokenData>> => {
+  public login = (request: LoginRequest): Promise<ApiResponse<Token>> => {
     return this.instance.post('authentication/login', request);
   };
 
@@ -33,7 +33,7 @@ class IdentityService extends BaseService {
     return this.instance.patchForm('user/upload-background', formData);
   };
 
-  public getCurrentUser = (): Promise<ApiResponse<CurrentUserData>> => {
+  public getCurrentUser = (): Promise<ApiResponse<CurrentUser>> => {
     return this.instance.get('user/current-user');
   };
 }
