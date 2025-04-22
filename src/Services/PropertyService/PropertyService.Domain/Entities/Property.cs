@@ -23,7 +23,7 @@ public class Property : AuditableEntity
     public Guid AddressId { get; set; }
     public required Address Address { get; set; }
 
-    public ICollection<Room> Rooms { get; set; } = default!;
+    public ICollection<PropertyRoom> PropertyRooms { get; set; } = default!;
     public ICollection<Utility> Utilities { get; set; } = default!;
     public ICollection<Image> Images { get; set; } = default!;
 }

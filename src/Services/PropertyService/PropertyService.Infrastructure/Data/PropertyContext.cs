@@ -252,19 +252,6 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Relationship with PropertyUtility (many-to-many)
-            entity.HasMany(e => e.Rooms)
-                .WithMany(p => p.Properties)
-                .UsingEntity<PropertyRoom>(
-                    j => j.HasOne(pu => pu.Room)
-                          .WithMany()
-                          .HasForeignKey(pu => pu.RoomId)
-                          .OnDelete(DeleteBehavior.Restrict),
-                    j => j.HasOne(pu => pu.Property)
-                          .WithMany()
-                          .HasForeignKey(pu => pu.PropertyId)
-                          .OnDelete(DeleteBehavior.Restrict)
-                );
-
             entity.HasMany(e => e.Utilities)
                 .WithMany(p => p.Properties)
                 .UsingEntity<PropertyUtility>(
@@ -315,20 +302,6 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(100);
-
-            // Relationship with PropertyUtility (many-to-many)
-            entity.HasMany(e => e.Properties)
-                .WithMany(p => p.Rooms)
-                .UsingEntity<PropertyRoom>(
-                    j => j.HasOne(pu => pu.Property)
-                          .WithMany()
-                          .HasForeignKey(pu => pu.PropertyId)
-                          .OnDelete(DeleteBehavior.Restrict),
-                    j => j.HasOne(pu => pu.Room)
-                          .WithMany()
-                          .HasForeignKey(pu => pu.RoomId)
-                          .OnDelete(DeleteBehavior.Restrict)
-                );
 
             // Index
             entity.HasIndex(e => e.Name);

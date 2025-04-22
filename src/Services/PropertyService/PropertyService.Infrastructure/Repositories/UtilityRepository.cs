@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-
-namespace PropertyService.Infrastructure.Repositories;
-
-using Domain.Entities;
-using Data;
-using Application.Interfaces;
+using PropertyService.Domain.Entities;
+using PropertyService.Infrastructure.Data;
+using PropertyService.Application.Interfaces;
 using SharedKernel.Extensions;
 using PropertyService.Application.Dtos.Utilities;
+
+namespace PropertyService.Infrastructure.Repositories;
 
 public class UtilityRepository(
     PropertyContext context,
@@ -29,6 +28,11 @@ public class UtilityRepository(
         return await context.Available<Utility>(false)
             .ProjectTo<UtilityDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Utility?> GetUtilityByIdAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await context.Available<Utility>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken)

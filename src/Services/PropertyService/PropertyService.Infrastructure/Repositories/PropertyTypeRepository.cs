@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using PropertyService.Domain.Entities;
+using PropertyService.Infrastructure.Data;
+using PropertyService.Application.Dtos.PropertyTypes;
+using PropertyService.Application.Interfaces;
+using SharedKernel.Extensions;
 
 namespace PropertyService.Infrastructure.Repositories;
-
-using Domain.Entities;
-using Data;
-using Application.Dtos.PropertyTypes;
-using Application.Interfaces;
-using SharedKernel.Extensions;
 
 public class PropertyTypeRepository(
     PropertyContext context,

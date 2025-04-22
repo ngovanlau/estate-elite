@@ -5,17 +5,17 @@ using PropertyService.Infrastructure.Data;
 
 namespace PropertyService.Infrastructure.Repositories;
 
-public class PropertyRepository(PropertyContext context) : IPropertyRepository
+public class AddressRepository(PropertyContext context) : IAddressRepository
 {
-    public async Task<bool> AddProperty(Property property, CancellationToken cancellationToken)
+    public async Task<bool> AddAddressAsync(Address address, CancellationToken cancellationToken)
     {
-        await context.Properties.AddAsync(property, cancellationToken);
+        await context.AddAsync(address, cancellationToken);
         return await SaveChangeAsync(cancellationToken);
     }
 
-    public Property Attach(Property entity)
+    public Address Attach(Address entity)
     {
-        var entry = context.Properties.Attach(entity);
+        var entry = context.Addresses.Attach(entity);
 
         // Mark the entity as modified to ensure changes are saved
         entry.State = EntityState.Modified;

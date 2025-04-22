@@ -17,6 +17,6 @@ public class PropertyProfile : Profile
             .ForMember(dest => dest.Type, opt => opt.Ignore())
             .ForMember(dest => dest.Images, opt => opt.Ignore())
             .ForMember(dest => dest.Utilities, opt => opt.Ignore())
-            .ForMember(dest => dest.Rooms, opt => opt.Ignore());
+            .ForMember(dest => dest.PropertyRooms, opt => opt.Ignore());
     }
 }

@@ -347,12 +347,22 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("PropertyId1")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
+                    b.Property<Guid?>("RoomId1")
+                        .HasColumnType("uuid");
+
                     b.HasKey("PropertyId", "RoomId");
 
+                    b.HasIndex("PropertyId1");
+
                     b.HasIndex("RoomId");
+
+                    b.HasIndex("RoomId1");
 
                     b.ToTable("PropertyRooms", "property");
                 });
@@ -534,11 +544,19 @@ namespace PropertyService.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PropertyService.Domain.Entities.Property", null)
+                        .WithMany("PropertyRooms")
+                        .HasForeignKey("PropertyId1");
+
                     b.HasOne("PropertyService.Domain.Entities.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("PropertyService.Domain.Entities.Room", null)
+                        .WithMany("PropertyRooms")
+                        .HasForeignKey("RoomId1");
 
                     b.Navigation("Property");
 
@@ -572,6 +590,13 @@ namespace PropertyService.Infrastructure.Migrations
             modelBuilder.Entity("PropertyService.Domain.Entities.Property", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("PropertyRooms");
+                });
+
+            modelBuilder.Entity("PropertyService.Domain.Entities.Room", b =>
+                {
+                    b.Navigation("PropertyRooms");
                 });
 #pragma warning restore 612, 618
         }

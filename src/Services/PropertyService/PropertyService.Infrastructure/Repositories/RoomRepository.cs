@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-
-namespace PropertyService.Infrastructure.Repositories;
-
-using Domain.Entities;
-using Data;
-using Application.Interfaces;
+using PropertyService.Domain.Entities;
+using PropertyService.Infrastructure.Data;
+using PropertyService.Application.Interfaces;
 using SharedKernel.Extensions;
 using PropertyService.Application.Dtos.Rooms;
+
+namespace PropertyService.Infrastructure.Repositories;
 
 public class RoomRepository(
     PropertyContext context,
@@ -29,6 +28,11 @@ public class RoomRepository(
         return await context.Available<Room>(false)
             .ProjectTo<RoomDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Room?> GetRoomByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await context.Available<Room>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 
     public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken)

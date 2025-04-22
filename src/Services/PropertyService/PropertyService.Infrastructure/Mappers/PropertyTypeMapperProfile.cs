@@ -1,9 +1,8 @@
 using AutoMapper;
+using PropertyService.Application.Dtos.PropertyTypes;
+using PropertyService.Domain.Entities;
 
 namespace PropertyService.Infrastructure.Mappers;
-
-using Application.Dtos.PropertyTypes;
-using Domain.Entities;
 
 public class PropertyTypeMapperProfile : Profile
 {

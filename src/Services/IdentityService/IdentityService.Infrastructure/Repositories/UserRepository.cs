@@ -16,7 +16,7 @@ public class UserRepository(IdentityContext context, IMapper mapper) : IUserRepo
     public async Task<bool> AddAsync(User user, CancellationToken cancellationToken)
     {
         await context.AddAsync(user, cancellationToken);
-        return await context.SaveChangesAsync(cancellationToken) > 0;
+        return await SaveChangeAsync(cancellationToken);
     }
 
     public async Task<bool> IsUsernameExistAsync(string username, CancellationToken cancellationToken)
