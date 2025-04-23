@@ -2,14 +2,14 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PropertyService.Application.Extensions;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
+using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
-using PropertyService.Application.Extensions;
 
 namespace PropertyService.Application.Commands.Properties;
 
@@ -29,6 +29,8 @@ public class CreatePropertyHandler(
     {
         var response = new ApiResponse();
 
+        using var transaction = await propertyRepository.BeginTransactionAsync(cancellationToken);
+
         try
         {
             logger.LogInformation("Processing create property request with title: {PropertyTitle}", request.Title);
@@ -42,31 +44,30 @@ public class CreatePropertyHandler(
                 return response.SetError(nameof(E000), E000, errors);
             }
 
-            // Map and prepare property
-            var property = mapper.Map<Property>(request);
-
-            // Upload images
-            logger.LogInformation("Uploading {ImageCount} images for property", request.Images.Count);
-            await property.UploadImagesAsync(request.Images, fileStorageService, logger, cancellationToken);
-            await imageRepository.AddImagesAsync(property.Images.ToList(), cancellationToken);
-
-            // Verify and set property type
-            var propertyType = await propertyTypeRepository.GetPropertyTypeByIdAsync(request.PropertyTypeId, cancellationToken);
+            // Verify property type exists first
+            var propertyType = await propertyTypeRepository.GetByIdAsync(request.PropertyTypeId, cancellationToken);
             if (propertyType is null)
             {
                 logger.LogWarning("Property type not found. Id: {PropertyTypeId}", request.PropertyTypeId);
                 return response.SetError(nameof(E008), string.Format(E008, nameof(request.PropertyTypeId)));
             }
-            property.Type = propertyType;
 
-            // Process address
-            var address = mapper.Map<Address>(request.Address);
-            if (!await addressRepository.AddAddressAsync(address, cancellationToken))
+            // Map and prepare property with relationships
+            var property = mapper.Map<Property>(request);
+            property.PropertyTypeId = propertyType.Id;
+            property.Address = mapper.Map<Address>(request.Address);
+
+            // Upload images last after all other operations succeeded
+            if (request.Images is not null && request.Images.Any())
             {
-                logger.LogError("Failed to add address for property");
-                return response.SetError(nameof(E011), string.Format(E011, nameof(address)));
+                logger.LogInformation("Uploading {ImageCount} images for property", request.Images.Count);
+                await property.UploadImagesAsync(request.Images, fileStorageService, logger, cancellationToken);
+                //await imageRepository.AddImagesAsync(property.Images.ToList(), cancellationToken);
             }
-            property.Address = address;
+
+            // Save property to generate ID
+            var data = await propertyRepository.AddProperty(property, cancellationToken);
+            logger.LogInformation("Property created successfully. ID: {PropertyId}", property.Id);
 
             // Process utilities if present
             if (request.UtilityIds is not null && request.UtilityIds.Any())
@@ -102,16 +103,13 @@ public class CreatePropertyHandler(
                 }
             }
 
-            // Save property
-            logger.LogInformation("Saving new property to database");
-            var data = await propertyRepository.AddProperty(property, cancellationToken);
-
-            logger.LogInformation("Property created successfully. ID: {PropertyId}", property.Id);
+            await transaction.CommitAsync(cancellationToken);
             return response.SetSuccess(data);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while creating property: {ErrorMessage}", ex.Message);
+            await transaction.RollbackAsync(cancellationToken);
+            logger.LogError(ex, "Unexpected error while creating property: {ErrorMessage}", ex.Message);
             return response.SetError(nameof(E000), E000, ex);
         }
     }

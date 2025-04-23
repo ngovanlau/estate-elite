@@ -1,4 +1,4 @@
-namespace SharedKernel.Commons;
+namespace SharedKernel.Responses;
 
 public class PageApiResponse(int pageNumber, int pageSize) : ApiResponse
 {

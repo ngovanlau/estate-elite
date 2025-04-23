@@ -1,18 +1,21 @@
+import { LISTING_TYPE, PROPERTY_STATUS } from '@/lib/enum';
+
 // types/property.ts
 export interface Property {
   id: string;
   title: string;
   address: string;
   price: number;
-  status: 'Đang bán' | 'Đang cho thuê' | 'Đã bán' | 'Đã cho thuê';
+  status: PROPERTY_STATUS;
   type: 'Căn hộ' | 'Nhà phố' | 'Biệt thự' | 'Đất nền';
   area: number;
   bedrooms: number;
   bathrooms: number;
   createdAt: string;
+  image: string;
+  listingType: LISTING_TYPE;
 }
 
-export type PropertyStatus = Property['status'];
 export type PropertyType = Property['type'];
 
 // Format helpers

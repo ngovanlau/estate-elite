@@ -12,5 +12,7 @@ public class Image : AuditableEntity
     public required string ContentType { get; set; }
     public required decimal FileSize { get; set; }
     public bool IsMain { get; set; }
-    public Guid EntityId { get; set; }
+    public Guid? PropertyId { get; set; }
+    public Guid? ProjectId { get; set; }
+
 }

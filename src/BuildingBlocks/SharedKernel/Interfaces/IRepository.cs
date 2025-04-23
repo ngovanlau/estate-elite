@@ -1,8 +1,16 @@
-﻿namespace SharedKernel.Interfaces;
+﻿using SharedKernel.Entities;
+using System.Data;
 
-public interface IRepository<T> where T : class
+namespace SharedKernel.Interfaces;
+
+public interface IRepository<T> where T : AuditableEntity
 {
+    Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default);
     T Attach(T entity);
+
+    Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task<ITransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
+
 }
 

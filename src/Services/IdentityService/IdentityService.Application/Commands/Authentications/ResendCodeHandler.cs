@@ -7,16 +7,16 @@ using Microsoft.Extensions.Options;
 namespace IdentityService.Application.Commands.Authentications;
 
 using DistributedCache.Redis;
+using Domain.Entities;
 using Dtos.Authentications;
 using EventBus.Infrastructures.Interfaces;
 using EventBus.RabbitMQ.Events;
 using Interfaces;
-using Domain.Entities;
 using Requests.Authentications;
-using SharedKernel.Commons;
 using SharedKernel.Extensions;
-using static SharedKernel.Constants.ErrorCode;
+using SharedKernel.Responses;
 using SharedKernel.Settings;
+using static SharedKernel.Constants.ErrorCode;
 
 public class ResendCodeHandler(
     IValidator<ResendCodeRequest> validator,

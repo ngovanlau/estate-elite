@@ -110,21 +110,22 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .IsRequired()
                 .HasPrecision(18, 2);
 
-            // Optional properties
-            entity.Property(e => e.Caption)
-                .HasMaxLength(500);
-
             entity.Property(e => e.IsMain)
                 .IsRequired()
                 .HasDefaultValue(false);
 
-            entity.Property(e => e.EntityId)
-                .IsRequired();
+            // Optional properties
+            entity.Property(e => e.Caption)
+                .HasMaxLength(500);
+
+            entity.Property(e => e.PropertyId);
+
+            entity.Property(e => e.ProjectId);
 
             // Indexes
             entity.HasIndex(e => e.HashId);
-            entity.HasIndex(e => e.EntityId);
-            entity.HasIndex(e => new { e.EntityId, e.IsMain });
+            entity.HasIndex(e => e.ProjectId);
+            entity.HasIndex(e => new { e.ProjectId, e.IsMain });
         });
 
         modelBuilder.Entity<Project>(entity =>
@@ -171,7 +172,7 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
 
             entity.HasMany(e => e.Images)
                 .WithOne()
-                .HasForeignKey(e => e.EntityId)
+                .HasForeignKey(e => e.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Indexes
@@ -244,11 +245,11 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             entity.HasOne(e => e.Address)
                 .WithMany()
                 .HasForeignKey(e => e.AddressId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(e => e.Images)
                 .WithOne()
-                .HasForeignKey(e => e.EntityId)
+                .HasForeignKey(e => e.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Relationship with PropertyUtility (many-to-many)
@@ -258,11 +259,11 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                     j => j.HasOne(pu => pu.Utility)
                         .WithMany()
                         .HasForeignKey(pu => pu.UtilityId)
-                        .OnDelete(DeleteBehavior.Restrict),
+                        .OnDelete(DeleteBehavior.Cascade),
                     j => j.HasOne(pu => pu.Property)
                         .WithMany()
                         .HasForeignKey(pu => pu.PropertyId)
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                 );
 
             // Indexes
@@ -327,7 +328,7 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             entity.HasOne(e => e.Room)
                 .WithMany()
                 .HasForeignKey(e => e.RoomId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Utility>(entity =>

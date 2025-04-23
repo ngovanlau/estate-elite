@@ -1,11 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using SharedKernel.Entities;
+using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
+using System.Data;
 
 namespace SharedKernel.Implements;
 
-public abstract class Repository<T>(DbContext context) : IRepository<T> where T : class
+public abstract class Repository<T>(DbContext context) : IRepository<T> where T : AuditableEntity
 {
     private readonly DbSet<T> _dbSet = context.Set<T>();
+
+    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await context.Available<T>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
 
     public T Attach(T entity)
     {
@@ -17,5 +25,17 @@ public abstract class Repository<T>(DbContext context) : IRepository<T> where T 
     public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default)
     {
         return await context.SaveChangesAsync(cancellationToken) > 0;
+    }
+
+    public async Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        return new Transaction(transaction);
+    }
+
+    public async Task<ITransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
+    {
+        var transaction = await context.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
+        return new Transaction(transaction);
     }
 }

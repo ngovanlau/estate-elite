@@ -5,7 +5,7 @@ namespace PropertyService.Application.Mediators;
 
 using Queries.Rooms;
 using Requests.Rooms;
-using SharedKernel.Commons;
+using SharedKernel.Responses;
 
 public static class RoomMediator
 {

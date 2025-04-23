@@ -4,12 +4,12 @@ export interface CreatePropertyRequest {
   title: string;
   description: string;
   listingType: LISTING_TYPE;
-  rentPeriod: RENT_PERIOD;
+  rentPeriod?: RENT_PERIOD;
   area: number;
   landArea: number;
   buildDate: string;
   price: number;
-  propertyId: string;
+  propertyTypeId: string;
   address: {
     country: string;
     province: string;
@@ -17,11 +17,11 @@ export interface CreatePropertyRequest {
     ward: string;
     details: string;
   };
-  rooms: {
+  rooms?: {
     id: string;
-    quantity: string;
+    quantity: number;
   }[];
-  utilityIds: string[];
+  utilityIds?: string[];
   images: File[];
 }
 

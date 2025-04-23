@@ -10,8 +10,8 @@ using Domain.Entities;
 using Dtos.Users;
 using Interfaces;
 using Requests.Users;
-using SharedKernel.Commons;
 using SharedKernel.Interfaces;
+using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class CurrentUserHandler(

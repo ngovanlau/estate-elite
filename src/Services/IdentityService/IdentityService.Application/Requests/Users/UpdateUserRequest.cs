@@ -2,7 +2,7 @@ using MediatR;
 
 namespace IdentityService.Application.Requests.Users;
 
-using SharedKernel.Commons;
+using SharedKernel.Responses;
 
 public class UpdateUserRequest : IRequest<ApiResponse>
 {

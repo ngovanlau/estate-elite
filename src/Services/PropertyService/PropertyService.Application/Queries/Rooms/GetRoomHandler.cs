@@ -8,7 +8,7 @@ using DistributedCache.Redis;
 using Interfaces;
 using PropertyService.Application.Dtos.Rooms;
 using PropertyService.Application.Requests.Rooms;
-using SharedKernel.Commons;
+using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class GetRoomHandler(

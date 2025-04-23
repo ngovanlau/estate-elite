@@ -1,5 +1,5 @@
 using MediatR;
-using SharedKernel.Commons;
+using SharedKernel.Responses;
 
 namespace PropertyService.Application.Requests.Rooms;
 

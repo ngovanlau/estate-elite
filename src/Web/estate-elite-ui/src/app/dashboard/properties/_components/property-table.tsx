@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatPrice, Property } from './type';
+import { LISTING_TYPE, PROPERTY_STATUS } from '@/lib/enum';
 
 interface PropertyTableProps {
   properties: Property[];
@@ -27,21 +28,47 @@ interface PropertyTableProps {
 }
 
 export function PropertyTable({ properties, onDelete, onEdit }: PropertyTableProps) {
-  const getStatusVariant = (
-    status: Property['status']
-  ): 'default' | 'secondary' | 'destructive' | 'outline' => {
-    switch (status) {
-      case 'Đang bán':
-        return 'default';
-      case 'Đang cho thuê':
-        return 'secondary';
-      case 'Đã bán':
-        return 'destructive';
-      case 'Đã cho thuê':
-        return 'outline';
-      default:
-        return 'default';
-    }
+  const propertyStatusMap: {
+    [listingType in LISTING_TYPE]: {
+      [status in PROPERTY_STATUS]: {
+        label: string;
+        variant: 'outline' | 'secondary' | 'destructive' | 'default';
+      };
+    };
+  } = {
+    [LISTING_TYPE.SALE]: {
+      [PROPERTY_STATUS.PENDING]: {
+        label: 'Chờ duyệt',
+        variant: 'outline',
+      },
+      [PROPERTY_STATUS.ACTIVE]: {
+        label: 'Đang bán',
+        variant: 'secondary',
+      },
+      [PROPERTY_STATUS.COMPLETED]: {
+        label: 'Đã bán',
+        variant: 'destructive',
+      },
+    },
+    [LISTING_TYPE.RENT]: {
+      [PROPERTY_STATUS.PENDING]: {
+        label: 'Chờ duyệt',
+        variant: 'outline',
+      },
+      [PROPERTY_STATUS.ACTIVE]: {
+        label: 'Đang cho thuê', // Changed from "Đang bán" to be more accurate for rentals
+        variant: 'destructive',
+      },
+      [PROPERTY_STATUS.COMPLETED]: {
+        label: 'Đã cho thuê', // Changed from "Đã bán" to be more accurate for rentals
+        variant: 'destructive',
+      },
+    },
+  };
+
+  const listingTypeMap = {
+    [LISTING_TYPE.SALE]: 'Bán',
+    [LISTING_TYPE.RENT]: 'Cho thuê',
   };
 
   return (
@@ -50,6 +77,7 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
         <TableRow>
           <TableHead className="w-[250px]">Tên BĐS</TableHead>
           <TableHead>Địa chỉ</TableHead>
+          <TableHead>Loại giao dịch</TableHead>
           <TableHead className="text-right">Giá</TableHead>
           <TableHead>Trạng thái</TableHead>
           <TableHead>Loại</TableHead>
@@ -63,9 +91,12 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
             <TableRow key={property.id}>
               <TableCell className="font-medium">{property.title}</TableCell>
               <TableCell className="max-w-[200px] truncate">{property.address}</TableCell>
+              <TableCell>{listingTypeMap[property.listingType]}</TableCell>
               <TableCell className="text-right">{formatPrice(property.price)}</TableCell>
               <TableCell>
-                <Badge variant={getStatusVariant(property.status)}>{property.status}</Badge>
+                <Badge variant={propertyStatusMap[property.listingType][property.status].variant}>
+                  {propertyStatusMap[property.listingType][property.status].label}
+                </Badge>
               </TableCell>
               <TableCell>{property.type}</TableCell>
               <TableCell className="text-right">{property.area} m²</TableCell>

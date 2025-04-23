@@ -1,12 +1,12 @@
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using PropertyService.Application.Dtos.PropertyTypes;
+using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
-using PropertyService.Application.Dtos.PropertyTypes;
 using SharedKernel.Extensions;
 using SharedKernel.Implements;
-using PropertyService.Application.Interfaces;
 
 namespace PropertyService.Infrastructure.Repositories;
 
@@ -19,10 +19,5 @@ public class PropertyTypeRepository(
         return await context.Available<PropertyType>(false)
             .ProjectTo<PropertyTypeDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
-    }
-
-    public async Task<PropertyType?> GetPropertyTypeByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        return await context.Available<PropertyType>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
 }

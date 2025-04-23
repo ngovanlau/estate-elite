@@ -12,9 +12,9 @@ using Domain.Entities;
 using IdentityService.Application.Dtos.Users;
 using Interfaces;
 using Requests.Users;
-using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
+using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class UploadHandler(

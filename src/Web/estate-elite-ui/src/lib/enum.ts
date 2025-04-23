@@ -17,4 +17,10 @@ export enum RENT_PERIOD {
   YEAR = 'Year',
 }
 
+export enum PROPERTY_STATUS {
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  COMPLETED = 'completed',
+}
+
 export enum PROJECT_STATUS {}

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PropertyService.Infrastructure.Data;
@@ -11,9 +12,11 @@ using PropertyService.Infrastructure.Data;
 namespace PropertyService.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertyContext))]
-    partial class PropertyContextModelSnapshot : ModelSnapshot
+    [Migration("20250423060928_UpdateImagesTable")]
+    partial class UpdateImagesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -525,7 +528,7 @@ namespace PropertyService.Infrastructure.Migrations
                     b.HasOne("PropertyService.Domain.Entities.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PropertyService.Domain.Entities.PropertyType", "Type")
@@ -554,7 +557,7 @@ namespace PropertyService.Infrastructure.Migrations
                     b.HasOne("PropertyService.Domain.Entities.Room", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PropertyService.Domain.Entities.Room", null)

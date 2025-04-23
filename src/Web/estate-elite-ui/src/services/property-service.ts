@@ -28,26 +28,27 @@ class PropertyService extends BaseService {
     formData.append('title', request.title);
     formData.append('description', request.description);
     formData.append('listingType', request.listingType);
-    formData.append('rentPeriod', request.rentPeriod);
+    formData.append('propertyTypeId', request.propertyTypeId);
+    if (request.rentPeriod) {
+      formData.append('rentPeriod', request.rentPeriod);
+    }
     formData.append('area', request.area.toString());
     formData.append('landArea', request.landArea.toString());
     formData.append('buildDate', request.buildDate);
     formData.append('price', request.price.toString());
-    formData.append('propertyId', request.propertyId);
 
     // Append địa chỉ (dạng JSON stringify)
     formData.append('address', JSON.stringify(request.address));
 
     // Append danh sách phòng
-    request.rooms.forEach((room, index) => {
-      formData.append(`rooms[${index}].id`, room.id);
-      formData.append(`rooms[${index}].quantity`, room.quantity);
-    });
+    if (request.rooms) {
+      formData.append('rooms', JSON.stringify(request.rooms));
+    }
 
     // Append utilityIds (nhiều giá trị cùng key)
-    request.utilityIds.forEach((id) => {
-      formData.append('utilityIds', id);
-    });
+    if (request.utilityIds) {
+      formData.append('utilityIds', JSON.stringify(request.utilityIds));
+    }
 
     // Append hình ảnh
     request.images.forEach((image) => {

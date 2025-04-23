@@ -2,7 +2,7 @@ namespace SharedKernel.Enums;
 
 public enum PropertyStatus
 {
-    Draft,
+    Pending,
     Active,
-    Sold
+    Completed
 }

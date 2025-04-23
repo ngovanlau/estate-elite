@@ -8,7 +8,7 @@ using DistributedCache.Redis;
 using Interfaces;
 using PropertyService.Application.Dtos.Utilities;
 using PropertyService.Application.Requests.Utilities;
-using SharedKernel.Commons;
+using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class GetUtilityHandler(

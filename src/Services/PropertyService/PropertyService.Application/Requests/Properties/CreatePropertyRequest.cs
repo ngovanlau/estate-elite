@@ -4,9 +4,10 @@ using System.Text.Json.Serialization;
 namespace PropertyService.Application.Requests.Properties;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Commons;
-using SharedKernel.Converters;
 using SharedKernel.Enums;
+using SharedKernel.Responses;
 
 public sealed record CreatePropertyRequest : IRequest<ApiResponse>
 {
@@ -18,15 +19,23 @@ public sealed record CreatePropertyRequest : IRequest<ApiResponse>
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RentPeriod? RentPeriod { get; init; }
+
     public decimal Area { get; init; }
     public decimal LandArea { get; init; }
 
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime BuildDate { get; init; }
+
     public decimal Price { get; init; }
     public Guid PropertyTypeId { get; init; }
+
+    [ModelBinder(BinderType = typeof(JsonModelBinder<AddressDto>))]
     public required AddressDto Address { get; init; }
+
+    [ModelBinder(BinderType = typeof(JsonModelBinder<List<RoomDto>>))]
     public List<RoomDto>? Rooms { get; init; }
+
+    [ModelBinder(BinderType = typeof(JsonModelBinder<List<Guid>>))]
     public List<Guid>? UtilityIds { get; init; }
     public required List<IFormFile> Images { get; init; }
 }

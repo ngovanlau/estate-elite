@@ -3,8 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace IdentityService.Application.Requests.Authentications;
 
-using SharedKernel.Commons;
 using SharedKernel.Enums;
+using SharedKernel.Responses;
 
 public class RegisterRequest : IRequest<ApiResponse>
 {

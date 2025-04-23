@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SharedKernel.Converters;
+namespace SharedKernel.Commons;
 
 public class UtcDateTimeConverter : JsonConverter<DateTime>
 {

@@ -2,6 +2,7 @@ using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Mediators;
+using PropertyService.Application.Validates;
 using PropertyService.Infrastructure.Data;
 using PropertyService.Infrastructure.Extensions;
 using Serilog;
@@ -43,6 +44,7 @@ builder.Services.AddDistributedService(configuration);
 builder.Services.AddAuthenticationService(configuration);
 builder.Services.AddMinioService(configuration);
 builder.Services.AddInfrastructureServices(configuration);
+builder.Services.AddValidation();
 
 // Register Event Bus and dependencies
 builder.Services.AddEventBusServices(configuration);

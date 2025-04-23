@@ -1,4 +1,4 @@
-namespace SharedKernel.Commons;
+namespace SharedKernel.Responses;
 
 public class ApiResponse
 {

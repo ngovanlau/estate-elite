@@ -67,6 +67,14 @@ export const InputField = <T extends FieldValues>({
                 type={type}
                 autoComplete={autoComplete}
                 {...field}
+                {...(type === 'number'
+                  ? {
+                      onChange: (e) => {
+                        const value = e.target.value === '' ? undefined : Number(e.target.value);
+                        field.onChange(value);
+                      },
+                    }
+                  : {})}
               />
             </div>
           </FormControl>

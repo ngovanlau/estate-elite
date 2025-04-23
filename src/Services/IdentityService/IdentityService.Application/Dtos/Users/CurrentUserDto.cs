@@ -1,6 +1,6 @@
 ﻿namespace IdentityService.Application.Dtos.Users;
 
-using SharedKernel.Converters;
+using SharedKernel.Commons;
 using SharedKernel.Enums;
 using System.Text.Json.Serialization;
 

@@ -10,14 +10,14 @@ import {
 } from 'lucide-react';
 
 export interface Property {
-  id: number;
+  id: string;
   title: string;
-  price: string;
+  price: number;
   address: string;
   type: string;
   bedrooms?: number;
   bathrooms?: number;
-  area: string;
+  area: number;
   status: 'active' | 'pending' | 'sold';
   image: string;
 }
@@ -63,48 +63,48 @@ export interface Appointment {
 // Property listings data
 export const propertyListings: Property[] = [
   {
-    id: 1,
+    id: 'qewesadaasdasdas',
     title: 'Luxury Villa in District 2',
-    price: '$1,200,000',
+    price: 1200000,
     address: '123 Thao Dien, District 2, Ho Chi Minh City',
     type: 'For Sale',
     bedrooms: 4,
     bathrooms: 3,
-    area: '250m²',
+    area: 250,
     status: 'active',
     image: '/api/placeholder/600/400',
   },
   {
-    id: 2,
+    id: 'sdsqewesadaasdasdas',
     title: 'Modern Apartment in City Center',
-    price: '$2,500/month',
+    price: 2500,
     address: '456 Le Loi, District 1, Ho Chi Minh City',
     type: 'For Rent',
     bedrooms: 2,
     bathrooms: 2,
-    area: '85m²',
+    area: 85,
     status: 'pending',
     image: '/api/placeholder/600/400',
   },
   {
-    id: 3,
+    id: 'sdassdasdasdasdasdas',
     title: 'Commercial Space on Main Street',
-    price: '$4,200/month',
+    price: 4200,
     address: '789 Nguyen Hue, District 1, Ho Chi Minh City',
     type: 'For Rent',
-    area: '120m²',
+    area: 128,
     status: 'active',
     image: '/api/placeholder/600/400',
   },
   {
-    id: 4,
+    id: 'asdasdasdsdasasdsadsadxc',
     title: 'Townhouse with Garden',
-    price: '$750,000',
+    price: 750000,
     address: '101 An Phu, District 2, Ho Chi Minh City',
     type: 'For Sale',
     bedrooms: 3,
     bathrooms: 2,
-    area: '180m²',
+    area: 180,
     status: 'sold',
     image: '/api/placeholder/600/400',
   },

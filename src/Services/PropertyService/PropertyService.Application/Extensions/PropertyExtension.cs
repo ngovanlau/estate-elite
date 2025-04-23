@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Http;
-using SharedKernel.Extensions;
-using SharedKernel.Interfaces;
 using Microsoft.Extensions.Logging;
 using PropertyService.Domain.Entities;
+using SharedKernel.Extensions;
+using SharedKernel.Interfaces;
 
 namespace PropertyService.Application.Extensions;
 
 public static class PropertyExtension
 {
     public static async Task<Property> UploadImagesAsync(this Property property,
-        List<IFormFile> images,
+        List<IFormFile> files,
         IFileStorageService fileStorageService,
         ILogger logger,
         CancellationToken cancellationToken = default)
@@ -18,17 +18,17 @@ public static class PropertyExtension
 
         try
         {
-            if (images == null || !images.Any())
+            if (files == null || !files.Any())
             {
                 logger.LogWarning("No images provided for upload for property {PropertyId}", property.Id);
                 return property;
             }
 
-            logger.LogDebug("Processing {ImageCount} images for property {PropertyId}", images.Count, property.Id);
+            logger.LogDebug("Processing {ImageCount} images for property {PropertyId}", files.Count, property.Id);
 
-            foreach (var image in images)
+            foreach (var file in files)
             {
-                var originFileName = image.FileName;
+                var originFileName = file.FileName;
                 var fileExtension = Path.GetExtension(originFileName);
                 var fileName = StringExtension.GenerateHashId(32);
                 var objectName = $"properties/{property.Id}/{fileName}{fileExtension}";
@@ -40,15 +40,15 @@ public static class PropertyExtension
                 logger.LogInformation("Deleting existing images with prefix {Prefix}", prefix);
                 await fileStorageService.DeleteFilesByPrefixAsync(prefix, cancellationToken);
 
-                using var stream = image.OpenReadStream();
+                using var stream = file.OpenReadStream();
                 logger.LogDebug("Uploading file {ObjectName} with size {FileSize} bytes",
-                    objectName, image.Length);
+                    objectName, file.Length);
 
                 var url = await fileStorageService.UploadFileAsync(
                     objectName,
                     stream,
-                    image.Length,
-                    image.ContentType,
+                    file.Length,
+                    file.ContentType,
                     cancellationToken
                 );
 
@@ -62,15 +62,17 @@ public static class PropertyExtension
                 logger.LogInformation("Successfully uploaded image {ObjectName} for property {PropertyId}",
                     objectName, property.Id);
 
-                property.Images.Add(new Image
+                var image = new Image
                 {
                     HashId = fileName,
                     OriginalFilename = originFileName,
                     BucketName = fileStorageService.BucketName,
                     ObjectName = objectName,
-                    ContentType = image.ContentType,
-                    FileSize = image.Length,
-                });
+                    ContentType = file.ContentType,
+                    FileSize = file.Length,
+                    PropertyId = property.Id,
+                };
+                property.Images.Add(image);
             }
 
             logger.LogInformation("Completed image upload for property {PropertyId}. Total images: {ImageCount}",

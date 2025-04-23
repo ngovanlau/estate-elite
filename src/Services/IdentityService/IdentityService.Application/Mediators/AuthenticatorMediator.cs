@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Application.Mediators;
 
-using SharedKernel.Commons;
 using Commands.Authentications;
 using Requests.Authentications;
+using SharedKernel.Responses;
 
 public static class AuthenticatorMediator
 {

@@ -13,8 +13,8 @@ using EventBus.RabbitMQ.Events;
 using FluentValidation;
 using Interfaces;
 using Requests.Authentications;
-using SharedKernel.Commons;
 using SharedKernel.Extensions;
+using SharedKernel.Responses;
 using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
 

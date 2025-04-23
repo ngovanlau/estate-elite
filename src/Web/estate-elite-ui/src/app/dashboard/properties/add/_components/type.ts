@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { UseFormReturn } from 'react-hook-form';
 import { District, Province, Ward } from '@/types';
-import { LISTING_TYPE } from '@/lib/enum';
+import { LISTING_TYPE, RENT_PERIOD } from '@/lib/enum';
 
 export const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -17,27 +17,26 @@ export const propertySchema = z.object({
   description: z.string().min(20, { message: 'Mô tả phải có ít nhất 20 ký tự' }),
   propertyType: z.string({ required_error: 'Vui lòng chọn loại bất động sản' }),
   listingType: z.nativeEnum(LISTING_TYPE, { required_error: 'Vui lòng chọn kiểu giao dịch' }),
-  price: z.string().min(1, { message: 'Vui lòng nhập giá' }),
-  area: z.string().min(1, { message: 'Vui lòng nhập diện tích' }),
-  landArea: z.string().min(1, { message: 'Vui lòng nhập diện tích' }),
-  buildDate: z.date({ message: 'Vui lòng nhập ngày xây dựng' }),
+  rentPeriod: z.nativeEnum(RENT_PERIOD).optional(),
+  price: z.number().min(1, { message: 'Vui lòng nhập giá' }),
+  area: z.number().min(1, { message: 'Vui lòng nhập diện tích' }),
+  landArea: z.number().min(1, { message: 'Vui lòng nhập diện tích' }),
+  buildDate: z.string({ message: 'Vui lòng nhập ngày xây dựng' }),
   address: z.string().min(5, { message: 'Địa chỉ phải có ít nhất 5 ký tự' }),
   province: z.string().min(1, { message: 'Vui lòng chọn thành phố' }),
   district: z.string().min(1, { message: 'Vui lòng chọn quận/huyện' }),
   ward: z.string().min(1, { message: 'Vui lòng chọn phường/xã' }),
   rooms: z.array(RoomValue).optional(),
   utilities: z.array(z.string()).optional(),
-  images: z
-    .array(
-      z
-        .instanceof(File)
-        .refine((file) => file.size <= MAX_FILE_SIZE, `Kích thước tệp tối đa là 5MB`)
-        .refine(
-          (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
-          'Chỉ chấp nhận định dạng .jpg, .jpeg, .png và .webp'
-        )
-    )
-    .optional(),
+  images: z.array(
+    z
+      .instanceof(File)
+      .refine((file) => file.size <= MAX_FILE_SIZE, `Kích thước tệp tối đa là 5MB`)
+      .refine(
+        (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+        'Chỉ chấp nhận định dạng .jpg, .jpeg, .png và .webp'
+      )
+  ),
 });
 
 export interface FormComponentProps {

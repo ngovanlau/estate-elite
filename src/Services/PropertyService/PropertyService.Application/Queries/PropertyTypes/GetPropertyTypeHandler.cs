@@ -8,7 +8,7 @@ using DistributedCache.Redis;
 using Dtos.PropertyTypes;
 using Interfaces;
 using Requests.PropertyTypes;
-using SharedKernel.Commons;
+using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class GetPropertyTypeHandler(
