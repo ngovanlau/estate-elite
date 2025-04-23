@@ -1,7 +1,13 @@
 import { environment } from '@/lib/environment';
 import BaseService from './base-service';
 import { ApiResponse } from '@/types/response/base-response';
-import { PropertyType, Room, Utility } from '@/types/response/property-service';
+import {
+  OwnerProperty,
+  Property,
+  PropertyType,
+  Room,
+  Utility,
+} from '@/types/response/property-response';
 import { CreatePropertyRequest } from '@/types/request/property-request';
 
 class PropertyService extends BaseService {
@@ -60,6 +66,14 @@ class PropertyService extends BaseService {
         'Content-Type': 'multipart/form-data',
       },
     });
+  };
+
+  public getOwnerProperties = (): Promise<ApiResponse<OwnerProperty[]>> => {
+    return this.instance.get('/property/owner');
+  };
+
+  public getProperties = (): Promise<ApiResponse<Property[]>> => {
+    return this.instance.get('/property');
   };
 }
 

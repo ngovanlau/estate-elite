@@ -7,6 +7,7 @@ using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Extensions;
+using SharedKernel.Implements;
 using SharedKernel.Interfaces;
 using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
@@ -19,10 +20,9 @@ public class CreatePropertyHandler(
     IFileStorageService fileStorageService,
     IPropertyRepository propertyRepository,
     IPropertyTypeRepository propertyTypeRepository,
-    IAddressRepository addressRepository,
     IRoomRepository roomRepository,
     IUtilityRepository utilityRepository,
-    IImageRepository imageRepository,
+    ICurrentUserService currentUserService,
     ILogger<CreatePropertyHandler> logger) : IRequestHandler<CreatePropertyRequest, ApiResponse>
 {
     public async Task<ApiResponse> Handle(CreatePropertyRequest request, CancellationToken cancellationToken)
@@ -44,6 +44,14 @@ public class CreatePropertyHandler(
                 return response.SetError(nameof(E000), E000, errors);
             }
 
+            // Check if user is authenticated
+            if (currentUserService.Id is null)
+            {
+                logger.LogWarning("User not authenticated");
+                return response.SetError(nameof(E103), E103);
+            }
+            var userId = currentUserService.Id.Value;
+
             // Verify property type exists first
             var propertyType = await propertyTypeRepository.GetByIdAsync(request.PropertyTypeId, cancellationToken);
             if (propertyType is null)
@@ -54,6 +62,7 @@ public class CreatePropertyHandler(
 
             // Map and prepare property with relationships
             var property = mapper.Map<Property>(request);
+            property.OwnerId = userId;
             property.PropertyTypeId = propertyType.Id;
             property.Address = mapper.Map<Address>(request.Address);
 

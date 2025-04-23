@@ -18,13 +18,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { formatPrice, Property } from './type';
+import { formatPrice } from './type';
 import { LISTING_TYPE, PROPERTY_STATUS } from '@/lib/enum';
+import { OwnerProperty } from '@/types/response/property-response';
 
 interface PropertyTableProps {
-  properties: Property[];
+  properties: OwnerProperty[];
   onDelete: (id: string) => void;
-  onEdit: (property: Property) => void;
+  onEdit: (property: OwnerProperty) => void;
 }
 
 export function PropertyTable({ properties, onDelete, onEdit }: PropertyTableProps) {
@@ -71,6 +72,8 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
     [LISTING_TYPE.RENT]: 'Cho thuê',
   };
 
+  const { label, variant } = propertyStatusMap[LISTING_TYPE.SALE][PROPERTY_STATUS.PENDING];
+
   return (
     <Table>
       <TableHeader>
@@ -94,9 +97,7 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
               <TableCell>{listingTypeMap[property.listingType]}</TableCell>
               <TableCell className="text-right">{formatPrice(property.price)}</TableCell>
               <TableCell>
-                <Badge variant={propertyStatusMap[property.listingType][property.status].variant}>
-                  {propertyStatusMap[property.listingType][property.status].label}
-                </Badge>
+                <Badge variant={variant}>{label}</Badge>
               </TableCell>
               <TableCell>{property.type}</TableCell>
               <TableCell className="text-right">{property.area} m²</TableCell>

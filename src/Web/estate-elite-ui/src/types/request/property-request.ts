@@ -24,16 +24,3 @@ export interface CreatePropertyRequest {
   utilityIds?: string[];
   images: File[];
 }
-
-// interface Address {
-//   country: string;
-//   province: string;
-//   district: string;
-//   ward: string;
-//   details: string;
-// }
-
-// interface Room {
-//   id: string;
-//   quantity: string;
-// }

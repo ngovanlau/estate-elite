@@ -13,5 +13,6 @@ public static class PropertyMediator
     {
         configuration.AddBehavior<IRequestHandler<CreatePropertyRequest, ApiResponse>, CreatePropertyHandler>(life);
         configuration.AddBehavior<IRequestHandler<GetOwnerPropertiesRequest, ApiResponse>, GetOwnerPropertiesHandler>(life);
+        configuration.AddBehavior<IRequestHandler<GetPropertiesRequest, ApiResponse>, GetPropertiesHandler>(life);
     }
 }

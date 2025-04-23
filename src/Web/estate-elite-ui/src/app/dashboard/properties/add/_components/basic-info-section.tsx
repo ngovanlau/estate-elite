@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LISTING_TYPE } from '@/lib/enum';
 import { InputField } from '@/components/form-fields/input-field';
 import { propertySchema } from './type';
-import { PropertyType } from '@/types/response/property-service';
+import { PropertyType } from '@/types/response/property-response';
 import propertyService from '@/services/property-service';
 import { SelectField } from '@/components/form-fields/select-field';
 import { TextareaField } from '@/components/form-fields/textarea-field';

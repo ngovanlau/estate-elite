@@ -2,18 +2,39 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "build",
+			"label": "build-all",
 			"type": "process",
 			"command": "dotnet",
 			"args": [
 				"build",
-				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj"
+				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj",
+				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj"
 			],
 			"problemMatcher": "$msCompile",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"label": "build-identity",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "build-property",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj"
+			],
+			"problemMatcher": "$msCompile"
 		}
 	]
 }

@@ -2,50 +2,47 @@
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
-using SharedKernel.Interfaces;
 using SharedKernel.Responses;
+using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;
 
-public class GetOwnerPropertiesHandler(
+public class GetPropertiesHandler(
     IPropertyRepository repository,
     IDistributedCache cache,
-    ICurrentUserService currentUserService,
-    ILogger<GetOwnerPropertiesHandler> logger) : IRequestHandler<GetOwnerPropertiesRequest, ApiResponse>
+    IOptions<MinioSetting> options,
+    ILogger<GetOwnerPropertiesHandler> logger) : IRequestHandler<GetPropertiesRequest, ApiResponse>
 {
-    public async Task<ApiResponse> Handle(GetOwnerPropertiesRequest request, CancellationToken cancellationToken)
+    private readonly MinioSetting _setting = options.Value;
+
+    public async Task<ApiResponse> Handle(GetPropertiesRequest request, CancellationToken cancellationToken)
     {
         var res = new ApiResponse();
 
         try
         {
-            if (currentUserService.Id is null)
-            {
-                return res.SetError(nameof(E103), E103);
-            }
-            var ownerId = currentUserService.Id.Value;
-
-            var cacheKey = CacheKeys.ForDtoCollection<OwnerPropertyDto>(ownerId.ToString());
-            var (success, properties) = await cache.TryGetValueAsync<List<OwnerPropertyDto>>(cacheKey, cancellationToken);
+            var cacheKey = CacheKeys.ForDtoCollection<PropertyDto>();
+            var (success, properties) = await cache.TryGetValueAsync<List<PropertyDto>>(cacheKey, cancellationToken);
 
             if (!success || properties is null || properties.Any())
             {
-                logger.LogInformation("Cache miss for owner properties. Fetching from database.");
-                // Cache miss, fetch from database
-                properties = await repository.GetOwnerPropertyDtosAsync(ownerId, cancellationToken);
-            }
-            {
-                properties = await repository.GetOwnerPropertyDtosAsync(ownerId, cancellationToken);
+                properties = await repository.GetPropertyDtosAsync(cancellationToken);
                 if (properties is null)
                 {
                     return res.SetError(nameof(E008), string.Format(E008, "Owner properties"));
                 }
 
                 await cache.SetAsync(cacheKey, properties, cancellationToken);
+            }
+
+            foreach (var property in properties)
+            {
+                property.ImageUrl = $"{_setting.Endpoint}/{_setting.BucketName}/{property.ObjectName}";
             }
 
             return res.SetSuccess(properties);

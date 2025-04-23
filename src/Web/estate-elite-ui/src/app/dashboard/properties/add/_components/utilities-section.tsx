@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { propertySchema } from './type';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
-import { Utility } from '@/types/response/property-service';
+import { Utility } from '@/types/response/property-response';
 import propertyService from '@/services/property-service';
 
 interface UtilitiesSectionProps {

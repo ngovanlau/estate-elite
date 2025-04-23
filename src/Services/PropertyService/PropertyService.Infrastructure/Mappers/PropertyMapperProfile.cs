@@ -21,7 +21,13 @@ public class PropertyProfile : Profile
             .ForMember(dest => dest.PropertyRooms, opt => opt.Ignore());
 
         CreateMap<Property, OwnerPropertyDto>()
-            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => $"{src.Address.Details}, {src.Address.Ward}, {src.Address.District}, {src.Address.Province}, {src.Address.Country}"))
-            .ForMember(dest => dest.PropertyType, opt => opt.MapFrom(src => src.Type.Name));
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address.Details))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name));
+
+        CreateMap<Property, PropertyDto>()
+            .ForMember(dest => dest.ObjectName, opt => opt.MapFrom(src => src.Images.Select(p => p.ObjectName).FirstOrDefault()))
+            .ForMember(dest => dest.ImageUrl, opt => opt.Ignore())
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address.Details))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name));
     }
 }

@@ -3,7 +3,7 @@ import { propertySchema } from './type';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import propertyService from '@/services/property-service';
-import { Room } from '@/types/response/property-service';
+import { Room } from '@/types/response/property-response';
 import { InputField } from '@/components/form-fields/input-field';
 
 interface RoomsSectionProps {

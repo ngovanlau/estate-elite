@@ -24,3 +24,8 @@ export enum PROPERTY_STATUS {
 }
 
 export enum PROJECT_STATUS {}
+
+export enum CURRENCY_UNIT {
+  VND = 'VND',
+  USD = 'USD',
+}

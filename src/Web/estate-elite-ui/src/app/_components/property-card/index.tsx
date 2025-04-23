@@ -9,8 +9,15 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { formatPrice } from '@/lib/utils';
+import { Property } from '@/types/response/property-response';
 
-const PropertyCard = () => {
+type PropertyCardProps = {
+  property: Property;
+};
+
+const PropertyCard = ({ property }: PropertyCardProps) => {
   const listingTypeMap = {
     [LISTING_TYPE.SALE]: (
       <span className="rounded bg-amber-600 px-2.5 py-1 text-xs font-medium text-white">Thuê</span>
@@ -21,12 +28,17 @@ const PropertyCard = () => {
   };
 
   return (
-    <Card className="pt-0">
+    <Card className="group overflow-hidden pt-0 transition-shadow duration-300 hover:shadow-lg">
       <div className="relative">
         <div className="aspect-video overflow-hidden rounded-t-lg bg-slate-200">
-          {/* Image would be placed here */}
+          <Image
+            src={property.imageUrl}
+            alt={property.title}
+            fill
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
         </div>
-        <div className="absolute top-3 left-3">{listingTypeMap[LISTING_TYPE.SALE]}</div>
+        <div className="absolute top-3 left-3">{listingTypeMap[property.listingType]}</div>
         <Button
           variant="ghost"
           size="icon"
@@ -37,33 +49,32 @@ const PropertyCard = () => {
       </div>
       <CardHeader className="pb-2">
         <div className="flex justify-between">
-          <CardTitle className="text-lg">5.2 tỷ</CardTitle>
+          <CardTitle className="line-clamp-1 text-lg transition-colors group-hover:text-blue-600">
+            {property.title}
+          </CardTitle>
           <div className="flex items-center text-sm text-slate-500">
             <Eye className="mr-1 h-4 w-4" />
             230
           </div>
         </div>
-        <CardDescription className="text-base font-medium">
-          Căn hộ 3 phòng ngủ Vinhomes Central Park
+        <CardDescription className="flex items-center text-sm text-slate-500">
+          <MapPin className="mr-1 h-4 w-4" />
+          <span>{property.address}</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-2">
-        <div className="mb-3 flex items-center text-sm text-slate-500">
-          <MapPin className="mr-1 h-4 w-4" />
-          <span>Quận Bình Thạnh, TP. Hồ Chí Minh</span>
-        </div>
         <div className="grid grid-cols-3 gap-2 text-sm">
           <div className="rounded bg-slate-100 p-2 text-center">
-            <p className="font-medium">90m²</p>
+            <p className="font-medium">{formatPrice(property.price, property.listingType)}</p>
+            <p className="text-xs text-slate-500">Giá</p>
+          </div>
+          <div className="rounded bg-slate-100 p-2 text-center">
+            <p className="font-medium">{property.area}m²</p>
             <p className="text-xs text-slate-500">Diện tích</p>
           </div>
           <div className="rounded bg-slate-100 p-2 text-center">
-            <p className="font-medium">3</p>
-            <p className="text-xs text-slate-500">Phòng ngủ</p>
-          </div>
-          <div className="rounded bg-slate-100 p-2 text-center">
-            <p className="font-medium">2</p>
-            <p className="text-xs text-slate-500">Phòng tắm</p>
+            <p className="font-medium">{property.type}</p>
+            <p className="text-xs text-slate-500">Loại</p>
           </div>
         </div>
       </CardContent>

@@ -5,6 +5,7 @@ using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
+using SharedKernel.Enums;
 using SharedKernel.Extensions;
 using SharedKernel.Implements;
 
@@ -18,11 +19,21 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
         return await SaveChangeAsync(cancellationToken);
     }
 
-    public async Task<List<OwnerPropertyDto>> GetOwnerPropertyDtos(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<List<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await context.Available<Property>(false)
+            .Include(p => p.Address)
             .Where(p => p.OwnerId == userId)
             .ProjectTo<OwnerPropertyDto>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+    }
+
+    public Task<List<PropertyDto>> GetPropertyDtosAsync(CancellationToken cancellationToken = default)
+    {
+        return context.Available<Property>(false)
+            .Where(p => p.Status == PropertyStatus.Active)
+            .OrderByDescending(p => p.CreatedOn)
+            .ProjectTo<PropertyDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }
 }

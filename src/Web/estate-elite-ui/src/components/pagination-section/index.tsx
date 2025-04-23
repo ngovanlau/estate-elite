@@ -8,17 +8,17 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 
-interface PropertyPaginationProps {
+interface PaginationSectionProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 }
 
-export function PropertyPagination({
+export function PaginationSection({
   currentPage,
   totalPages,
   onPageChange,
-}: PropertyPaginationProps) {
+}: PaginationSectionProps) {
   return (
     <div className="mt-4 flex items-center justify-end">
       <Pagination>
