@@ -18,9 +18,9 @@ export enum RENT_PERIOD {
 }
 
 export enum PROPERTY_STATUS {
-  PENDING = 'pending',
-  ACTIVE = 'active',
-  COMPLETED = 'completed',
+  PENDING = 'Pending',
+  ACTIVE = 'Active',
+  COMPLETED = 'Completed',
 }
 
 export enum PROJECT_STATUS {}

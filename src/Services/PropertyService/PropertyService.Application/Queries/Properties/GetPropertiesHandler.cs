@@ -29,7 +29,7 @@ public class GetPropertiesHandler(
             var cacheKey = CacheKeys.ForDtoCollection<PropertyDto>();
             var (success, properties) = await cache.TryGetValueAsync<List<PropertyDto>>(cacheKey, cancellationToken);
 
-            if (!success || properties is null || properties.Any())
+            if (!success || properties is null || !properties.Any())
             {
                 properties = await repository.GetPropertyDtosAsync(cancellationToken);
                 if (properties is null)
@@ -37,12 +37,12 @@ public class GetPropertiesHandler(
                     return res.SetError(nameof(E008), string.Format(E008, "Owner properties"));
                 }
 
-                await cache.SetAsync(cacheKey, properties, cancellationToken);
-            }
+                foreach (var property in properties)
+                {
+                    property.ImageUrl = $"{_setting.Endpoint}/{_setting.BucketName}/{property.ObjectName}";
+                }
 
-            foreach (var property in properties)
-            {
-                property.ImageUrl = $"{_setting.Endpoint}/{_setting.BucketName}/{property.ObjectName}";
+                await cache.SetAsync(cacheKey, properties, cancellationToken);
             }
 
             return res.SetSuccess(properties);

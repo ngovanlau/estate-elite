@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
   experimental: {
     externalDir: true, // Cho phép import từ bên ngoài
   },
+  // Chế độ Strict Mode của React: Next.js mặc định bật Strict Mode, chủ động render components 2 lần trong môi trường development để phát hiện side effects.
+  reactStrictMode: false, // Tắt trong development
   // other Next.js config options...
 };
 

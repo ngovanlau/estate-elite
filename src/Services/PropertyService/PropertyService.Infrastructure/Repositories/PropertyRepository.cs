@@ -1,10 +1,11 @@
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
+using SharedKernel.Commons;
 using SharedKernel.Enums;
 using SharedKernel.Extensions;
 using SharedKernel.Implements;
@@ -19,21 +20,81 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
         return await SaveChangeAsync(cancellationToken);
     }
 
-    public async Task<List<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid userId, CancellationToken cancellationToken = default)
+    // Keyset Pagination
+    public async Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid userId, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
     {
-        return await context.Available<Property>(false)
-            .Include(p => p.Address)
-            .Where(p => p.OwnerId == userId)
+        var query = context.Available<Property>(false)
+            .Where(p => p.OwnerId == userId);
+
+        var totalRecords = await query.CountAsync(cancellationToken);
+
+        if (lastPropertyId.HasValue)
+        {
+            // Áp dụng cursor-based pagination
+            if (lastPropertyId.HasValue)
+            {
+                var lastProperty = await context.Properties
+                    .Where(p => p.Id == lastPropertyId.Value && p.OwnerId == userId)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (lastProperty != null)
+                {
+                    query = query.Where(p => p.CreatedOn < lastProperty.CreatedOn ||
+                                         (p.CreatedOn == lastProperty.CreatedOn && p.Id > lastProperty.Id));
+                }
+            }
+        }
+
+        var items = await query
+            .OrderByDescending(p => p.CreatedOn)
+            .ThenBy(p => p.Id)  // Đảm bảo thứ tự nhất quán khi CreatedOn giống nhau
+            .Take(pageSize)
             .ProjectTo<OwnerPropertyDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+
+        return new PageResult<OwnerPropertyDto>
+        {
+            Items = items,
+            TotalRecords = totalRecords
+        };
     }
 
-    public Task<List<PropertyDto>> GetPropertyDtosAsync(CancellationToken cancellationToken = default)
+    // Keyset Pagination
+    public async Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
     {
-        return context.Available<Property>(false)
-            .Where(p => p.Status == PropertyStatus.Active)
+        var query = context.Available<Property>(false)
+            .Where(p => p.Status == PropertyStatus.Active);
+
+        var totalRecords = await query.CountAsync(cancellationToken);
+
+        if (lastPropertyId.HasValue)
+        {
+            // Áp dụng cursor-based pagination
+            if (lastPropertyId.HasValue)
+            {
+                var lastProperty = await context.Properties
+                    .Where(p => p.Id == lastPropertyId.Value)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (lastProperty != null)
+                {
+                    query = query.Where(p => p.CreatedOn < lastProperty.CreatedOn ||
+                                         (p.CreatedOn == lastProperty.CreatedOn && p.Id > lastProperty.Id));
+                }
+            }
+        }
+
+        var items = await query
             .OrderByDescending(p => p.CreatedOn)
+            .ThenBy(p => p.Id)  // Đảm bảo thứ tự nhất quán khi CreatedOn giống nhau
+            .Take(pageSize)
             .ProjectTo<PropertyDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+
+        return new PageResult<PropertyDto>
+        {
+            Items = items,
+            TotalRecords = totalRecords
+        };
     }
 }

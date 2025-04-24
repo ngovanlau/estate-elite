@@ -1,8 +1,9 @@
 using MediatR;
+using SharedKernel.Requests;
 using SharedKernel.Responses;
 
 namespace PropertyService.Application.Requests.Properties;
 
-public class GetPropertiesRequest : IRequest<ApiResponse>
+public class GetPropertiesRequest : PageRequest, IRequest<ApiResponse>
 {
 }

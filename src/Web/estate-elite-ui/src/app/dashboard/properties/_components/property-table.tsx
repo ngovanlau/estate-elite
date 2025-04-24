@@ -18,9 +18,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { formatPrice } from './type';
 import { LISTING_TYPE, PROPERTY_STATUS } from '@/lib/enum';
 import { OwnerProperty } from '@/types/response/property-response';
+import { formatPrice } from '@/lib/utils';
 
 interface PropertyTableProps {
   properties: OwnerProperty[];
@@ -72,8 +72,6 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
     [LISTING_TYPE.RENT]: 'Cho thuê',
   };
 
-  const { label, variant } = propertyStatusMap[LISTING_TYPE.SALE][PROPERTY_STATUS.PENDING];
-
   return (
     <Table>
       <TableHeader>
@@ -90,44 +88,49 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
       </TableHeader>
       <TableBody>
         {properties.length > 0 ? (
-          properties.map((property) => (
-            <TableRow key={property.id}>
-              <TableCell className="font-medium">{property.title}</TableCell>
-              <TableCell className="max-w-[200px] truncate">{property.address}</TableCell>
-              <TableCell>{listingTypeMap[property.listingType]}</TableCell>
-              <TableCell className="text-right">{formatPrice(property.price)}</TableCell>
-              <TableCell>
-                <Badge variant={variant}>{label}</Badge>
-              </TableCell>
-              <TableCell>{property.type}</TableCell>
-              <TableCell className="text-right">{property.area} m²</TableCell>
-              <TableCell className="text-center">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => onEdit(property)}>
-                      <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-red-600"
-                      onClick={() => onDelete(property.id)}
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" /> Xóa
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))
+          properties.map((property) => {
+            const { label, variant } = propertyStatusMap[property.listingType][property.status];
+            return (
+              <TableRow key={property.id}>
+                <TableCell className="font-medium">{property.title}</TableCell>
+                <TableCell className="max-w-[200px] truncate">{property.address}</TableCell>
+                <TableCell>{listingTypeMap[property.listingType]}</TableCell>
+                <TableCell className="text-right">
+                  {formatPrice(property.price, property.listingType)}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={variant}>{label}</Badge>
+                </TableCell>
+                <TableCell>{property.type}</TableCell>
+                <TableCell className="text-right">{property.area} m²</TableCell>
+                <TableCell className="text-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Thao tác</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onEdit(property)}>
+                        <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onClick={() => onDelete(property.id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Xóa
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            );
+          })
         ) : (
           <TableRow>
             <TableCell

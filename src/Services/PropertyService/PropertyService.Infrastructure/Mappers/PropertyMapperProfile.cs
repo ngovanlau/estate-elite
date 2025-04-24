@@ -4,7 +4,7 @@ using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Enums;
 
-namespace PropertyService.Application.Mapping;
+namespace PropertyService.Infrastructure.Mappers;
 
 public class PropertyProfile : Profile
 {

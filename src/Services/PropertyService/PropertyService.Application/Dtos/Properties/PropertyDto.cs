@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using SharedKernel.Enums;
+using System.Text.Json.Serialization;
 
 namespace PropertyService.Application.Dtos.Properties;
 
@@ -21,7 +21,7 @@ public class PropertyDto
     public decimal Area { get; set; }
 
     [JsonIgnore]
-    public required string ObjectName { get; set; }
+    public string? ObjectName { get; set; }
 
     public virtual string? ImageUrl { get; set; }
 }

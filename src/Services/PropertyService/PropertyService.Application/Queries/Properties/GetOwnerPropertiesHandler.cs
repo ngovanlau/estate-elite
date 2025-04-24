@@ -19,7 +19,7 @@ public class GetOwnerPropertiesHandler(
 {
     public async Task<ApiResponse> Handle(GetOwnerPropertiesRequest request, CancellationToken cancellationToken)
     {
-        var res = new ApiResponse();
+        var res = new PageApiResponse(request.PageNumber, request.PageSize);
 
         try
         {
@@ -31,13 +31,7 @@ public class GetOwnerPropertiesHandler(
 
             var cacheKey = CacheKeys.ForDtoCollection<OwnerPropertyDto>(ownerId.ToString());
             var (success, properties) = await cache.TryGetValueAsync<List<OwnerPropertyDto>>(cacheKey, cancellationToken);
-
-            if (!success || properties is null || properties.Any())
-            {
-                logger.LogInformation("Cache miss for owner properties. Fetching from database.");
-                // Cache miss, fetch from database
-                properties = await repository.GetOwnerPropertyDtosAsync(ownerId, cancellationToken);
-            }
+            if (!success || properties is null || !properties.Any())
             {
                 properties = await repository.GetOwnerPropertyDtosAsync(ownerId, cancellationToken);
                 if (properties is null)

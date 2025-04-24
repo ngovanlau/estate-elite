@@ -26,6 +26,10 @@ public static class PropertyExtension
 
             logger.LogDebug("Processing {ImageCount} images for property {PropertyId}", files.Count, property.Id);
 
+            var prefix = $"properties/{property.Id}";
+            logger.LogInformation("Deleting existing images with prefix {Prefix}", prefix);
+            await fileStorageService.DeleteFilesByPrefixAsync(prefix, cancellationToken);
+
             foreach (var file in files)
             {
                 var originFileName = file.FileName;
@@ -35,10 +39,6 @@ public static class PropertyExtension
 
                 logger.LogDebug("Processing image: {OriginalFileName} -> {ObjectName}",
                     originFileName, objectName);
-
-                var prefix = $"properties/{property.Id}";
-                logger.LogInformation("Deleting existing images with prefix {Prefix}", prefix);
-                await fileStorageService.DeleteFilesByPrefixAsync(prefix, cancellationToken);
 
                 using var stream = file.OpenReadStream();
                 logger.LogDebug("Uploading file {ObjectName} with size {FileSize} bytes",
