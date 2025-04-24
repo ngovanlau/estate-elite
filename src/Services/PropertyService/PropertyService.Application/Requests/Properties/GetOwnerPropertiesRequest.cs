@@ -4,6 +4,6 @@ using SharedKernel.Responses;
 
 namespace PropertyService.Application.Requests.Properties;
 
-public class GetOwnerPropertiesRequest : PageRequest, IRequest<ApiResponse>
+public class GetOwnerPropertiesRequest : PageRequest, IRequest<PageApiResponse>
 {
 }

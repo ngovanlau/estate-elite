@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
+using PropertyService.Domain.Entities;
+using SharedKernel.Commons;
 using SharedKernel.Responses;
 using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
@@ -16,36 +18,38 @@ public class GetPropertiesHandler(
     IPropertyRepository repository,
     IDistributedCache cache,
     IOptions<MinioSetting> options,
-    ILogger<GetOwnerPropertiesHandler> logger) : IRequestHandler<GetPropertiesRequest, ApiResponse>
+    ILogger<GetOwnerPropertiesHandler> logger) : IRequestHandler<GetPropertiesRequest, PageApiResponse>
 {
     private readonly MinioSetting _setting = options.Value;
 
-    public async Task<ApiResponse> Handle(GetPropertiesRequest request, CancellationToken cancellationToken)
+    public async Task<PageApiResponse> Handle(GetPropertiesRequest request, CancellationToken cancellationToken)
     {
-        var res = new ApiResponse();
+        var res = new PageApiResponse(request.PageNumber, request.PageSize);
 
         try
         {
-            var cacheKey = CacheKeys.ForDtoCollection<PropertyDto>();
-            var (success, properties) = await cache.TryGetValueAsync<List<PropertyDto>>(cacheKey, cancellationToken);
+            var cacheKey = CacheKeys.ForQuery<Property, PageResult<PropertyDto>>(request);
+            var (success, pageResult) = await cache.TryGetValueAsync<PageResult<PropertyDto>>(cacheKey, cancellationToken);
 
-            if (!success || properties is null || !properties.Any())
+            if (!success || pageResult is null || !pageResult.Items.Any())
             {
-                properties = await repository.GetPropertyDtosAsync(cancellationToken);
-                if (properties is null)
+                pageResult = await repository.GetPropertyDtosAsync(request.PageSize, request.LastEntityId, cancellationToken);
+                if (!pageResult.Items.Any())
                 {
                     return res.SetError(nameof(E008), string.Format(E008, "Owner properties"));
                 }
 
-                foreach (var property in properties)
+                foreach (var property in pageResult.Items)
                 {
                     property.ImageUrl = $"{_setting.Endpoint}/{_setting.BucketName}/{property.ObjectName}";
                 }
 
-                await cache.SetAsync(cacheKey, properties, cancellationToken);
+                await cache.SetAsync(cacheKey, pageResult, cancellationToken);
             }
 
-            return res.SetSuccess(properties);
+            res.TotalRecords = pageResult.TotalRecords;
+
+            return res.SetSuccess(pageResult.Items);
         }
         catch (Exception ex)
         {

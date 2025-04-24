@@ -8,6 +8,12 @@ using SharedKernel.Interfaces;
 public interface IPropertyRepository : IRepository<Property>
 {
     Task<bool> AddProperty(Property property, CancellationToken cancellationToken = default);
-    Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid userId, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default);
+    Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default);
     Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default);
+
+    Task<PageResult<TDto>> GetPaginatedPropertyDtosAsync<TDto>(
+        Func<IQueryable<Property>, IQueryable<Property>> filter,
+        int pageSize,
+        Guid? lastProperty = null,
+        CancellationToken cancellationToken = default) where TDto : class;
 }

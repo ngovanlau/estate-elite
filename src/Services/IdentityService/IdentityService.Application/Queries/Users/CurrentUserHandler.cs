@@ -55,7 +55,7 @@ public class CurrentUserHandler(
 
     private async Task<CurrentUserDto?> GetCurrentUserDtoAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var currentUserDtoKey = CacheKeys.ForDto<CurrentUserDto>(userId);
+        var currentUserDtoKey = CacheKeys.ForDto<User, CurrentUserDto>(userId);
         var (dtoSuccess, currentUserDto) = await cache.TryGetValueAsync<CurrentUserDto>(currentUserDtoKey, cancellationToken);
 
         if (dtoSuccess && currentUserDto is not null)

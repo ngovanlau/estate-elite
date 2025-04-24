@@ -1,4 +1,5 @@
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -67,5 +68,23 @@ public static class RedisCacheService
             await cache.SetAsync<T>(key, value, options, cancellationToken);
         }
         return value;
+    }
+
+    public static async Task<int> ClearCacheByPrefixAsync(IConnectionMultiplexer connectionMultiplexer, string prefix)
+    {
+        var db = connectionMultiplexer.GetDatabase();
+        var server = connectionMultiplexer.GetServer(connectionMultiplexer.GetEndPoints().First());
+        int removedCount = 0;
+
+        // Pattern để tìm tất cả các key bắt đầu bằng prefix
+        var pattern = $"{prefix.ToLowerInvariant()}*";
+
+        foreach (var key in server.Keys(pattern: pattern, pageSize: 1000))
+        {
+            await db.KeyDeleteAsync(key);
+            removedCount++;
+        }
+
+        return removedCount;
     }
 }

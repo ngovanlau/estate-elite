@@ -8,6 +8,7 @@ using DistributedCache.Redis;
 using Interfaces;
 using PropertyService.Application.Dtos.Utilities;
 using PropertyService.Application.Requests.Utilities;
+using PropertyService.Domain.Entities;
 using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
@@ -23,7 +24,7 @@ public class GetUtilityHandler(
 
         try
         {
-            var cacheKey = CacheKeys.ForDtoCollection<UtilityDto>();
+            var cacheKey = CacheKeys.ForDtoCollection<Utility, UtilityDto>();
             var (success, list) = await cache.TryGetValueAsync<List<UtilityDto>>(cacheKey, cancellationToken);
             if (!success || list is null || list.Count == 0)
             {

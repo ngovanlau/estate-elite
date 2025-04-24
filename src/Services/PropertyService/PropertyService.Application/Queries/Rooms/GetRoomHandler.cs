@@ -8,6 +8,7 @@ using DistributedCache.Redis;
 using Interfaces;
 using PropertyService.Application.Dtos.Rooms;
 using PropertyService.Application.Requests.Rooms;
+using PropertyService.Domain.Entities;
 using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
@@ -23,7 +24,7 @@ public class GetRoomHandler(
 
         try
         {
-            var cacheKey = CacheKeys.ForDtoCollection<RoomDto>();
+            var cacheKey = CacheKeys.ForDtoCollection<Room, RoomDto>();
             var (success, list) = await cache.TryGetValueAsync<List<RoomDto>>(cacheKey, cancellationToken);
             if (!success || list is null || list.Count == 0)
             {

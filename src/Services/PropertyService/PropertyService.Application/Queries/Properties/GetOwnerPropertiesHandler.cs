@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
+using PropertyService.Domain.Entities;
+using SharedKernel.Commons;
 using SharedKernel.Interfaces;
 using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
@@ -15,9 +17,9 @@ public class GetOwnerPropertiesHandler(
     IPropertyRepository repository,
     IDistributedCache cache,
     ICurrentUserService currentUserService,
-    ILogger<GetOwnerPropertiesHandler> logger) : IRequestHandler<GetOwnerPropertiesRequest, ApiResponse>
+    ILogger<GetOwnerPropertiesHandler> logger) : IRequestHandler<GetOwnerPropertiesRequest, PageApiResponse>
 {
-    public async Task<ApiResponse> Handle(GetOwnerPropertiesRequest request, CancellationToken cancellationToken)
+    public async Task<PageApiResponse> Handle(GetOwnerPropertiesRequest request, CancellationToken cancellationToken)
     {
         var res = new PageApiResponse(request.PageNumber, request.PageSize);
 
@@ -29,20 +31,22 @@ public class GetOwnerPropertiesHandler(
             }
             var ownerId = currentUserService.Id.Value;
 
-            var cacheKey = CacheKeys.ForDtoCollection<OwnerPropertyDto>(ownerId.ToString());
-            var (success, properties) = await cache.TryGetValueAsync<List<OwnerPropertyDto>>(cacheKey, cancellationToken);
-            if (!success || properties is null || !properties.Any())
+            var cacheKey = CacheKeys.ForQuery<Property, PageResult<OwnerPropertyDto>>(request);
+            var (success, pageResult) = await cache.TryGetValueAsync<PageResult<OwnerPropertyDto>>(cacheKey, cancellationToken);
+            if (!success || pageResult is null || !pageResult.Items.Any())
             {
-                properties = await repository.GetOwnerPropertyDtosAsync(ownerId, cancellationToken);
-                if (properties is null)
+                pageResult = await repository.GetOwnerPropertyDtosAsync(ownerId, request.PageSize, request.LastEntityId, cancellationToken);
+                if (!pageResult.Items.Any())
                 {
                     return res.SetError(nameof(E008), string.Format(E008, "Owner properties"));
                 }
 
-                await cache.SetAsync(cacheKey, properties, cancellationToken);
+                await cache.SetAsync(cacheKey, pageResult, cancellationToken);
             }
 
-            return res.SetSuccess(properties);
+            res.TotalRecords = pageResult.TotalRecords;
+
+            return res.SetSuccess(pageResult.Items);
         }
         catch (Exception ex)
         {

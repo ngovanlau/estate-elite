@@ -58,7 +58,7 @@ public class ConfirmHandler(
                 return res.SetError(nameof(E109), E109);
             }
 
-            var codeKey = CacheKeys.ForDto<UserConfirmationDto>(request.UserId);
+            var codeKey = CacheKeys.ForDto<User, UserConfirmationDto>(request.UserId);
             var (dtoSuccess, confirmationDto) = await cache.TryGetValueAsync<UserConfirmationDto>(codeKey, cancellationToken);
             if (!dtoSuccess || confirmationDto == null)
             {

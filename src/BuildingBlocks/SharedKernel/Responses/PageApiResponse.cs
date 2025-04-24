@@ -1,6 +1,6 @@
 namespace SharedKernel.Responses;
 
-public class PageApiResponse(int pageNumber, int pageSize) : ApiResponse
+public class PageApiResponse(int pageNumber, int pageSize) : ApiResponse<PageApiResponse>
 {
     public int PageNumber
     {
@@ -24,7 +24,7 @@ public class PageApiResponse(int pageNumber, int pageSize) : ApiResponse
             }
         }
     }
-    private int TotalRecords { get; set; }
+    public int TotalRecords { get; set; }
     public int TotalPages
     {
         get

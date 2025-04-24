@@ -98,7 +98,7 @@ public class UpdateUserHandler(
                 await cache.RemoveAsync(cacheKey, cancellationToken);
                 await cache.SetAsync(cacheKey, user, cancellationToken);
 
-                var dtoKey = CacheKeys.ForDto<CurrentUserDto>(userId);
+                var dtoKey = CacheKeys.ForDto<User, CurrentUserDto>(userId);
                 await cache.RemoveAsync(cacheKey, cancellationToken);
                 await cache.SetAsync(dtoKey, mapper.Map<CurrentUserDto>(user), cancellationToken);
 

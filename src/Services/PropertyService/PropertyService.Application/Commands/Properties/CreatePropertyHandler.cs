@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DistributedCache.Redis;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -7,9 +8,9 @@ using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Extensions;
-using SharedKernel.Implements;
 using SharedKernel.Interfaces;
 using SharedKernel.Responses;
+using StackExchange.Redis;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PropertyService.Application.Commands.Properties;
@@ -23,6 +24,7 @@ public class CreatePropertyHandler(
     IRoomRepository roomRepository,
     IUtilityRepository utilityRepository,
     ICurrentUserService currentUserService,
+    IConnectionMultiplexer connectionMultiplexer,
     ILogger<CreatePropertyHandler> logger) : IRequestHandler<CreatePropertyRequest, ApiResponse>
 {
     public async Task<ApiResponse> Handle(CreatePropertyRequest request, CancellationToken cancellationToken)
@@ -111,6 +113,8 @@ public class CreatePropertyHandler(
                     }
                 }
             }
+
+            await RedisCacheService.ClearCacheByPrefixAsync(connectionMultiplexer, $"{nameof(Property)}:");
 
             await transaction.CommitAsync(cancellationToken);
             return response.SetSuccess(data);

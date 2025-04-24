@@ -45,7 +45,7 @@ public class ResendCodeHandler(
             }
 
             var userId = request.UserId;
-            var codeKey = CacheKeys.ForDto<UserConfirmationDto>(userId);
+            var codeKey = CacheKeys.ForDto<User, UserConfirmationDto>(userId);
 
             logger.LogDebug("Checking for existing confirmation code for user ID: {UserId}", userId);
             var (success, _) = await cache.TryGetValueAsync<UserConfirmationDto>(codeKey, cancellationToken);

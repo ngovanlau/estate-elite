@@ -82,7 +82,7 @@ public class UploadHandler(
                 logger.LogInformation("Upload successful: Type={Type}, UserId={UserId}",
                     request.IsAvatar ? "avatar" : "background", userId);
 
-                var dtoKey = CacheKeys.ForDto<CurrentUserDto>(userId);
+                var dtoKey = CacheKeys.ForDto<User, CurrentUserDto>(userId);
                 await cache.RemoveAsync(cacheKey, cancellationToken);
                 await cache.SetAsync(dtoKey, mapper.Map<CurrentUserDto>(user), cancellationToken);
             }

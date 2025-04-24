@@ -14,6 +14,8 @@ namespace PropertyService.Infrastructure.Repositories;
 
 public class PropertyRepository(PropertyContext context, IMapper mapper) : Repository<Property>(context), IPropertyRepository
 {
+    private sealed record LastPropertyInfo(Guid Id, DateTime CreatedOn);
+
     public async Task<bool> AddProperty(Property property, CancellationToken cancellationToken)
     {
         await context.Properties.AddAsync(property, cancellationToken);
@@ -21,49 +23,29 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
     }
 
     // Keyset Pagination
-    public async Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid userId, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
+    public async Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
     {
-        var query = context.Available<Property>(false)
-            .Where(p => p.OwnerId == userId);
-
-        var totalRecords = await query.CountAsync(cancellationToken);
-
-        if (lastPropertyId.HasValue)
-        {
-            // Áp dụng cursor-based pagination
-            if (lastPropertyId.HasValue)
-            {
-                var lastProperty = await context.Properties
-                    .Where(p => p.Id == lastPropertyId.Value && p.OwnerId == userId)
-                    .FirstOrDefaultAsync(cancellationToken);
-
-                if (lastProperty != null)
-                {
-                    query = query.Where(p => p.CreatedOn < lastProperty.CreatedOn ||
-                                         (p.CreatedOn == lastProperty.CreatedOn && p.Id > lastProperty.Id));
-                }
-            }
-        }
-
-        var items = await query
-            .OrderByDescending(p => p.CreatedOn)
-            .ThenBy(p => p.Id)  // Đảm bảo thứ tự nhất quán khi CreatedOn giống nhau
-            .Take(pageSize)
-            .ProjectTo<OwnerPropertyDto>(mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
-
-        return new PageResult<OwnerPropertyDto>
-        {
-            Items = items,
-            TotalRecords = totalRecords
-        };
+        return await GetPaginatedPropertyDtosAsync<OwnerPropertyDto>(
+            query => query.Where(p => p.OwnerId == ownerId),
+            pageSize,
+            lastPropertyId,
+            cancellationToken);
     }
 
     // Keyset Pagination
     public async Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
     {
-        var query = context.Available<Property>(false)
-            .Where(p => p.Status == PropertyStatus.Active);
+        return await GetPaginatedPropertyDtosAsync<PropertyDto>(
+           query => query.Where(p => p.Status == PropertyStatus.Active),
+           pageSize,
+           lastPropertyId,
+           cancellationToken);
+    }
+
+    public async Task<PageResult<TDto>> GetPaginatedPropertyDtosAsync<TDto>(Func<IQueryable<Property>, IQueryable<Property>> filter, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default) where TDto : class
+    {
+        var baseQuery = context.Available<Property>(false);
+        var query = filter(baseQuery);
 
         var totalRecords = await query.CountAsync(cancellationToken);
 
@@ -72,14 +54,13 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
             // Áp dụng cursor-based pagination
             if (lastPropertyId.HasValue)
             {
-                var lastProperty = await context.Properties
-                    .Where(p => p.Id == lastPropertyId.Value)
+                var lastProperty = await query.Where(p => p.Id == lastPropertyId.Value)
+                    .Select(p => new LastPropertyInfo(p.Id, p.CreatedOn))
                     .FirstOrDefaultAsync(cancellationToken);
 
                 if (lastProperty != null)
                 {
-                    query = query.Where(p => p.CreatedOn < lastProperty.CreatedOn ||
-                                         (p.CreatedOn == lastProperty.CreatedOn && p.Id > lastProperty.Id));
+                    query = query.Where(p => p.CreatedOn < lastProperty.CreatedOn || (p.CreatedOn == lastProperty.CreatedOn && p.Id > lastProperty.Id));
                 }
             }
         }
@@ -88,10 +69,10 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
             .OrderByDescending(p => p.CreatedOn)
             .ThenBy(p => p.Id)  // Đảm bảo thứ tự nhất quán khi CreatedOn giống nhau
             .Take(pageSize)
-            .ProjectTo<PropertyDto>(mapper.ConfigurationProvider)
+            .ProjectTo<TDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        return new PageResult<PropertyDto>
+        return new PageResult<TDto>
         {
             Items = items,
             TotalRecords = totalRecords

@@ -1,55 +1,58 @@
 namespace SharedKernel.Responses;
 
-public class ApiResponse
+public class ApiResponse<T> where T : ApiResponse<T>
 {
-    public bool Succeeded { get; private set; }
-    public string? Message { get; private set; }
-    public string? Code { get; private set; }
-    public object? Data { get; private set; }
-    public object? Errors { get; private set; }
+    public bool Succeeded { get; protected set; }
+    public string? Message { get; protected set; }
+    public string? Code { get; protected set; }
+    public object? Data { get; protected set; }
+    public object? Errors { get; protected set; }
 
     public ApiResponse()
     {
         Succeeded = true;
     }
 
-    public ApiResponse SetSuccess(object? data)
+    public T SetSuccess(object? data)
     {
         Succeeded = true;
         Data = data;
 
-        return this;
+        return (T)this;
     }
 
-    public ApiResponse SetError(string code)
+    public T SetError(string code)
     {
         Succeeded = false;
         Code = code;
 
-        return this;
+        return (T)this;
     }
 
-    public ApiResponse SetError(string code, string? message)
+    public T SetError(string code, string? message)
     {
         SetError(code);
         Message = message;
 
-        return this;
+        return (T)this;
     }
 
-    public ApiResponse SetError(string code, string? message, object? data)
+    public T SetError(string code, string? message, object? data)
     {
         SetError(code, message);
         Data = data;
 
-        return this;
+        return (T)this;
     }
 
-    public ApiResponse SetError(string code, string? message, object? data, object? errors)
+    public T SetError(string code, string? message, object? data, object? errors)
     {
         SetError(code, message, data);
         Errors = errors;
 
-        return this;
+        return (T)this;
     }
+}
+public class ApiResponse : ApiResponse<ApiResponse>
+{
 }

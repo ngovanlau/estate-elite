@@ -12,7 +12,7 @@ public static class PropertyMediator
     public static void AddPropertyMediator(this MediatRServiceConfiguration configuration, ServiceLifetime life = ServiceLifetime.Scoped)
     {
         configuration.AddBehavior<IRequestHandler<CreatePropertyRequest, ApiResponse>, CreatePropertyHandler>(life);
-        configuration.AddBehavior<IRequestHandler<GetOwnerPropertiesRequest, ApiResponse>, GetOwnerPropertiesHandler>(life);
-        configuration.AddBehavior<IRequestHandler<GetPropertiesRequest, ApiResponse>, GetPropertiesHandler>(life);
+        configuration.AddBehavior<IRequestHandler<GetOwnerPropertiesRequest, PageApiResponse>, GetOwnerPropertiesHandler>(life);
+        configuration.AddBehavior<IRequestHandler<GetPropertiesRequest, PageApiResponse>, GetPropertiesHandler>(life);
     }
 }

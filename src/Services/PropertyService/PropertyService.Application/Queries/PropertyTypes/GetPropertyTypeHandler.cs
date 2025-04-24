@@ -7,6 +7,7 @@ namespace PropertyService.Application.Queries.PropertyTypes;
 using DistributedCache.Redis;
 using Dtos.PropertyTypes;
 using Interfaces;
+using PropertyService.Domain.Entities;
 using Requests.PropertyTypes;
 using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
@@ -23,7 +24,7 @@ public class GetPropertyTypeHandler(
 
         try
         {
-            var cacheKey = CacheKeys.ForDtoCollection<PropertyTypeDto>();
+            var cacheKey = CacheKeys.ForDtoCollection<PropertyType, PropertyTypeDto>();
             var (success, list) = await cache.TryGetValueAsync<List<PropertyTypeDto>>(cacheKey, cancellationToken);
             if (!success || list is null || list.Count == 0)
             {

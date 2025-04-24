@@ -92,7 +92,7 @@ public class RegisterHandler(
 
             logger.LogDebug("Caching confirmation code for user {UserId} (Expiry: {ExpiryTime})",
                 user.Id, expiryTime);
-            var codeKey = CacheKeys.ForDto<UserConfirmationDto>(userConfirmationDto.UserId);
+            var codeKey = CacheKeys.ForDto<User, UserConfirmationDto>(userConfirmationDto.UserId);
             await cache.SetAsync(codeKey, userConfirmationDto, options, cancellationToken);
 
             logger.LogInformation("Publishing confirmation event for user {UserId}", user.Id);
