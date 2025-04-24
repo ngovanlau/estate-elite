@@ -1,8 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
-    <ProjectReference Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SharedKernel\SharedKernel.csproj" />
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
   </ItemGroup>
@@ -10,13 +18,13 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+  <ItemGroup>
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/*.proto" GrpcServices="Server"
+      ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
+  </ItemGroup>
 
 </Project>

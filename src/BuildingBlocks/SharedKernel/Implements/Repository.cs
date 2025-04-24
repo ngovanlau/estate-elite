@@ -1,3 +1,5 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Entities;
 using SharedKernel.Extensions;
@@ -6,7 +8,7 @@ using System.Data;
 
 namespace SharedKernel.Implements;
 
-public abstract class Repository<T>(DbContext context) : IRepository<T> where T : AuditableEntity
+public abstract class Repository<T>(DbContext context, IMapper mapper) : IRepository<T> where T : AuditableEntity
 {
     private readonly DbSet<T> _dbSet = context.Set<T>();
 
@@ -37,5 +39,13 @@ public abstract class Repository<T>(DbContext context) : IRepository<T> where T 
     {
         var transaction = await context.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
         return new Transaction(transaction);
+    }
+
+    public async Task<TDto?> GetDtoByIdAsync<TDto>(Guid id, CancellationToken cancellationToken = default) where TDto : class
+    {
+        return await context.Available<T>(false)
+            .Where(p => p.Id == id)
+            .ProjectTo<TDto>(mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 }

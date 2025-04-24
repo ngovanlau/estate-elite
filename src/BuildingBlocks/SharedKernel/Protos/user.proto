@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "SharedKernel.Protos";
+
+package IdentityService;
+
+service UserService {
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetUserResponse {
+  string id = 1;
+  string full_name = 2;
+  string email = 3;
+  string phone = 4;
+  string avatar = 6;
+  string company_name = 7;
+}

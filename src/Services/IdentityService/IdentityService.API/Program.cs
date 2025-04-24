@@ -1,12 +1,14 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using IdentityService.Application.Mediators;
+using IdentityService.Application.Protos;
 using IdentityService.Application.Validates;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using SharedKernel.Settings;
@@ -75,7 +77,16 @@ builder.Services.AddCorsService();
 // Rate limit
 builder.Services.AddRateLimiterService();
 
+// gRPC
+builder.Services.AddGrpc(options =>
+{
+    options.EnableDetailedErrors = true;
+    options.Interceptors.Add<GrpcExceptionInterceptor>();
+});
+
 var app = builder.Build();
+
+app.MapGrpcService<UserGrpcService>();
 
 // Add Serilog request logging
 app.UseMiddleware<SerilogRequestLoggingMiddleware>();
