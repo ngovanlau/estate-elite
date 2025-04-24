@@ -17,17 +17,15 @@ public class PropertyController(IMediator mediator) : BaseController(mediator)
     }
 
     [HttpGet("owner"), Authorize(Policy = Policy.RequireSellerRole)]
-    public async Task<IActionResult> GetOwnerProperties()
+    public async Task<IActionResult> GetOwnerProperties([FromQuery] GetOwnerPropertiesRequest request)
     {
-        var request = new GetOwnerPropertiesRequest();
         var response = await _mediator.Send(request);
         return Ok(response);
     }
 
     [HttpGet(), Authorize]
-    public async Task<IActionResult> GetProperties()
+    public async Task<IActionResult> GetProperties([FromQuery] GetPropertiesRequest request)
     {
-        var request = new GetPropertiesRequest();
         var response = await _mediator.Send(request);
         return Ok(response);
     }

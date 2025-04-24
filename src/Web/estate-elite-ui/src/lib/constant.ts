@@ -6,3 +6,6 @@ export const REGEX = {
   Username: /^[a-zA-Z0-9_]+$/,
   Password: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_]).+$/,
 };
+
+export const PAGE_SIZE = 9;
+export const PAGE_NUMBER = 1;

@@ -1,106 +1,94 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { PaginationSection } from '@/components/pagination-section';
 import PropertyCard from '@/app/_components/property-card';
 import propertyService from '@/services/property-service';
 import toast from 'react-hot-toast';
 import { Property } from '@/types/response/property-response';
+import { PAGE_SIZE } from '@/lib/constant';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { Loader2 } from 'lucide-react';
+import { InfiniteScroll } from '@/components/infinite-scroll';
+import { Button } from '@/components/ui/button';
 
 export default function PropertyListingPage() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  // const [filterType, setFilterType] = useState<string>('');
-  // const [filterCategory, setFilterCategory] = useState<string>('');
-  // const [filterLocation, setFilterLocation] = useState<string>('');
-  // const [priceRange, setPriceRange] = useState<number[]>([0, 15000000000]);
-  // const [sortOption, setSortOption] = useState<string>('');
-  // const [searchTerm, setSearchTerm] = useState<string>('');
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } = useInfiniteQuery({
+    queryKey: ['properties'],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await propertyService.getProperties({
+        pageNumber: pageParam,
+        pageSize: PAGE_SIZE,
+        lastEntityId: lastEntityId,
+      });
 
-  // Xử lý lọc và sắp xếp dữ liệu
-  // const filteredProperties = properties
-  //   .filter((property) => {
-  //     return (
-  //       (filterType === '' || property.type === filterType) &&
-  //       (filterCategory === '' || property.category === filterCategory) &&
-  //       (filterLocation === '' || property.location.includes(filterLocation)) &&
-  //       property.price >= priceRange[0] &&
-  //       property.price <= priceRange[1] &&
-  //       (searchTerm === '' ||
-  //         property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //         property.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //         property.location.toLowerCase().includes(searchTerm.toLowerCase()))
-  //     );
-  //   })
-  //   .sort((a, b) => {
-  //     if (sortOption === 'price-asc') return a.price - b.price;
-  //     if (sortOption === 'price-desc') return b.price - a.price;
-  //     if (sortOption === 'area-asc') return a.area - b.area;
-  //     if (sortOption === 'area-desc') return b.area - a.area;
-  //     return 0;
-  //   });
-
-  const fetchProperties = async () => {
-    try {
-      const response = await propertyService.getProperties();
       if (!response.succeeded) {
-        toast.error('Lấy danh sách bất động sản thất bại');
-        return;
+        throw new Error('Failed to load properties');
       }
-      setProperties(response.data);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-    }
-  };
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+      return {
+        properties: response.data,
+        currentPage: pageParam,
+        totalPages: response.totalPages,
+        lastEntityId: response.data[response.data.length - 1]?.id,
+      };
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.currentPage < lastPage.totalPages) {
+        return lastPage.currentPage + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
+  });
+
+  const allProperties = data?.pages.flatMap((page) => page.properties) || [];
+  const lastEntityId = data?.pages[data.pages.length - 1]?.lastEntityId;
+
+  if (status === 'error') {
+    toast.error(`Lỗi khi tải danh sách bất động sản: ${error.message}`);
+    return (
+      <div className="py-10 text-center">Lỗi khi tải danh sách bất động sản. Vui lòng thử lại.</div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8">
       <h1 className="mb-8 text-3xl font-bold">Danh sách bất động sản</h1>
 
-      {/* Thanh tìm kiếm và lọc */}
-      {/* <PropertySearchFilter
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filterType={filterType}
-        setFilterType={setFilterType}
-        filterCategory={filterCategory}
-        setFilterCategory={setFilterCategory}
-        filterLocation={filterLocation}
-        setFilterLocation={setFilterLocation}
-        priceRange={priceRange}
-        setPriceRange={setPriceRange}
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-        formatPrice={formatPrice}
-      /> */}
+      {status === 'pending' ? (
+        <div className="flex justify-center py-10">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+        </div>
+      ) : (
+        <>
+          <InfiniteScroll
+            loadMore={() => fetchNextPage()}
+            hasMore={!!hasNextPage}
+            isLoading={isFetchingNextPage}
+            className="mb-4"
+          >
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {allProperties.map((property: Property) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                />
+              ))}
+            </div>
+          </InfiniteScroll>
 
-      {/* Hiển thị kết quả */}
-      {/* <PropertyListHeader count={filteredProperties.length} /> */}
-
-      {/* Danh sách bất động sản */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {properties.map((property) => (
-          // <PropertyCard
-          //   key={property.id}
-          //   property={property}
-          //   formatPrice={formatPrice}
-          // />
-          <PropertyCard
-            key={property.id}
-            property={property}
-          />
-        ))}
-      </div>
-
-      {/* Phân trang */}
-      <PaginationSection
-        currentPage={1}
-        onPageChange={() => {}}
-        totalPages={10}
-      />
+          {/* Manual load more button (optional) */}
+          {hasNextPage && !isFetchingNextPage && (
+            <div className="flex justify-center py-4">
+              <Button
+                onClick={() => fetchNextPage()}
+                variant="outline"
+              >
+                Load More
+              </Button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

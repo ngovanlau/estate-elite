@@ -11,7 +11,7 @@ import {
 interface PaginationSectionProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  onPageChange: (pageNumber: number) => void;
 }
 
 export function PaginationSection({

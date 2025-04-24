@@ -1,6 +1,6 @@
 import { environment } from '@/lib/environment';
 import BaseService from './base-service';
-import { ApiResponse } from '@/types/response/base-response';
+import { ApiResponse, PageApiResponse } from '@/types/response/base-response';
 import {
   OwnerProperty,
   Property,
@@ -9,6 +9,7 @@ import {
   Utility,
 } from '@/types/response/property-response';
 import { CreatePropertyRequest } from '@/types/request/property-request';
+import { PageRequest } from '@/types/request/base-request';
 
 class PropertyService extends BaseService {
   public constructor() {
@@ -68,12 +69,20 @@ class PropertyService extends BaseService {
     });
   };
 
-  public getOwnerProperties = (): Promise<ApiResponse<OwnerProperty[]>> => {
-    return this.instance.get('/property/owner');
+  public getOwnerProperties = (request: PageRequest): Promise<ApiResponse<OwnerProperty[]>> => {
+    let url = `/property/owner?pageSize=${request.pageSize}&pageNumber=${request.pageNumber}`;
+    if (request.lastEntityId) {
+      url += `&lastEntityId=${request.lastEntityId}`;
+    }
+    return this.instance.get(url);
   };
 
-  public getProperties = (): Promise<ApiResponse<Property[]>> => {
-    return this.instance.get('/property');
+  public getProperties = (request: PageRequest): Promise<PageApiResponse<Property[]>> => {
+    let url = `/property?pageSize=${request.pageSize}&pageNumber=${request.pageNumber}`;
+    if (request.lastEntityId) {
+      url += `&lastEntityId=${request.lastEntityId}`;
+    }
+    return this.instance.get(url);
   };
 }
 
