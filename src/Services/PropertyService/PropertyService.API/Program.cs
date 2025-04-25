@@ -81,12 +81,12 @@ try
         else
         {
             // Fallback configuration
-            options.ListenAnyIP(5001, listenOptions =>
+            options.ListenAnyIP(5002, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1;
             });
 
-            options.ListenAnyIP(5101, listenOptions =>
+            options.ListenAnyIP(5102, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                 listenOptions.UseHttps();

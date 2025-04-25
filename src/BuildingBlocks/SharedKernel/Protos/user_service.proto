@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option csharp_namespace = "SharedKernel.Protos";
 
-package IdentityService;
+package identity.service;
 
 service UserService {
   rpc GetUser (GetUserRequest) returns (GetUserResponse);

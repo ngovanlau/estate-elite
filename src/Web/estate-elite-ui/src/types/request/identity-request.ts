@@ -24,3 +24,10 @@ export interface ConfirmRequest {
   userId: string;
   code: string;
 }
+
+export interface UpdateUserRequest {
+  fullname?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}

@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { OwnerProperty } from '@/types/response/property-response';
 import propertyService from '@/services/property-service';
 import toast from 'react-hot-toast';
+import { PAGE_NUMBER, PAGE_SIZE } from '@/lib/constant';
 
 export default function PropertyManagement() {
   const router = useRouter();
@@ -18,7 +19,8 @@ export default function PropertyManagement() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterType, setFilterType] = useState<string>('all');
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(PAGE_NUMBER);
 
   // Filter properties based on search term and filters
   const filteredProperties = properties.filter((property) => {
@@ -65,13 +67,17 @@ export default function PropertyManagement() {
 
   const fetchOwnerProperties = async () => {
     try {
-      const response = await propertyService.getOwnerProperties();
+      const response = await propertyService.getOwnerProperties({
+        pageSize: PAGE_SIZE,
+        pageNumber: currentPage,
+      });
       if (!response.succeeded) {
         toast.error('Lấy danh sách bất động sản thất bại');
         throw new Error(response.message);
       }
 
       setProperties(response.data);
+      setTotalPage(response.totalPages);
     } catch (error) {
       console.error('Error fetching properties:', error);
     }
@@ -79,7 +85,7 @@ export default function PropertyManagement() {
 
   useEffect(() => {
     fetchOwnerProperties();
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className="container mx-auto py-8">
@@ -113,7 +119,7 @@ export default function PropertyManagement() {
 
           <PropertyPagination
             currentPage={currentPage}
-            totalPages={Math.ceil(filteredProperties.length / 10)}
+            totalPages={totalPages}
             onPageChange={setCurrentPage}
           />
         </CardContent>

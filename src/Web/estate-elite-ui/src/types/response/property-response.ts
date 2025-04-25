@@ -31,3 +31,22 @@ export interface Property {
 export interface OwnerProperty extends Omit<Property, 'ImageUrl'> {
   status: PROPERTY_STATUS;
 }
+
+export interface PropertyDetails extends Omit<Property, 'ImageUrl'> {
+  description: string;
+  rooms: {
+    name: string;
+    quantity: number;
+  }[];
+  utilities: string[];
+  owner: {
+    id: string;
+    fullName: string;
+    email: string;
+    phone?: string;
+    avatar?: string;
+    companyName?: string;
+  };
+  images: string[];
+  buildDate: string;
+}

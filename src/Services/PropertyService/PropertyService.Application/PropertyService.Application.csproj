@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.71.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
@@ -16,6 +18,10 @@
     <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
     <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
     <ProjectReference Include="../PropertyService.Domain/PropertyService.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/*.proto" GrpcServices="Client" ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
   </ItemGroup>
 
 </Project>

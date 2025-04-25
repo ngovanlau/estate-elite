@@ -28,15 +28,15 @@ public class GetPropertiesHandler(
 
         try
         {
-            var cacheKey = CacheKeys.ForQuery<Property, PageResult<PropertyDto>>(request);
+            var cacheKey = CacheKeys.ForDtoCollection<Property, PropertyDto>(request.LastEntityId.ToString());
             var (success, pageResult) = await cache.TryGetValueAsync<PageResult<PropertyDto>>(cacheKey, cancellationToken);
 
             if (!success || pageResult is null || !pageResult.Items.Any())
             {
-                pageResult = await repository.GetPropertyDtosAsync(request.PageSize, request.LastEntityId, cancellationToken);
+                pageResult = await repository.GetDtoByIdAsync(request.PageSize, request.LastEntityId, cancellationToken);
                 if (!pageResult.Items.Any())
                 {
-                    return res.SetError(nameof(E008), string.Format(E008, "Owner properties"));
+                    return res.SetError(nameof(E008), string.Format(E008, "Properties"));
                 }
 
                 foreach (var property in pageResult.Items)

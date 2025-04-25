@@ -29,4 +29,15 @@ public class PropertyController(IMediator mediator) : BaseController(mediator)
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpGet("{id}"), Authorize]
+    public async Task<IActionResult> GetPropertyDetails([FromRoute] Guid id)
+    {
+        var request = new GetPropertyDetailsRequest
+        {
+            Id = id
+        };
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }

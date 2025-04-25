@@ -1,6 +1,7 @@
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '@/lib/constant';
 import { getCookie, removeCookie, setCookie } from '@/lib/cookies';
 import { environment } from '@/lib/environment';
+import { RefreshTokenRequest } from '@/types/request/identity-request';
 import { ApiResponse } from '@/types/response/base-response';
 import { Token } from '@/types/response/identity-response';
 import axios, {
@@ -202,16 +203,21 @@ export default class BaseService {
         throw new Error('No refresh token available');
       }
 
-      const response = await this.instance.post<unknown, ApiResponse<Token>>(ROUTES.REFRESH_TOKEN, {
-        accessToken,
-        refreshToken,
-      });
+      const response = await axios
+        .create({
+          baseURL: environment.identityServiceApi + '/api/',
+          timeout: this.TIME_OUT,
+        })
+        .post<RefreshTokenRequest, AxiosResponse<ApiResponse<Token>>>(ROUTES.REFRESH_TOKEN, {
+          accessToken,
+          refreshToken,
+        });
 
-      if (!response.succeeded) {
-        throw new Error(response.message || 'Failed to refresh token');
+      if (!response || response.status !== 200 || !response.data || !response.data.succeeded) {
+        throw new Error(response.data.message || 'Failed to refresh token');
       }
 
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
 
       setCookie(ACCESS_TOKEN_NAME, newAccessToken);
       setCookie(REFRESH_TOKEN_NAME, newRefreshToken);
@@ -297,7 +303,6 @@ export default class BaseService {
 
       originalConfig._retry = true;
       this.setRefreshingState(true);
-
       try {
         // Refresh the token
         const newAccessToken = await this.refreshAuthToken();

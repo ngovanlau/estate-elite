@@ -1,23 +1,19 @@
 import { Eye, Heart, MapPin } from 'lucide-react';
 import { LISTING_TYPE } from '@/lib/enum';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { formatPrice } from '@/lib/utils';
 import { Property } from '@/types/response/property-response';
+import { useRouter } from 'next/navigation';
 
 type PropertyCardProps = {
   property: Property;
 };
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
+  const router = useRouter();
+
   const listingTypeMap = {
     [LISTING_TYPE.SALE]: (
       <span className="rounded bg-amber-600 px-2.5 py-1 text-xs font-medium text-white">Thuê</span>
@@ -27,8 +23,15 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     ),
   };
 
+  const handlePropertyClick = () => {
+    router.push(`/properties/${property.id}`);
+  };
+
   return (
-    <Card className="group overflow-hidden pt-0 transition-shadow duration-300 hover:shadow-lg">
+    <Card
+      onClick={handlePropertyClick}
+      className="group cursor-pointer overflow-hidden pt-0 transition-shadow duration-300 hover:shadow-lg"
+    >
       <div className="relative">
         <div className="aspect-video overflow-hidden rounded-t-lg bg-slate-200">
           <Image
@@ -78,14 +81,6 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Button
-          variant="default"
-          className="w-full"
-        >
-          Xem chi tiết
-        </Button>
-      </CardFooter>
     </Card>
   );
 };

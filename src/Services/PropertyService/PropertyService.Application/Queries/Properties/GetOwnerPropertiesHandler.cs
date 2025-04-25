@@ -31,11 +31,11 @@ public class GetOwnerPropertiesHandler(
             }
             var ownerId = currentUserService.Id.Value;
 
-            var cacheKey = CacheKeys.ForQuery<Property, PageResult<OwnerPropertyDto>>(request);
+            var cacheKey = CacheKeys.ForDtoCollection<Property, OwnerPropertyDto>(request.PageNumber.ToString());
             var (success, pageResult) = await cache.TryGetValueAsync<PageResult<OwnerPropertyDto>>(cacheKey, cancellationToken);
             if (!success || pageResult is null || !pageResult.Items.Any())
             {
-                pageResult = await repository.GetOwnerPropertyDtosAsync(ownerId, request.PageSize, request.LastEntityId, cancellationToken);
+                pageResult = await repository.GetOwnerPropertyDtosAsync(ownerId, request.PageSize, request.PageNumber, cancellationToken);
                 if (!pageResult.Items.Any())
                 {
                     return res.SetError(nameof(E008), string.Format(E008, "Owner properties"));

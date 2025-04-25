@@ -16,7 +16,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "Dual Mode",
+			"launchSettingsProfile": "gRPC (HTTP/2)",
 			"launchBrowser": {
 				"enabled": true
 			}
@@ -36,7 +36,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "Dual Mode",
+			"launchSettingsProfile": "gRPC (HTTP/2)",
 			"launchBrowser": {
 				"enabled": true
 			}

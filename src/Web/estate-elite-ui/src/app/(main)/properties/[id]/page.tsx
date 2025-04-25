@@ -1,48 +1,48 @@
-// src/app/(main)/properties/[id]/page.tsx
-import { PropertyDetails } from './_components/property-details';
+'use client';
 
-export default async function PropertyDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id: slug } = await params;
+import { useEffect, useState } from 'react';
+import { PropertyDetails as PropertyDetailsType } from '@/types/response/property-response';
+import propertyService from '@/services/property-service';
+import toast from 'react-hot-toast';
+import { useParams } from 'next/navigation';
+import { PropertyInfoDetails } from './_components/property-info-details';
 
-  const propertyData = {
-    id: slug,
-    title: 'Căn hộ cao cấp tại trung tâm Quận 1',
-    address: 'Đường Nguyễn Huệ, Quận 1, TP. HCM',
-    price: 5500000000,
-    description: `Căn hộ cao cấp với thiết kế hiện đại, view toàn cảnh thành phố. Tọa lạc tại vị trí đắc địa ngay trung tâm Quận 1, thuận tiện di chuyển đến các điểm giải trí, mua sắm và ăn uống.
-Căn hộ được thiết kế với không gian mở, tối ưu ánh sáng tự nhiên. Các phòng đều được trang bị nội thất cao cấp, thiết bị điện tử hiện đại đến từ các thương hiệu hàng đầu.
-Khu căn hộ được trang bị đầy đủ tiện ích như: hồ bơi, phòng gym, spa, khu vui chơi trẻ em, nhà hàng, siêu thị, và bảo vệ 24/7.`,
-    images: [
-      '/api/placeholder/800/600',
-      '/api/placeholder/800/600',
-      '/api/placeholder/800/600',
-      '/api/placeholder/800/600',
-      '/api/placeholder/800/600',
-    ],
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 120,
-    features: [
-      'Ban công rộng',
-      'Bếp hiện đại',
-      'Sàn gỗ cao cấp',
-      'Tủ âm tường',
-      'Máy lạnh trung tâm',
-      'Hệ thống an ninh',
-      'Cửa sổ kính cường lực',
-      'Nội thất cao cấp',
-      'Bãi đậu xe riêng',
-      'Thang máy tốc độ cao',
-      'Smart home',
-      'Lối đi riêng',
-    ],
-    type: 'sale' as const,
-    yearBuilt: 2022,
-    agentName: 'Nguyễn Văn A',
-    agentPhone: '0123456789',
-    agentEmail: 'nguyenvana@example.com',
-    agentPhoto: '/api/placeholder/150/150',
+export default function PropertyDetailPage() {
+  const params = useParams();
+  const slug = params.id as string;
+  const [propertyDetails, setPropertyDetails] = useState<PropertyDetailsType | undefined>();
+  const [loading, setLoading] = useState(true);
+
+  const fetchPropertyDetails = async (propertySlug: string) => {
+    try {
+      setLoading(true);
+      const response = await propertyService.getPropertyDetails(propertySlug);
+      if (!response.succeeded) {
+        toast.error('Không tìm thấy bất động sản này');
+        throw new Error('Property not found');
+      }
+
+      setPropertyDetails(response.data);
+    } catch (error) {
+      console.error('Error fetching property details:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return <PropertyDetails {...propertyData} />;
+  useEffect(() => {
+    if (slug) {
+      fetchPropertyDetails(slug);
+    }
+  }, [slug]);
+
+  if (loading) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+  }
+
+  if (!propertyDetails) {
+    return <div className="flex min-h-screen items-center justify-center">Property not found</div>;
+  }
+
+  return <PropertyInfoDetails details={propertyDetails} />;
 }

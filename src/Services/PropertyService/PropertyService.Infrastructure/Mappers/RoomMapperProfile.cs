@@ -1,6 +1,6 @@
 using AutoMapper;
-using PropertyService.Domain.Entities;
 using PropertyService.Application.Dtos.Rooms;
+using PropertyService.Domain.Entities;
 
 namespace PropertyService.Infrastructure.Mappers;
 

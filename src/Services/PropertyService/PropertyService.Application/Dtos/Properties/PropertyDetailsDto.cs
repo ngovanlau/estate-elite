@@ -1,0 +1,52 @@
+using SharedKernel.Commons;
+using SharedKernel.Enums;
+using System.Text.Json.Serialization;
+
+namespace PropertyService.Application.Dtos.Properties;
+
+public class PropertyDetailsDto
+{
+    public required Guid Id { get; set; }
+    public required string Title { get; set; }
+    public required string Address { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ListingType ListingType { get; set; }
+
+    public decimal Price { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public CurrencyUnit CurrencyUnit { get; set; }
+
+    public required string Type { get; set; }
+    public decimal Area { get; set; }
+    public List<string> Images { get; set; } = [];
+
+    [JsonIgnore]
+    public Guid OwnerId { get; set; }
+
+    public required OwnerDto Owner { get; set; }
+    public List<RoomDetailsDto> Rooms { get; set; } = [];
+    public List<string> Utilities { get; set; } = [];
+    public string? Description { get; set; }
+
+    [JsonConverter(typeof(UtcDateTimeConverter))]
+    public DateTime BuildDate { get; set; }
+}
+
+public sealed record OwnerDto
+{
+    public Guid Id { get; set; }
+    public required string FullName { get; set; }
+    public required string Email { get; set; }
+    public string? Avatar { get; set; }
+    public string? Phone { get; set; }
+    public string? CompanyName { get; set; }
+
+}
+
+public sealed record RoomDetailsDto
+{
+    public required string Name { get; set; }
+    public int Quantity { get; set; }
+}

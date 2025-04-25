@@ -4,6 +4,7 @@ import { ApiResponse, PageApiResponse } from '@/types/response/base-response';
 import {
   OwnerProperty,
   Property,
+  PropertyDetails,
   PropertyType,
   Room,
   Utility,
@@ -49,7 +50,7 @@ class PropertyService extends BaseService {
 
     // Append danh sách phòng
     if (request.rooms) {
-      formData.append('rooms', JSON.stringify(request.rooms));
+      formData.append('rooms', JSON.stringify(request.rooms.filter((room) => room.quantity > 0)));
     }
 
     // Append utilityIds (nhiều giá trị cùng key)
@@ -69,7 +70,7 @@ class PropertyService extends BaseService {
     });
   };
 
-  public getOwnerProperties = (request: PageRequest): Promise<ApiResponse<OwnerProperty[]>> => {
+  public getOwnerProperties = (request: PageRequest): Promise<PageApiResponse<OwnerProperty[]>> => {
     let url = `/property/owner?pageSize=${request.pageSize}&pageNumber=${request.pageNumber}`;
     if (request.lastEntityId) {
       url += `&lastEntityId=${request.lastEntityId}`;
@@ -83,6 +84,10 @@ class PropertyService extends BaseService {
       url += `&lastEntityId=${request.lastEntityId}`;
     }
     return this.instance.get(url);
+  };
+
+  public getPropertyDetails = (id: string): Promise<ApiResponse<PropertyDetails>> => {
+    return this.instance.get(`/property/${id}`);
   };
 }
 

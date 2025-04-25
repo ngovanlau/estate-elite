@@ -23,17 +23,28 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
     }
 
     // Keyset Pagination
-    public async Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
+    public async Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, int pageNumber, CancellationToken cancellationToken = default)
     {
-        return await GetPaginatedPropertyDtosAsync<OwnerPropertyDto>(
-            query => query.Where(p => p.OwnerId == ownerId),
-            pageSize,
-            lastPropertyId,
-            cancellationToken);
+        var query = context.Available<Property>(false).Where(p => p.OwnerId == ownerId);
+
+        var totalRecords = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .OrderByDescending(p => p.CreatedOn)
+            .Skip(pageNumber - 1)
+            .Take(pageSize)
+            .ProjectTo<OwnerPropertyDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+
+        return new PageResult<OwnerPropertyDto>
+        {
+            Items = items,
+            TotalRecords = totalRecords
+        };
     }
 
     // Keyset Pagination
-    public async Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
+    public async Task<PageResult<PropertyDto>> GetDtoByIdAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
     {
         return await GetPaginatedPropertyDtosAsync<PropertyDto>(
            query => query.Where(p => p.Status == PropertyStatus.Active),
