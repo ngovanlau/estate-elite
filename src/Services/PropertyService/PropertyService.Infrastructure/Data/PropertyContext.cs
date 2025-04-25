@@ -361,5 +361,39 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             // Index
             entity.HasIndex(e => e.Name);
         });
+
+        modelBuilder.Entity<PropertyRental>(entity =>
+        {
+            // Table name
+            entity.ToTable("PropertyRentals");
+
+            // Audit properties (assuming these are in AuditableEntity)
+            entity.ConfigureAuditProperties();
+
+            // Configure required properties
+            entity.Property(e => e.UserId)
+                .IsRequired();
+
+            entity.Property(e => e.StartDate)
+                .IsRequired();
+
+            entity.Property(e => e.EndDate)
+                .IsRequired();
+
+            entity.Property(e => e.PropertyId)
+                .IsRequired();
+
+            // Configure required relationships
+            entity.HasOne(e => e.Property)
+                .WithMany()
+                .HasForeignKey(e => e.PropertyId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Index
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.PropertyId);
+            entity.HasIndex(e => new { e.StartDate, e.EndDate });
+        });
     }
 }

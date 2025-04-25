@@ -1,16 +1,15 @@
-using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
-using PropertyService.Application.Mediators;
-using PropertyService.Application.Validates;
-using PropertyService.Infrastructure.Data;
-using PropertyService.Infrastructure.Extensions;
+using PaymentService.Infrastructure.Data;
 using Serilog;
 using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
+using SharedKernel.Settings;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()
@@ -19,47 +18,47 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-    Log.Information("Starting PropertyService microservice");
+    Log.Information("Starting IdentityService microservice");
 
     var builder = WebApplication.CreateBuilder(args);
     var configuration = builder.Configuration;
     var env = builder.Environment;
 
-    // Serilog configuration
-    builder.Host.UseSerilog((context, config) => config
-        .ReadFrom.Configuration(context.Configuration)
-        .Enrich.FromLogContext());
+    // Configure Serilog
+    builder.Host.UseSerilog((context, config) =>
+        config.ReadFrom.Configuration(context.Configuration)
+              .Enrich.FromLogContext());
 
-    // Add services to the container.
-    // Mediator
+    // Configuration Bindings
+    builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
+    builder.Services.Configure<JsonOptions>(options =>
+    {
+        options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+    // Application Services
     builder.Services.AddMediatR(config =>
     {
         config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        // Add mediator
-        config.AddPropertyTypeMediator();
-        config.AddUtilityMediator();
-        config.AddRoomMediator();
-        config.AddPropertyMediator();
+        // config.AddAuthenticatorMediator();
+        // config.AddUserMediator();
     });
 
-    // Controllers
+    // builder.Services.AddValidation();
     builder.Services.AddControllers();
-
-    // Documentation & Monitoring
     builder.Services.AddOpenApiService();
     builder.Services.AddHealthChecks();
 
     // Infrastructure Services
-    builder.Services.AddDistributedService(configuration);
+    // builder.Services.AddDistributedService(configuration);
+    // builder.Services.AddInfrastructureServices(configuration);
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);
-    builder.Services.AddInfrastructureServices(configuration);
-    builder.Services.AddValidation();
 
-    // Register Event Bus and dependencies
+    // Event Bus
     builder.Services.AddEventBusServices(configuration);
 
-    // Security & Traffic Management
+    // Cross-cutting Concerns
     builder.Services.AddCorsService();
     builder.Services.AddRateLimiterService();
 
@@ -83,12 +82,12 @@ try
         else
         {
             // Fallback configuration
-            options.ListenAnyIP(5002, listenOptions =>
+            options.ListenAnyIP(5001, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1;
             });
 
-            options.ListenAnyIP(5102, listenOptions =>
+            options.ListenAnyIP(5101, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                 listenOptions.UseHttps();
@@ -98,20 +97,28 @@ try
 
     var app = builder.Build();
 
+    // Configure middleware pipeline
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+
+        // API Documentation
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Service API v1"));
+    }
+    else
+    {
+        app.UseExceptionHandler("/error");
+        app.UseHsts();
+    }
+
     // Middleware Pipeline
     app.UseMiddleware<SerilogRequestLoggingMiddleware>();
-
-    // API Documentation
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Property Service API v1");
-    });
+    app.UseHttpsRedirection();
 
     // Security & Traffic Management
     app.UseCors("AllowSpecificOrigin");
     app.UseRateLimiter();
-    // app.UseHttpsRedirection(); // Enable when using HTTPS
 
     // Authentication & Authorization
     app.UseAuthentication();
@@ -121,22 +128,23 @@ try
     app.MapControllers();
     app.MapHealthChecks("/health");
 
-    // Apply database migrations and seed data
+    // gRPC Endpoints
+    // app.MapGrpcService<UserGrpcService>();
+
+    // Apply database migrations
     using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<PropertyContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<PaymentContext>();
 
     Log.Information("Applying database migrations...");
     await dbContext.Database.MigrateAsync();
     Log.Information("Database migrations applied successfully");
-
-    await DbInitializer.InitializeAsync(dbContext);
-    Log.Information("Database seeded successfully");
 
     await app.RunAsync();
 }
 catch (Exception ex)
 {
     Log.Fatal(ex, "Host terminated unexpectedly");
+    throw;
 }
 finally
 {
