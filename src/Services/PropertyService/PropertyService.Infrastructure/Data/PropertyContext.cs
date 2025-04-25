@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace PropertyService.Infrastructure.Data;
 
 using Domain.Entities;
+using SharedKernel.Enums;
 using SharedKernel.Extensions;
 
 public class PropertyContext(DbContextOptions<PropertyContext> options) : DbContext(options)
@@ -221,6 +222,7 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
 
             entity.Property(e => e.CurrencyUnit)
                 .IsRequired()
+                .HasDefaultValue(CurrencyUnit.USD)
                 .HasConversion<string>();
 
             entity.Property(e => e.Status)

@@ -13,7 +13,7 @@ public class PropertyProfile : Profile
     {
         CreateMap<CreatePropertyRequest, Property>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => PropertyStatus.Active))
-            .ForMember(dest => dest.CurrencyUnit, opt => opt.MapFrom(_ => CurrencyUnit.VND))
+            .ForMember(dest => dest.CurrencyUnit, opt => opt.MapFrom(_ => CurrencyUnit.USD))
             .ForMember(dest => dest.OwnerId, opt => opt.Ignore())
             .ForMember(dest => dest.AddressId, opt => opt.Ignore())
             .ForMember(dest => dest.Type, opt => opt.Ignore())

@@ -13,7 +13,6 @@ public partial class SellerProfile
 
     // Professional Details
     public string? Biography { get; set; }
-
     public int EstablishedYear { get; set; }
 
     // Verification Status
@@ -25,4 +24,8 @@ public partial class SellerProfile
     public DateTime? ModifiedOn { get; set; }
     public Guid? ModifiedBy { get; set; }
     public bool IsDelete { get; set; }
+
+    public string? PayPalEmail { get; set; }
+    public string? PayPalMerchantId { get; set; }
+    public bool AcceptsPayPal { get; set; }
 }

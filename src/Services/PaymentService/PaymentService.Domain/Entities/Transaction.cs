@@ -12,4 +12,5 @@ public class Transaction : AuditableEntity
     public PaymentMethod PaymentMethod { get; set; }
     public Guid UserId { get; set; }
     public Guid PropertyId { get; set; }
+    public required string OrderId { get; set; }
 }
