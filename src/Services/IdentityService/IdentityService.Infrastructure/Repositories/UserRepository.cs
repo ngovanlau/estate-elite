@@ -12,7 +12,7 @@ using IdentityService.Application.Interfaces;
 using SharedKernel.Extensions;
 using SharedKernel.Implements;
 
-public class UserRepository(IdentityContext context, IMapper mapper) : Repository<User>(context), IUserRepository
+public class UserRepository(IdentityContext context, IMapper mapper) : Repository<User>(context, mapper), IUserRepository
 {
     public async Task<bool> AddAsync(User user, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class UserRepository(IdentityContext context, IMapper mapper) : Repositor
             .Where(u => (!string.IsNullOrWhiteSpace(username) && u.Username == username) ||
                         (!string.IsNullOrWhiteSpace(email) && u.Email == email));
 
-        return await query.ProjectTo<UserDto>(mapper.ConfigurationProvider)
+        return await query.ProjectTo<UserDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -58,7 +58,7 @@ public class UserRepository(IdentityContext context, IMapper mapper) : Repositor
         return await context.Available<User>(false)
             .Include(u => u.SellerProfile)
             .Where(u => u.Id == userId)
-            .ProjectTo<CurrentUserDto>(mapper.ConfigurationProvider)
+            .ProjectTo<CurrentUserDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }
 }

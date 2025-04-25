@@ -12,7 +12,7 @@ using SharedKernel.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 
-public class PropertyRepository(PropertyContext context, IMapper mapper) : Repository<Property>(context), IPropertyRepository
+public class PropertyRepository(PropertyContext context, IMapper mapper) : Repository<Property>(context, mapper), IPropertyRepository
 {
     private sealed record LastPropertyInfo(Guid Id, DateTime CreatedOn);
 
@@ -69,7 +69,7 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
             .OrderByDescending(p => p.CreatedOn)
             .ThenBy(p => p.Id)  // Đảm bảo thứ tự nhất quán khi CreatedOn giống nhau
             .Take(pageSize)
-            .ProjectTo<TDto>(mapper.ConfigurationProvider)
+            .ProjectTo<TDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return new PageResult<TDto>

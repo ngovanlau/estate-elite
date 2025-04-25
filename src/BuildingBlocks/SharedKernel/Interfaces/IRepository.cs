@@ -12,6 +12,5 @@ public interface IRepository<T> where T : AuditableEntity
 
     Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
     Task<ITransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default);
-
 }
 

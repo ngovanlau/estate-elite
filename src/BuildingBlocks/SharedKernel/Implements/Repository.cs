@@ -11,6 +11,7 @@ namespace SharedKernel.Implements;
 public abstract class Repository<T>(DbContext context, IMapper mapper) : IRepository<T> where T : AuditableEntity
 {
     private readonly DbSet<T> _dbSet = context.Set<T>();
+    protected readonly IMapper _mapper = mapper;
 
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -45,7 +46,7 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
     {
         return await context.Available<T>(false)
             .Where(p => p.Id == id)
-            .ProjectTo<TDto>(mapper.ConfigurationProvider)
+            .ProjectTo<TDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }
 }

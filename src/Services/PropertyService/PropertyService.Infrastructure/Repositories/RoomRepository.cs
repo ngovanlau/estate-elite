@@ -1,23 +1,23 @@
-using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using PropertyService.Application.Dtos.Rooms;
+using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
 using SharedKernel.Extensions;
-using PropertyService.Application.Dtos.Rooms;
 using SharedKernel.Implements;
-using PropertyService.Application.Interfaces;
 
 namespace PropertyService.Infrastructure.Repositories;
 
 public class RoomRepository(
     PropertyContext context,
-    IMapper mapper) : Repository<Room>(context), IRoomRepository
+    IMapper mapper) : Repository<Room>(context, mapper), IRoomRepository
 {
     public async Task<List<RoomDto>> GetAllRoomDtoAsync(CancellationToken cancellationToken)
     {
         return await context.Available<Room>(false)
-            .ProjectTo<RoomDto>(mapper.ConfigurationProvider)
+            .ProjectTo<RoomDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }
 

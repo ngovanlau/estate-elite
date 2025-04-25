@@ -12,12 +12,12 @@ namespace PropertyService.Infrastructure.Repositories;
 
 public class PropertyTypeRepository(
     PropertyContext context,
-    IMapper mapper) : Repository<PropertyType>(context), IPropertyTypeRepository
+    IMapper mapper) : Repository<PropertyType>(context, mapper), IPropertyTypeRepository
 {
     public async Task<List<PropertyTypeDto>> GetAllPropertyTypeDtoAsync(CancellationToken cancellationToken)
     {
         return await context.Available<PropertyType>(false)
-            .ProjectTo<PropertyTypeDto>(mapper.ConfigurationProvider)
+            .ProjectTo<PropertyTypeDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }
 }
