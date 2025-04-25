@@ -18,6 +18,8 @@ public class UserMapperProfile : Profile
 
         CreateMap<User, GetUserResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
+            .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone + ""))
+            .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar + ""))
             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.SellerProfile != null ? src.SellerProfile.CompanyName : ""));
     }
 }

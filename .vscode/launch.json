@@ -16,7 +16,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "http",
+			"launchSettingsProfile": "Dual Mode",
 			"launchBrowser": {
 				"enabled": true
 			}
@@ -36,7 +36,27 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "http",
+			"launchSettingsProfile": "Dual Mode",
+			"launchBrowser": {
+				"enabled": true
+			}
+		},
+		{
+			"name": "FunctionalService - Debug",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build-functional",
+			"program": "${workspaceFolder}/src/Services/FunctionalService/bin/Debug/net9.0/FunctionalService.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/Services/FunctionalService",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			},
+			"launchSettingsProfile": "https",
 			"launchBrowser": {
 				"enabled": true
 			}

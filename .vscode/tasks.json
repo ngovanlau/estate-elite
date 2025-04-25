@@ -8,7 +8,8 @@
 			"args": [
 				"build",
 				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj",
-				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj"
+				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj",
+				"${workspaceFolder}/src/Services/FunctionalService/FunctionalService.API.csproj"
 			],
 			"problemMatcher": "$msCompile",
 			"group": {
@@ -22,7 +23,7 @@
 			"command": "dotnet",
 			"args": [
 				"build",
-				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj"
+				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.csproj"
 			],
 			"problemMatcher": "$msCompile"
 		},
@@ -33,6 +34,16 @@
 			"args": [
 				"build",
 				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "build-functional",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/src/Services/FunctionalService/FunctionalService.csproj"
 			],
 			"problemMatcher": "$msCompile"
 		}

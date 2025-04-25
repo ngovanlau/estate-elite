@@ -1,5 +1,6 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Mediators;
 using PropertyService.Application.Validates;
@@ -59,6 +60,39 @@ try
     // Security & Traffic Management
     builder.Services.AddCorsService();
     builder.Services.AddRateLimiterService();
+
+    // gRPC Configuration
+    //builder.Services.AddGrpc(options =>
+    //{
+    //    options.EnableDetailedErrors = env.IsDevelopment();
+    //    options.Interceptors.Add<GrpcExceptionInterceptor>();
+    //    options.MaxReceiveMessageSize = 16 * 1024 * 1024; // 16 MB
+    //});
+
+    // Kestrel Configuration
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        // Explicitly configure endpoints based on configuration
+        var kestrelSection = configuration.GetSection("Kestrel:Endpoints");
+        if (kestrelSection.Exists())
+        {
+            options.Configure(kestrelSection);
+        }
+        else
+        {
+            // Fallback configuration
+            options.ListenAnyIP(5001, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1;
+            });
+
+            options.ListenAnyIP(5101, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                listenOptions.UseHttps();
+            });
+        }
+    });
 
     var app = builder.Build();
 

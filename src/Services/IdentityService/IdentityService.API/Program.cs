@@ -1,4 +1,4 @@
-using DistributedCache.Redis.Extensions;
+﻿using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using IdentityService.Application.Mediators;
 using IdentityService.Application.Protos;
@@ -27,6 +27,7 @@ try
 
     var builder = WebApplication.CreateBuilder(args);
     var configuration = builder.Configuration;
+    var env = builder.Environment;
 
     // Configure Serilog
     builder.Host.UseSerilog((context, config) =>
@@ -69,41 +70,60 @@ try
     // gRPC Configuration
     builder.Services.AddGrpc(options =>
     {
-        options.EnableDetailedErrors = true;
+        options.EnableDetailedErrors = env.IsDevelopment();
         options.Interceptors.Add<GrpcExceptionInterceptor>();
+        options.MaxReceiveMessageSize = 16 * 1024 * 1024; // 16 MB
     });
 
     // Kestrel Configuration
     builder.WebHost.ConfigureKestrel(options =>
     {
-        options.ListenAnyIP(5000, listenOptions =>
+        // Explicitly configure endpoints based on configuration
+        var kestrelSection = configuration.GetSection("Kestrel:Endpoints");
+        if (kestrelSection.Exists())
         {
-            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-        });
+            options.Configure(kestrelSection);
+        }
+        else
+        {
+            // Fallback configuration
+            options.ListenAnyIP(5001, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1;
+            });
 
-        options.ListenAnyIP(5101, listenOptions =>
-        {
-            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-            listenOptions.UseHttps();
-        });
+            options.ListenAnyIP(5101, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                listenOptions.UseHttps();
+            });
+        }
     });
 
     var app = builder.Build();
 
-    // gRPC Endpoints
-    app.MapGrpcService<UserGrpcService>();
+    // Configure middleware pipeline
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+
+        // API Documentation
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Service API v1"));
+    }
+    else
+    {
+        app.UseExceptionHandler("/error");
+        app.UseHsts();
+    }
 
     // Middleware Pipeline
     app.UseMiddleware<SerilogRequestLoggingMiddleware>();
-
-    // API Documentation
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Service API v1"));
+    app.UseHttpsRedirection();
 
     // Security & Traffic Management
     app.UseCors("AllowSpecificOrigin");
     app.UseRateLimiter();
-    // app.UseHttpsRedirection(); // Enable for HTTPS
 
     // Authentication & Authorization
     app.UseAuthentication();
@@ -112,6 +132,9 @@ try
     // Endpoints
     app.MapControllers();
     app.MapHealthChecks("/health");
+
+    // gRPC Endpoints
+    app.MapGrpcService<UserGrpcService>();
 
     // Apply database migrations
     using var scope = app.Services.CreateScope();
