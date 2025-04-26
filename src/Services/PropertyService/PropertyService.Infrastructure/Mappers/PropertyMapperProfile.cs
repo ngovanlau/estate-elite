@@ -49,7 +49,7 @@ public class PropertyProfile : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.ListingType, opt => opt.MapFrom(src => src.ListingType.ToString()))
             .ForMember(dest => dest.RentPeriod, opt => opt.MapFrom(src => src.RentPeriod != null ? src.RentPeriod.ToString() : string.Empty))
-            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price.ToString("F2")))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
             .ForMember(dest => dest.CurrencyUnit, opt => opt.MapFrom(src => src.CurrencyUnit.ToString()))
             .ForMember(dest => dest.OwnerId, opt => opt.MapFrom(src => src.OwnerId.ToString()));
     }

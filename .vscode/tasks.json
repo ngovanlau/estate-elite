@@ -46,6 +46,51 @@
 				"${workspaceFolder}/src/Services/FunctionalService/FunctionalService.csproj"
 			],
 			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "run-identity",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj",
+				"--launch-profile",
+				"all"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "run-property",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj",
+				"--launch-profile",
+				"all"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "run-functional",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/src/Services/FunctionalService/FunctionalService.csproj",
+				"--launch-profile",
+				"https"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "run-all",
+			"dependsOn": ["run-identity", "run-property", "run-functional"],
+			"dependsOrder": "parallel",
+			"problemMatcher": "$msCompile"
 		}
 	]
 }

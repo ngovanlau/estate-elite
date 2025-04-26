@@ -54,7 +54,7 @@ try
     app.MapHealthChecks("/health");
 
     // HTTPS Redirection (currently disabled)
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
 
     Log.Information("FunctionalService started successfully");
     await app.RunAsync();

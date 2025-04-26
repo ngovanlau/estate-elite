@@ -16,7 +16,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "https",
+			"launchSettingsProfile": "all",
 			"launchBrowser": {
 				"enabled": true
 			}
@@ -36,7 +36,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "https",
+			"launchSettingsProfile": "all",
 			"launchBrowser": {
 				"enabled": true
 			}

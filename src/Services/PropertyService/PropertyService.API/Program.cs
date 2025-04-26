@@ -98,20 +98,28 @@ try
 
     var app = builder.Build();
 
+    // Configure middleware pipeline
+    if (env.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+
+        // API Documentation
+        app.UseSwagger();
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Service API v1"));
+    }
+    else
+    {
+        app.UseExceptionHandler("/error");
+        app.UseHsts();
+    }
+
     // Middleware Pipeline
     app.UseMiddleware<SerilogRequestLoggingMiddleware>();
 
-    // API Documentation
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Property Service API v1");
-    });
-
     // Security & Traffic Management
-    app.UseCors("AllowSpecificOrigin");
+    app.UseCors("AllowAll");
     app.UseRateLimiter();
-    // app.UseHttpsRedirection(); // Enable when using HTTPS
+    // app.UseHttpsRedirection();
 
     // Authentication & Authorization
     app.UseAuthentication();

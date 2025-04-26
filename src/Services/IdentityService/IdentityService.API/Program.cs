@@ -1,7 +1,7 @@
 ﻿using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
-using IdentityService.Application.Grpc;
 using IdentityService.Application.Mediators;
+using IdentityService.Application.Protos;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.Json;
@@ -48,7 +48,7 @@ try
         config.AddUserMediator();
     });
 
-    builder.Services.AddValidation(Assembly.Load("Identity.Application"));
+    builder.Services.AddValidation(Assembly.Load("IdentityService.Application"));
     builder.Services.AddControllers();
     builder.Services.AddOpenApiService();
     builder.Services.AddHealthChecks();
@@ -118,11 +118,11 @@ try
 
     // Middleware Pipeline
     app.UseMiddleware<SerilogRequestLoggingMiddleware>();
-    app.UseHttpsRedirection();
 
     // Security & Traffic Management
-    app.UseCors("AllowSpecificOrigin");
+    app.UseCors("AllowAll");
     app.UseRateLimiter();
+    // app.UseHttpsRedirection();
 
     // Authentication & Authorization
     app.UseAuthentication();

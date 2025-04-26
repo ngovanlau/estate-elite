@@ -57,7 +57,7 @@ try
     builder.Services.AddInfrastructureServices(configuration);
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);
-    builder.Services.AddValidation(Assembly.Load("Payment.Application"));
+    builder.Services.AddValidation(Assembly.Load("PaymentService.Application"));
 
     // Event Bus
     builder.Services.AddEventBusServices(configuration);
@@ -118,11 +118,11 @@ try
 
     // Middleware Pipeline
     app.UseMiddleware<SerilogRequestLoggingMiddleware>();
-    app.UseHttpsRedirection();
 
     // Security & Traffic Management
-    app.UseCors("AllowSpecificOrigin");
+    app.UseCors("AllowAll");
     app.UseRateLimiter();
+    // app.UseHttpsRedirection();
 
     // Authentication & Authorization
     app.UseAuthentication();
