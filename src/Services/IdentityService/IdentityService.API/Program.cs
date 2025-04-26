@@ -1,8 +1,7 @@
 ﻿using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
+using IdentityService.Application.Grpc;
 using IdentityService.Application.Mediators;
-using IdentityService.Application.Protos;
-using IdentityService.Application.Validates;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.Json;
@@ -49,7 +48,7 @@ try
         config.AddUserMediator();
     });
 
-    builder.Services.AddValidation();
+    builder.Services.AddValidation(Assembly.Load("Identity.Application"));
     builder.Services.AddControllers();
     builder.Services.AddOpenApiService();
     builder.Services.AddHealthChecks();

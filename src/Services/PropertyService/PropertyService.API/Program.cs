@@ -3,7 +3,7 @@ using EventBus.RabbitMQ.Extensions;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Mediators;
-using PropertyService.Application.Validates;
+using PropertyService.Application.Protos;
 using PropertyService.Infrastructure.Data;
 using PropertyService.Infrastructure.Extensions;
 using Serilog;
@@ -54,7 +54,7 @@ try
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);
     builder.Services.AddInfrastructureServices(configuration);
-    builder.Services.AddValidation();
+    builder.Services.AddValidation(Assembly.Load("PropertyService.Application"));
 
     // Register Event Bus and dependencies
     builder.Services.AddEventBusServices(configuration);
@@ -120,6 +120,9 @@ try
     // Endpoints
     app.MapControllers();
     app.MapHealthChecks("/health");
+
+    // gRPC Endpoints
+    app.MapGrpcService<PropertyGrpcService>();
 
     // Apply database migrations and seed data
     using var scope = app.Services.CreateScope();

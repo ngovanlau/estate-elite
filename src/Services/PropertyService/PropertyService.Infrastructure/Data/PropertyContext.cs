@@ -323,12 +323,12 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
 
             // Relationships
             entity.HasOne(e => e.Property)
-                .WithMany()
+                .WithMany(p => p.PropertyRooms)
                 .HasForeignKey(e => e.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Room)
-                .WithMany()
+                .WithMany(p => p.PropertyRooms)
                 .HasForeignKey(e => e.RoomId)
                 .OnDelete(DeleteBehavior.Cascade);
         });

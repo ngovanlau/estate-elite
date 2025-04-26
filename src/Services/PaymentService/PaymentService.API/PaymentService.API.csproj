@@ -13,9 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
-    <ProjectReference Include="../PaymentService.Infrastructure/PaymentService.Infrastructure.csproj" />
+    <ProjectReference
+      Include="../PaymentService.Infrastructure/PaymentService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

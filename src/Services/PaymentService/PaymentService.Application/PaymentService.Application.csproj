@@ -14,12 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Requests/" />
-    <Folder Include="Requests/Transaction/" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
+    <ProjectReference Include="../PaymentService.Domain/PaymentService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

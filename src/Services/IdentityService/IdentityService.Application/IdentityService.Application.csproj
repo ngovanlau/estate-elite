@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
-    <ProjectReference Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
+    <ProjectReference
+      Include="../../PaymentService/PaymentService.Domain/PaymentService.Domain.csproj" />
     <ProjectReference Include="..\..\..\BuildingBlocks\SharedKernel\SharedKernel.csproj" />
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
   </ItemGroup>
@@ -21,7 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/*.proto" GrpcServices="Server" ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/user_service.proto"
+      GrpcServices="Server"
+      ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
   </ItemGroup>
 
 </Project>

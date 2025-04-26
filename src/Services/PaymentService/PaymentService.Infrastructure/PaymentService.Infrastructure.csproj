@@ -25,4 +25,8 @@
     <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/*.proto" GrpcServices="Client" ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions/" />
+  </ItemGroup>
+
 </Project>

@@ -33,13 +33,13 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
     public async Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-        return new Transaction(transaction);
+        return new DbTransaction(transaction);
     }
 
     public async Task<ITransaction> BeginTransactionAsync(IsolationLevel isolationLevel, CancellationToken cancellationToken = default)
     {
         var transaction = await context.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
-        return new Transaction(transaction);
+        return new DbTransaction(transaction);
     }
 
     public async Task<TDto?> GetDtoByIdAsync<TDto>(Guid id, CancellationToken cancellationToken = default) where TDto : class

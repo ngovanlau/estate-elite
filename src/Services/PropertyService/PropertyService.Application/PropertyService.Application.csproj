@@ -14,13 +14,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
     <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
     <ProjectReference Include="../PropertyService.Domain/PropertyService.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/*.proto" GrpcServices="Client" ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/user_service.proto"
+      GrpcServices="Client"
+      ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/property_service.proto"
+      GrpcServices="Server"
+      ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,11 @@
+using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using PaymentService.Application.Mediators;
 using PaymentService.Infrastructure.Data;
+using PaymentService.Infrastructure.Extensions;
 using Serilog;
 using SharedKernel.Commons;
 using SharedKernel.Extensions;
@@ -40,8 +43,8 @@ try
     builder.Services.AddMediatR(config =>
     {
         config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        // config.AddAuthenticatorMediator();
-        // config.AddUserMediator();
+
+        config.AddTransactionMediator();
     });
 
     // builder.Services.AddValidation();
@@ -50,10 +53,11 @@ try
     builder.Services.AddHealthChecks();
 
     // Infrastructure Services
-    // builder.Services.AddDistributedService(configuration);
-    // builder.Services.AddInfrastructureServices(configuration);
+    builder.Services.AddDistributedService(configuration);
+    builder.Services.AddInfrastructureServices(configuration);
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);
+    builder.Services.AddValidation(Assembly.Load("Payment.Application"));
 
     // Event Bus
     builder.Services.AddEventBusServices(configuration);
@@ -82,12 +86,12 @@ try
         else
         {
             // Fallback configuration
-            options.ListenAnyIP(5001, listenOptions =>
+            options.ListenAnyIP(5003, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1;
             });
 
-            options.ListenAnyIP(5101, listenOptions =>
+            options.ListenAnyIP(5103, listenOptions =>
             {
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                 listenOptions.UseHttps();

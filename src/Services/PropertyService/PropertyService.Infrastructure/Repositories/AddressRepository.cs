@@ -6,7 +6,9 @@ using SharedKernel.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 
-public class AddressRepository(PropertyContext context, IMapper mapper) : Repository<Address>(context, mapper), IAddressRepository
+public class AddressRepository(
+    PropertyContext context,
+    IMapper mapper) : Repository<Address>(context, mapper), IAddressRepository
 {
     public async Task<bool> AddAddressAsync(Address address, CancellationToken cancellationToken)
     {

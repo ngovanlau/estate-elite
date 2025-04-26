@@ -14,6 +14,7 @@ public static class ErrorCode
     public const string E009 = "File size must not exceed {0}";
     public const string E010 = "Only image files are allowed (JPG, PNG, GIF, JPEG)";
     public const string E011 = "Failed to add {0}";
+    public const string E012 = "{0} must be greater than {1}";
 
     // Identity service
     public const string E101 = "Username already exists";

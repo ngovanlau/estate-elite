@@ -3,7 +3,7 @@ using SharedKernel.Interfaces;
 
 namespace SharedKernel.Implements;
 
-public class Transaction(IDbContextTransaction transaction) : ITransaction
+public class DbTransaction(IDbContextTransaction transaction) : ITransaction
 {
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
