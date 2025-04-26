@@ -25,8 +25,8 @@ namespace PropertyService.Infrastructure.Migrations
                     District = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Ward = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Details = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    Latitude = table.Column<decimal>(type: "numeric(18,9)", precision: 18, scale: 9, nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(18,9)", precision: 18, scale: 9, nullable: true),
+                    Latitude = table.Column<double>(type: "double precision", precision: 18, scale: 9, nullable: true),
+                    Longitude = table.Column<double>(type: "double precision", precision: 18, scale: 9, nullable: true),
                     GooglePlaceId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
@@ -37,33 +37,6 @@ namespace PropertyService.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                schema: "property",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    HashId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Caption = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    OriginalFilename = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    BucketName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ObjectName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    ContentType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    FileSize = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
-                    IsMain = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    EntityId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                    table.UniqueConstraint("AK_Images_HashId", x => x.HashId);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,7 +102,7 @@ namespace PropertyService.Infrastructure.Migrations
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     DeveloperId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TotalArea = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    TotalArea = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
                     TotalUnits = table.Column<Guid>(type: "uuid", nullable: false),
                     CompletionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
@@ -162,11 +135,11 @@ namespace PropertyService.Infrastructure.Migrations
                     Description = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: false),
                     ListingType = table.Column<string>(type: "text", nullable: false),
                     RentPeriod = table.Column<string>(type: "text", nullable: true),
-                    Area = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
-                    LandArea = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    Area = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
+                    LandArea = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
                     BuildDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
-                    CurrencyUnit = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
+                    CurrencyUnit = table.Column<string>(type: "text", nullable: false, defaultValue: "USD"),
                     Status = table.Column<string>(type: "text", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
                     PropertyTypeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -186,12 +159,82 @@ namespace PropertyService.Infrastructure.Migrations
                         principalSchema: "property",
                         principalTable: "Addresses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Properties_PropertyTypes_PropertyTypeId",
                         column: x => x.PropertyTypeId,
                         principalSchema: "property",
                         principalTable: "PropertyTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                schema: "property",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    HashId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Caption = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    OriginalFilename = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    BucketName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ObjectName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ContentType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    FileSize = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
+                    IsMain = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.UniqueConstraint("AK_Images_HashId", x => x.HashId);
+                    table.ForeignKey(
+                        name: "FK_Images_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalSchema: "property",
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Images_Properties_PropertyId",
+                        column: x => x.PropertyId,
+                        principalSchema: "property",
+                        principalTable: "Properties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PropertyRentals",
+                schema: "property",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ModifiedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: true),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PropertyRentals", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PropertyRentals_Properties_PropertyId",
+                        column: x => x.PropertyId,
+                        principalSchema: "property",
+                        principalTable: "Properties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -221,7 +264,7 @@ namespace PropertyService.Infrastructure.Migrations
                         principalSchema: "property",
                         principalTable: "Rooms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -270,22 +313,28 @@ namespace PropertyService.Infrastructure.Migrations
                 columns: new[] { "Latitude", "Longitude" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Images_EntityId",
-                schema: "property",
-                table: "Images",
-                column: "EntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Images_EntityId_IsMain",
-                schema: "property",
-                table: "Images",
-                columns: new[] { "EntityId", "IsMain" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Images_HashId",
                 schema: "property",
                 table: "Images",
                 column: "HashId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ProjectId",
+                schema: "property",
+                table: "Images",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ProjectId_IsMain",
+                schema: "property",
+                table: "Images",
+                columns: new[] { "ProjectId", "IsMain" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_PropertyId",
+                schema: "property",
+                table: "Images",
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_AddressId",
@@ -366,6 +415,24 @@ namespace PropertyService.Infrastructure.Migrations
                 column: "Title");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PropertyRentals_PropertyId",
+                schema: "property",
+                table: "PropertyRentals",
+                column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropertyRentals_StartDate_EndDate",
+                schema: "property",
+                table: "PropertyRentals",
+                columns: new[] { "StartDate", "EndDate" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropertyRentals_UserId",
+                schema: "property",
+                table: "PropertyRentals",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PropertyRooms_RoomId",
                 schema: "property",
                 table: "PropertyRooms",
@@ -398,7 +465,7 @@ namespace PropertyService.Infrastructure.Migrations
                 schema: "property");
 
             migrationBuilder.DropTable(
-                name: "Projects",
+                name: "PropertyRentals",
                 schema: "property");
 
             migrationBuilder.DropTable(
@@ -407,6 +474,10 @@ namespace PropertyService.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "PropertyUtilities",
+                schema: "property");
+
+            migrationBuilder.DropTable(
+                name: "Projects",
                 schema: "property");
 
             migrationBuilder.DropTable(

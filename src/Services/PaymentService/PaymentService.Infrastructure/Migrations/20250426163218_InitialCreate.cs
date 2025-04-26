@@ -20,12 +20,13 @@ namespace PaymentService.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    Amount = table.Column<double>(type: "double precision", precision: 18, scale: 2, nullable: false),
                     CurrencyUnit = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     PaymentMethod = table.Column<string>(type: "text", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", maxLength: 50, nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),

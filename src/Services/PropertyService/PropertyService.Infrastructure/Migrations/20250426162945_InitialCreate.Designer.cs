@@ -12,8 +12,8 @@ using PropertyService.Infrastructure.Data;
 namespace PropertyService.Infrastructure.Migrations
 {
     [DbContext(typeof(PropertyContext))]
-    [Migration("20250422132716_UpdatePropertyAndProjectTable")]
-    partial class UpdatePropertyAndProjectTable
+    [Migration("20250426162945_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,13 +62,13 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<decimal?>("Latitude")
+                    b.Property<double?>("Latitude")
                         .HasPrecision(18, 9)
-                        .HasColumnType("numeric(18,9)");
+                        .HasColumnType("double precision");
 
-                    b.Property<decimal?>("Longitude")
+                    b.Property<double?>("Longitude")
                         .HasPrecision(18, 9)
-                        .HasColumnType("numeric(18,9)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
@@ -125,12 +125,9 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("FileSize")
+                    b.Property<double>("FileSize")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("HashId")
                         .IsRequired()
@@ -164,15 +161,23 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
+                    b.Property<Guid?>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PropertyId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasAlternateKey("HashId");
 
-                    b.HasIndex("EntityId");
-
                     b.HasIndex("HashId");
 
-                    b.HasIndex("EntityId", "IsMain");
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.HasIndex("ProjectId", "IsMain");
 
                     b.ToTable("Images", "property");
                 });
@@ -225,9 +230,9 @@ namespace PropertyService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("TotalArea")
+                    b.Property<double>("TotalArea")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("TotalUnits")
                         .HasColumnType("uuid");
@@ -256,9 +261,9 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("AddressId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Area")
+                    b.Property<double>("Area")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime>("BuildDate")
                         .HasColumnType("timestamp with time zone");
@@ -272,7 +277,9 @@ namespace PropertyService.Infrastructure.Migrations
 
                     b.Property<string>("CurrencyUnit")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("USD");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -284,9 +291,9 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<decimal>("LandArea")
+                    b.Property<double>("LandArea")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("ListingType")
                         .IsRequired()
@@ -302,9 +309,9 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Price")
+                    b.Property<double>("Price")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("PropertyTypeId")
                         .HasColumnType("uuid");
@@ -342,6 +349,54 @@ namespace PropertyService.Infrastructure.Migrations
                     b.ToTable("Properties", "property");
                 });
 
+            modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRental", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("StartDate", "EndDate");
+
+                    b.ToTable("PropertyRentals", "property");
+                });
+
             modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRoom", b =>
                 {
                     b.Property<Guid>("PropertyId")
@@ -350,22 +405,12 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PropertyId1")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("RoomId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("PropertyId", "RoomId");
 
-                    b.HasIndex("PropertyId1");
-
                     b.HasIndex("RoomId");
-
-                    b.HasIndex("RoomId1");
 
                     b.ToTable("PropertyRooms", "property");
                 });
@@ -498,15 +543,13 @@ namespace PropertyService.Infrastructure.Migrations
                 {
                     b.HasOne("PropertyService.Domain.Entities.Project", null)
                         .WithMany("Images")
-                        .HasForeignKey("EntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("PropertyService.Domain.Entities.Property", null)
                         .WithMany("Images")
-                        .HasForeignKey("EntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PropertyService.Domain.Entities.Project", b =>
@@ -525,7 +568,7 @@ namespace PropertyService.Infrastructure.Migrations
                     b.HasOne("PropertyService.Domain.Entities.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PropertyService.Domain.Entities.PropertyType", "Type")
@@ -539,27 +582,30 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRoom", b =>
+            modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRental", b =>
                 {
                     b.HasOne("PropertyService.Domain.Entities.Property", "Property")
                         .WithMany()
                         .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PropertyService.Domain.Entities.Property", null)
-                        .WithMany("PropertyRooms")
-                        .HasForeignKey("PropertyId1");
-
-                    b.HasOne("PropertyService.Domain.Entities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PropertyService.Domain.Entities.Room", null)
+                    b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRoom", b =>
+                {
+                    b.HasOne("PropertyService.Domain.Entities.Property", "Property")
                         .WithMany("PropertyRooms")
-                        .HasForeignKey("RoomId1");
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PropertyService.Domain.Entities.Room", "Room")
+                        .WithMany("PropertyRooms")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Property");
 

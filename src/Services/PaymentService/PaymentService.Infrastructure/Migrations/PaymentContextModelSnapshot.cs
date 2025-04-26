@@ -29,9 +29,9 @@ namespace PaymentService.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<double>("Amount")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("CreatedBy")
                         .HasMaxLength(50)
@@ -55,6 +55,10 @@ namespace PaymentService.Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()

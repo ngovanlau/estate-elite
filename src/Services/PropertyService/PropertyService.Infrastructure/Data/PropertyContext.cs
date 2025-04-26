@@ -55,7 +55,7 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             entity.Property(e => e.Details)
                 .HasMaxLength(200);
 
-            // Configure decimal properties with precision and scale
+            // Configure double properties with precision and scale
             entity.Property(e => e.Latitude)
                 .HasPrecision(18, 9);
 

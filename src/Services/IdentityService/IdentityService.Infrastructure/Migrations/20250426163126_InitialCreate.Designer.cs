@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityService.Infrastructure.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20250415060959_AddSellerProfile")]
-    partial class AddSellerProfile
+    [Migration("20250426163126_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,11 @@ namespace IdentityService.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("AcceptsPayPal")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Biography")
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
@@ -46,6 +51,10 @@ namespace IdentityService.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EstablishedYear")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Range", new[] { 1900 });
 
                     b.Property<bool>("IsDelete")
                         .ValueGeneratedOnAdd()
@@ -67,6 +76,14 @@ namespace IdentityService.Infrastructure.Migrations
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PayPalEmail")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("PayPalMerchantId")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("ProfessionalLicense")
                         .HasMaxLength(50)

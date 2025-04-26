@@ -20,13 +20,13 @@ public sealed record CreatePropertyRequest : IRequest<ApiResponse>
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RentPeriod? RentPeriod { get; init; }
 
-    public decimal Area { get; init; }
-    public decimal LandArea { get; init; }
+    public double Area { get; init; }
+    public double LandArea { get; init; }
 
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime BuildDate { get; init; }
 
-    public decimal Price { get; init; }
+    public double Price { get; init; }
     public Guid PropertyTypeId { get; init; }
 
     [ModelBinder(BinderType = typeof(JsonModelBinder<AddressDto>))]

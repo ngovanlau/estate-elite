@@ -12,13 +12,13 @@ public class PropertyDto
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ListingType ListingType { get; set; }
 
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public CurrencyUnit CurrencyUnit { get; set; }
 
     public required string Type { get; set; }
-    public decimal Area { get; set; }
+    public double Area { get; set; }
 
     [JsonIgnore]
     public string? ObjectName { get; set; }

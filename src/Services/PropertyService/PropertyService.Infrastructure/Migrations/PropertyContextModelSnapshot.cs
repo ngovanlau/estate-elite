@@ -59,13 +59,13 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<decimal?>("Latitude")
+                    b.Property<double?>("Latitude")
                         .HasPrecision(18, 9)
-                        .HasColumnType("numeric(18,9)");
+                        .HasColumnType("double precision");
 
-                    b.Property<decimal?>("Longitude")
+                    b.Property<double?>("Longitude")
                         .HasPrecision(18, 9)
-                        .HasColumnType("numeric(18,9)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasMaxLength(50)
@@ -122,9 +122,9 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("FileSize")
+                    b.Property<double>("FileSize")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("HashId")
                         .IsRequired()
@@ -227,9 +227,9 @@ namespace PropertyService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("TotalArea")
+                    b.Property<double>("TotalArea")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("TotalUnits")
                         .HasColumnType("uuid");
@@ -258,9 +258,9 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("AddressId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Area")
+                    b.Property<double>("Area")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<DateTime>("BuildDate")
                         .HasColumnType("timestamp with time zone");
@@ -288,9 +288,9 @@ namespace PropertyService.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<decimal>("LandArea")
+                    b.Property<double>("LandArea")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("ListingType")
                         .IsRequired()
@@ -306,9 +306,9 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("Price")
+                    b.Property<double>("Price")
                         .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("PropertyTypeId")
                         .HasColumnType("uuid");
@@ -402,22 +402,12 @@ namespace PropertyService.Infrastructure.Migrations
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PropertyId1")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("RoomId1")
-                        .HasColumnType("uuid");
-
                     b.HasKey("PropertyId", "RoomId");
 
-                    b.HasIndex("PropertyId1");
-
                     b.HasIndex("RoomId");
-
-                    b.HasIndex("RoomId1");
 
                     b.ToTable("PropertyRooms", "property");
                 });
@@ -603,24 +593,16 @@ namespace PropertyService.Infrastructure.Migrations
             modelBuilder.Entity("PropertyService.Domain.Entities.PropertyRoom", b =>
                 {
                     b.HasOne("PropertyService.Domain.Entities.Property", "Property")
-                        .WithMany()
+                        .WithMany("PropertyRooms")
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PropertyService.Domain.Entities.Property", null)
-                        .WithMany("PropertyRooms")
-                        .HasForeignKey("PropertyId1");
-
                     b.HasOne("PropertyService.Domain.Entities.Room", "Room")
-                        .WithMany()
+                        .WithMany("PropertyRooms")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("PropertyService.Domain.Entities.Room", null)
-                        .WithMany("PropertyRooms")
-                        .HasForeignKey("RoomId1");
 
                     b.Navigation("Property");
 

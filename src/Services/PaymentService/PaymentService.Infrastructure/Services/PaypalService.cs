@@ -82,7 +82,7 @@ public class PaypalService : IPaypalService
     }
 
     public async Task<CreateOrderDto> CreateOrderAsync(
-        decimal amount,
+        double amount,
         string propertyTitle,
         CurrencyUnit currencyUnit,
         Guid sellerId,
@@ -126,7 +126,7 @@ public class PaypalService : IPaypalService
     }
 
     private OrderRequest CreateOrderRequest(
-       decimal amount,
+       double amount,
        string propertyTitle,
        CurrencyUnit currencyUnit,
        Guid sellerId,
@@ -155,7 +155,7 @@ public class PaypalService : IPaypalService
                     Amount = new AmountWithBreakdown
                     {
                         CurrencyCode = currencyUnit.ToString(),
-                        MValue = amount.ToString("F2"), // Format to 2 decimal places
+                        MValue = amount.ToString("F2"), // Format to 2 double places
                     }
                 }
             },

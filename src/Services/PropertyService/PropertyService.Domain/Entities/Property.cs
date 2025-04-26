@@ -9,10 +9,10 @@ public class Property : AuditableEntity
     public required string Description { get; set; }
     public ListingType ListingType { get; set; }
     public RentPeriod? RentPeriod { get; set; }
-    public decimal Area { get; set; }
-    public decimal LandArea { get; set; }
+    public double Area { get; set; }
+    public double LandArea { get; set; }
     public DateTime BuildDate { get; set; }
-    public decimal Price { get; set; }
+    public double Price { get; set; }
     public CurrencyUnit CurrencyUnit { get; set; }
     public PropertyStatus Status { get; set; }
     public Guid OwnerId { get; set; }
