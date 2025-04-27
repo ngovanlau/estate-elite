@@ -18,4 +18,16 @@
     <ProjectReference Include="../PaymentService.Domain/PaymentService.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/property_service.proto"
+      GrpcServices="Client"
+      ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos"
+    />
+
+    <Protobuf Include="../../../BuildingBlocks/SharedKernel/Protos/user_service.proto"
+      GrpcServices="Client"
+      ProtoRoot="../../../BuildingBlocks/SharedKernel/Protos"
+    />
+  </ItemGroup>
+
 </Project>

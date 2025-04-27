@@ -1,8 +1,6 @@
 using AutoMapper;
-using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Minio.Exceptions;
 using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
 using PaypalServerSdk.Standard;
@@ -10,7 +8,6 @@ using PaypalServerSdk.Standard.Authentication;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
 using SharedKernel.Enums;
-using SharedKernel.Protos;
 using SharedKernel.Settings;
 
 namespace PaymentService.Infrastructure.Services;
@@ -19,17 +16,14 @@ public class PaypalService : IPaypalService
 {
     private readonly PaypalSetting _setting;
     private readonly ILogger _logger;
-    private readonly IMapper _mapper;
     private readonly OrdersController _ordersController;
 
     public PaypalService(
         ILogger<PaypalService> logger,
-        IMapper mapper,
         IOptions<PaypalSetting> options)
     {
         _setting = options.Value;
         _logger = logger;
-        _mapper = mapper;
 
         var client = new PaypalServerSdkClient.Builder()
             .ClientCredentialsAuth(
@@ -82,24 +76,22 @@ public class PaypalService : IPaypalService
     }
 
     public async Task<CreateOrderDto> CreateOrderAsync(
+        string propertyTile,
         double amount,
-        string propertyTitle,
         CurrencyUnit currencyUnit,
-        Guid sellerId,
+        SellerDto seller,
         string returnUrl,
         string cancelUrl,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var seller = await GetUserByGrpcAsync(sellerId, cancellationToken) ?? throw new ObjectNotFoundException("Seller not found");
-
             var transactionId = Guid.NewGuid();
 
             var createOrderInput = new CreateOrderInput
             {
                 Prefer = "return=representation",
-                Body = CreateOrderRequest(amount, propertyTitle, currencyUnit, sellerId, seller, transactionId, returnUrl, cancelUrl)
+                Body = CreateOrderRequest(propertyTile, amount, currencyUnit, seller, transactionId, returnUrl, cancelUrl)
             };
 
             var response = await _ordersController.CreateOrderAsync(createOrderInput, cancellationToken);
@@ -126,14 +118,13 @@ public class PaypalService : IPaypalService
     }
 
     private OrderRequest CreateOrderRequest(
-       double amount,
-       string propertyTitle,
-       CurrencyUnit currencyUnit,
-       Guid sellerId,
-       SellerDto seller,
-       Guid transactionId,
-       string returnUrl,
-       string cancelUrl)
+        string propertyTile,
+        double amount,
+        CurrencyUnit currencyUnit,
+        SellerDto seller,
+        Guid transactionId,
+        string returnUrl,
+        string cancelUrl)
     {
         return new OrderRequest
         {
@@ -142,20 +133,20 @@ public class PaypalService : IPaypalService
             {
                 new PurchaseUnitRequest
                 {
-                    ReferenceId = sellerId.ToString(),
-                    Description = $"Payment for {propertyTitle}",
+                    ReferenceId = seller.Id.ToString(),
+                    Description = $"Payment for {propertyTile}",
                     CustomId = Guid.NewGuid().ToString(),
                     SoftDescriptor = "Estate Elite",
                     InvoiceId = transactionId.ToString(),
                     Payee = new PayeeBase
                     {
-                        EmailAddress = seller.PayPalEmail,
-                        MerchantId = seller.PayPalMerchantId
+                        EmailAddress = seller.PaypalEmail,
+                        MerchantId = seller.PaypalMerchantId
                     },
                     Amount = new AmountWithBreakdown
                     {
                         CurrencyCode = currencyUnit.ToString(),
-                        MValue = amount.ToString("F2"), // Format to 2 double places
+                        MValue = amount.ToString(),
                     }
                 }
             },
@@ -165,34 +156,5 @@ public class PaypalService : IPaypalService
                 CancelUrl = cancelUrl
             }
         };
-    }
-
-    private async Task<SellerDto> GetUserByGrpcAsync(
-        Guid userId,
-        CancellationToken cancellationToken = default)
-    {
-        using var channel = GrpcChannel.ForAddress("https://localhost:5101");
-        var client = new UserService.UserServiceClient(channel);
-
-        var request = new GetUserRequest
-        {
-            Id = userId.ToString()
-        };
-
-        try
-        {
-            var response = await client.GetUserAsync(request, cancellationToken: cancellationToken);
-            if (response == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            return _mapper.Map<SellerDto>(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error occurred while getting seller details");
-            throw;
-        }
     }
 }

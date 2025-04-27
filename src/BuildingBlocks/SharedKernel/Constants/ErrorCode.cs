@@ -35,4 +35,5 @@ public static class ErrorCode
     public const string E116 = "OTP code is still valid";
     public const string E117 = "Access token is invalid ";
     public const string E118 = "Refresh token is invalid or expired";
+    public const string E119 = "Fail to create order";
 }

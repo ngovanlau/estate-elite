@@ -99,7 +99,7 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
                 .IsRequired()
                 .HasDefaultValue(false);
 
-            entity.Property(p => p.AcceptsPayPal)
+            entity.Property(p => p.AcceptsPaypal)
                 .IsRequired()
                 .HasDefaultValue(false);
 
@@ -118,10 +118,10 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
 
             entity.Property(p => p.ModifiedOn);
 
-            entity.Property(p => p.PayPalEmail)
+            entity.Property(p => p.PaypalEmail)
                 .HasMaxLength(50);
 
-            entity.Property(p => p.PayPalMerchantId)
+            entity.Property(p => p.PaypalMerchantId)
                 .HasMaxLength(50);
 
             // Primary key and relationship

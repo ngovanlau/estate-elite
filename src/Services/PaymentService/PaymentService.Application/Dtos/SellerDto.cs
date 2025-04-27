@@ -8,7 +8,7 @@ public class SellerDto
     public string? Avatar { get; set; }
     public string? Phone { get; set; }
     public string? CompanyName { get; set; }
-    public string? PayPalEmail { get; set; }
-    public string? PayPalMerchantId { get; set; }
-    public bool AcceptsPayPal { get; set; }
+    public string? PaypalEmail { get; set; }
+    public string? PaypalMerchantId { get; set; }
+    public bool AcceptsPaypal { get; set; }
 }

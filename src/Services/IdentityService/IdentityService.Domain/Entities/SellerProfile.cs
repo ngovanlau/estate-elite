@@ -25,7 +25,7 @@ public partial class SellerProfile
     public Guid? ModifiedBy { get; set; }
     public bool IsDelete { get; set; }
 
-    public string? PayPalEmail { get; set; }
-    public string? PayPalMerchantId { get; set; }
-    public bool AcceptsPayPal { get; set; }
+    public string? PaypalEmail { get; set; }
+    public string? PaypalMerchantId { get; set; }
+    public bool AcceptsPaypal { get; set; }
 }

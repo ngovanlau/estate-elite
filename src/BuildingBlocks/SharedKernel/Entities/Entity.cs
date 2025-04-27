@@ -2,7 +2,7 @@ namespace SharedKernel.Entities;
 
 public abstract class Entity
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; set; }
 
     protected Entity()
     {
