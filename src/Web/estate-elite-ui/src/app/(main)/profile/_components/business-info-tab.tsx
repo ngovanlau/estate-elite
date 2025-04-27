@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
-import { Building2, Calendar, IdCard, Loader2 } from 'lucide-react';
+import { Building2, Calendar, IdCard, Loader2, Mail } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
@@ -14,10 +14,14 @@ import { useAppSelector } from '@/lib/hooks';
 import { selectUser } from '@/redux/slices/auth-slice';
 import { TextareaField } from '@/components/form-fields/textarea-field';
 import { InputField } from '@/components/form-fields/input-field';
+import { CheckboxField } from '@/components/form-fields/checkbox-field';
+import { useCurrentUser } from '@/lib/hooks/use-current-user';
+import identityService from '@/services/identity-service';
 
 export function BusinessInfoTab() {
   const [isLoading, setIsLoading] = useState(false);
   const sellerProfile = useAppSelector(selectUser)?.sellerProfile;
+  const { refresh } = useCurrentUser();
 
   const businessForm = useForm<z.infer<typeof businessFormSchema>>({
     resolver: zodResolver(businessFormSchema),
@@ -26,20 +30,53 @@ export function BusinessInfoTab() {
       taxId: sellerProfile?.taxIdentificationNumber,
       licenseNumber: sellerProfile?.licenseNumber,
       professionalLicense: sellerProfile?.professionalLicense,
-      establishedYear: sellerProfile?.establishedYear.toString(),
+      establishedYear: sellerProfile?.establishedYear,
       biography: sellerProfile?.biography,
+      acceptsPaypal: sellerProfile?.acceptsPaypal || false,
+      paypalEmail: sellerProfile?.paypalEmail,
+      paypalMerchantId: sellerProfile?.paypalMerchantId,
     },
   });
 
-  function onBusinessSubmit(values: z.infer<typeof businessFormSchema>) {
+  const onBusinessSubmit = async (values: z.infer<typeof businessFormSchema>) => {
     setIsLoading(true);
-    // Giả lập API call
-    setTimeout(() => {
-      console.log(values);
-      setIsLoading(false);
-      toast.success('Thông tin doanh nghiệp của bạn đã được lưu thành công.');
-    }, 1000);
-  }
+    try {
+      const response = await identityService.updateSellerProfile({
+        companyName: values.companyName,
+        licenseNumber: values.licenseNumber,
+        taxIdentificationNumber: values.taxId,
+        professionalLicense: values.professionalLicense,
+        biography: values.biography,
+        establishedYear: values.establishedYear,
+        acceptsPaypal: values.acceptsPaypal,
+        paypalEmail: values.paypalEmail,
+        paypalMerchantId: values.paypalMerchantId,
+      });
+
+      if (!response.succeeded || !response.data) {
+        toast.error('Cập nhật thất bại, vui lòng thử lại');
+        setIsLoading(false);
+        return;
+      }
+
+      toast.success('Cập nhật thông tin thành công');
+      refresh();
+      businessForm.reset();
+    } catch (error) {
+      toast.error('Đã xảy ra lỗi, vui long thử lại');
+      throw error;
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    businessForm.resetField('paypalEmail');
+    businessForm.resetField('paypalMerchantId');
+  }, [businessForm.watch('acceptsPaypal')]);
+
+  useEffect(() => {
+    businessForm.clearErrors('acceptsPaypal');
+  }, [businessForm.watch('paypalEmail'), businessForm.watch('paypalMerchantId')]);
 
   return (
     <Card>
@@ -75,6 +112,7 @@ export function BusinessInfoTab() {
               <InputField
                 control={businessForm.control}
                 name="establishedYear"
+                type="number"
                 icon={Calendar}
                 label="Năm thành lập"
                 placeholder="Năm thành lập"
@@ -95,6 +133,33 @@ export function BusinessInfoTab() {
                 placeholder="Nhập mã giấy phép hành nghề"
               />
             </div>
+
+            <CheckboxField
+              control={businessForm.control}
+              name="acceptsPaypal"
+              label="Cho phép thanh toán bằng Paypal"
+            />
+
+            {businessForm.watch('acceptsPaypal') && (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-1">
+                <InputField
+                  control={businessForm.control}
+                  name="paypalEmail"
+                  icon={Mail}
+                  label="Email của tài khoản Paypal"
+                  placeholder="Nhập email của tài khoản Paypal"
+                  required
+                />
+                <InputField
+                  control={businessForm.control}
+                  name="paypalMerchantId"
+                  icon={IdCard}
+                  label="Merchant ID của tài khoản Paypal"
+                  placeholder="Nhập merchant ID của tài khoản Paypal"
+                  required
+                />
+              </div>
+            )}
 
             <TextareaField
               control={businessForm.control}

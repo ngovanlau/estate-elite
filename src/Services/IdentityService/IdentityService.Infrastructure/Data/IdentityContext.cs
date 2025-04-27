@@ -58,6 +58,11 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
             entity.Property(u => u.Background)
                 .HasMaxLength(255);
 
+            // Relationship
+            entity.HasOne(u => u.SellerProfile)
+                .WithOne()
+                .HasForeignKey<SellerProfile>(e => e.UserId);
+
             // Indexes
             entity.HasIndex(e => e.Username).IsUnique();
             entity.HasIndex(e => e.Email).IsUnique();
@@ -124,10 +129,8 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
             entity.Property(p => p.PaypalMerchantId)
                 .HasMaxLength(50);
 
-            // Primary key and relationship
-            entity.HasKey(e => e.UserId);
-
-            entity.HasOne(e => e.User)
+            // Relationship
+            entity.HasOne<User>()
                 .WithOne(u => u.SellerProfile)
                 .HasForeignKey<SellerProfile>(e => e.UserId)
                 .OnDelete(DeleteBehavior.Cascade);

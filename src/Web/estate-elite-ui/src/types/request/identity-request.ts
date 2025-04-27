@@ -26,8 +26,20 @@ export interface ConfirmRequest {
 }
 
 export interface UpdateUserRequest {
-  fullname?: string;
+  fullName?: string;
   email?: string;
   phone?: string;
   address?: string;
+}
+
+export interface UpdateSellerProfileRequest {
+  companyName: string;
+  licenseNumber?: string;
+  taxIdentificationNumber: string;
+  professionalLicense?: string;
+  biography?: string;
+  establishedYear: number;
+  acceptsPaypal: boolean;
+  paypalEmail?: string;
+  paypalMerchantId?: string;
 }

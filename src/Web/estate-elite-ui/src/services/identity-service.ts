@@ -1,4 +1,10 @@
-import { ConfirmRequest, LoginRequest, RegisterRequest } from '@/types/request/identity-request';
+import {
+  ConfirmRequest,
+  LoginRequest,
+  RegisterRequest,
+  UpdateSellerProfileRequest,
+  UpdateUserRequest,
+} from '@/types/request/identity-request';
 import { ApiResponse } from '@/types/response/base-response';
 import { CurrentUser, Token } from '@/types/response/identity-response';
 import BaseService from './base-service';
@@ -35,6 +41,16 @@ class IdentityService extends BaseService {
 
   public getCurrentUser = (): Promise<ApiResponse<CurrentUser>> => {
     return this.instance.get('user/current-user');
+  };
+
+  public updateUser = (request: UpdateUserRequest): Promise<ApiResponse<boolean>> => {
+    return this.instance.patch('user/update-user', request);
+  };
+
+  public updateSellerProfile = (
+    request: UpdateSellerProfileRequest
+  ): Promise<ApiResponse<boolean>> => {
+    return this.instance.patch('user/update-seller-profile', request);
   };
 }
 

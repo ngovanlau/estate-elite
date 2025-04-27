@@ -13,10 +13,13 @@ import { useAppSelector } from '@/lib/hooks';
 import { selectUser } from '@/redux/slices/auth-slice';
 import { useState } from 'react';
 import { InputField } from '@/components/form-fields/input-field';
+import identityService from '@/services/identity-service';
+import { useCurrentUser } from '@/lib/hooks/use-current-user';
 
 export function GeneralInfoTab() {
   const [isLoading, setIsLoading] = useState(false);
   const currentUser = useAppSelector(selectUser);
+  const { refresh } = useCurrentUser();
 
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
@@ -28,15 +31,31 @@ export function GeneralInfoTab() {
     },
   });
 
-  function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
+  const onProfileSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     setIsLoading(true);
-    // Giả lập API call
-    setTimeout(() => {
-      console.log(values);
-      setIsLoading(false);
-      toast.success('Thông tin cá nhân của bạn đã được lưu thành công.');
-    }, 1000);
-  }
+    try {
+      const response = await identityService.updateUser({
+        fullName: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+      });
+
+      if (!response.succeeded || !response.data) {
+        toast.error('Cập nhật thất bại, vui lòng thử lại');
+        setIsLoading(false);
+        return;
+      }
+
+      toast.success('Cập nhật thông tin thành công');
+      refresh();
+      profileForm.reset();
+    } catch (error) {
+      toast.error('Đã xảy ra lỗi, vui long thử lại');
+      throw error;
+    }
+    setIsLoading(false);
+  };
 
   return (
     <Card>
@@ -54,7 +73,6 @@ export function GeneralInfoTab() {
               <InputField
                 control={profileForm.control}
                 name="fullName"
-                required
                 icon={User}
                 label="Họ và tên"
                 placeholder="Họ và tên"
@@ -62,7 +80,6 @@ export function GeneralInfoTab() {
               <InputField
                 control={profileForm.control}
                 name="email"
-                required
                 icon={Mail}
                 label="Email"
                 placeholder="name@example.com"
@@ -84,7 +101,7 @@ export function GeneralInfoTab() {
             </div>
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !profileForm.formState.isDirty}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Lưu thay đổi

@@ -27,4 +27,7 @@ interface SellerProfile {
   biography?: string;
   establishedYear: number;
   isVerified: boolean;
+  acceptsPaypal: boolean;
+  paypalEmail?: string;
+  paypalMerchantId?: string;
 }

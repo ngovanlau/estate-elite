@@ -3,18 +3,17 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-
-namespace IdentityService.Application.Commands.Users;
-
 using DistributedCache.Redis;
-using Domain.Entities;
-using Dtos.Users;
-using Interfaces;
-using Requests.Users;
+using IdentityService.Domain.Entities;
+using IdentityService.Application.Dtos.Users;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Users;
 using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
 using SharedKernel.Responses;
 using static SharedKernel.Constants.ErrorCode;
+
+namespace IdentityService.Application.Commands.Users;
 
 public class UpdateUserHandler(
     ICurrentUserService currentUserService,
@@ -87,29 +86,23 @@ public class UpdateUserHandler(
             user.Phone = request.Phone ?? user.Phone;
             user.Address = request.Address ?? user.Address;
 
-            // Save changes and update cache
-            logger.LogDebug("Attempting to save changes for user {UserId}", userId);
-            if (await userRepository.SaveChangeAsync(cancellationToken))
-            {
-                logger.LogInformation("Successfully updated user {UserId}", userId);
-
-                // Log cache operations
-                logger.LogDebug("Updating cache for user {UserId}", userId);
-                await cache.RemoveAsync(cacheKey, cancellationToken);
-                await cache.SetAsync(cacheKey, user, cancellationToken);
-
-                var dtoKey = CacheKeys.ForDto<User, CurrentUserDto>(userId);
-                await cache.RemoveAsync(cacheKey, cancellationToken);
-                await cache.SetAsync(dtoKey, mapper.Map<CurrentUserDto>(user), cancellationToken);
-
-                logger.LogDebug("Cache updated successfully for user {UserId}", userId);
-            }
-            else
+            // Persist changes
+            if (!await userRepository.SaveChangeAsync(cancellationToken))
             {
                 logger.LogError("Failed to save changes for user {UserId}", userId);
                 return res.SetError(nameof(E000), E000);
             }
 
+            // Update cache
+            logger.LogDebug("Updating cache for user {UserId}", userId);
+            await cache.RemoveAsync(cacheKey, cancellationToken);
+            await cache.SetAsync(cacheKey, user, cancellationToken);
+
+            var dtoKey = CacheKeys.ForDto<User, CurrentUserDto>(userId);
+            await cache.RemoveAsync(dtoKey, cancellationToken);
+            await cache.SetAsync(dtoKey, mapper.Map<CurrentUserDto>(user), cancellationToken);
+
+            logger.LogInformation("Successfully updated user profile for user {UserId}", userId);
             return res.SetSuccess(true);
         }
         catch (Exception ex)

@@ -23,7 +23,7 @@
 			"command": "dotnet",
 			"args": [
 				"build",
-				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.csproj"
+				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj"
 			],
 			"problemMatcher": "$msCompile"
 		},

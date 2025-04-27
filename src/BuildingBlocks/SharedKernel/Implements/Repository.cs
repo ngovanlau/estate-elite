@@ -13,6 +13,12 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
     private readonly DbSet<T> _dbSet = context.Set<T>();
     protected readonly IMapper _mapper = mapper;
 
+    public async Task<bool> AddEntity(T entity, CancellationToken cancellationToken = default)
+    {
+        await _dbSet.AddAsync(entity, cancellationToken);
+        return await SaveChangeAsync(cancellationToken);
+    }
+
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await context.Available<T>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
@@ -27,7 +33,16 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
 
     public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default)
     {
-        return await context.SaveChangesAsync(cancellationToken) > 0;
+        try
+        {
+            var res = await context.SaveChangesAsync(cancellationToken);
+            return res > 0;
+        }
+        catch
+        {
+
+        }
+        return false;
     }
 
     public async Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)

@@ -1,11 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using IdentityService.Application.Requests.Users;
+using SharedKernel.Controllers;
+using SharedKernel.Constants;
 
 namespace IdentityService.API.Controllers;
-
-using Application.Requests.Users;
-using SharedKernel.Controllers;
 
 [Authorize]
 public class UserController(IMediator mediator) : BaseController(mediator)
@@ -36,6 +36,13 @@ public class UserController(IMediator mediator) : BaseController(mediator)
 
     [HttpPatch("update-user")]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpPatch("update-seller-profile"), Authorize(Policy = Policy.RequireSellerRole)]
+    public async Task<IActionResult> UpdateSellerProfile([FromBody] UpdateSellerProfileRequest request)
     {
         var response = await _mediator.Send(request);
         return Ok(response);
