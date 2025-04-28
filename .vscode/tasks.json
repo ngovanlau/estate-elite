@@ -9,6 +9,7 @@
 				"build",
 				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj",
 				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj",
+				"${workspaceFolder}/src/Services/PaymentService/PaymentService.API/PaymentService.API.csproj",
 				"${workspaceFolder}/src/Services/FunctionalService/FunctionalService.API.csproj"
 			],
 			"problemMatcher": "$msCompile",
@@ -34,6 +35,16 @@
 			"args": [
 				"build",
 				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "build-payment",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"${workspaceFolder}/src/Services/PaymentService/PaymentService.API/PaymentService.API.csproj"
 			],
 			"problemMatcher": "$msCompile"
 		},
@@ -74,6 +85,19 @@
 			"problemMatcher": "$msCompile"
 		},
 		{
+			"label": "run-payment",
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--project",
+				"${workspaceFolder}/src/Services/PaymentService/PaymentService.API/PaymentService.API.csproj",
+				"--launch-profile",
+				"all"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
 			"label": "run-functional",
 			"type": "process",
 			"command": "dotnet",
@@ -88,7 +112,12 @@
 		},
 		{
 			"label": "run-all",
-			"dependsOn": ["run-identity", "run-property", "run-functional"],
+			"dependsOn": [
+				"run-identity",
+				"run-property",
+				"run-payment",
+				"run-functional"
+			],
 			"dependsOrder": "parallel",
 			"problemMatcher": "$msCompile"
 		}

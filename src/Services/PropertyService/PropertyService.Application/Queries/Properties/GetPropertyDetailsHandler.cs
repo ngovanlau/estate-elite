@@ -77,12 +77,8 @@ public class GetPropertyDetailsHandler(
 
         try
         {
-            var response = await client.GetUserAsync(request, cancellationToken: cancellationToken);
-            if (response == null)
-            {
-                throw new Exception("User not found");
-            }
-
+            var response = await client.GetUserAsync(request, cancellationToken: cancellationToken)
+                ?? throw new Exception("User not found");
             return mapper.Map<OwnerDto>(response);
         }
         catch (Exception ex)

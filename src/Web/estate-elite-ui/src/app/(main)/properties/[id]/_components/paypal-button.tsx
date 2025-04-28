@@ -1,8 +1,9 @@
 'use client';
 
 import paymentService from '@/services/payment-service';
-import { OnApproveActions, OnApproveData } from '@paypal/paypal-js';
+import { OnApproveData } from '@paypal/paypal-js';
 import { PayPalButtons } from '@paypal/react-paypal-js';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 type PaypalButtonProps = {
@@ -11,6 +12,8 @@ type PaypalButtonProps = {
 };
 
 export const PaypalButton = ({ propertyId, rentalPeriod }: PaypalButtonProps) => {
+  const [transactionId, setTransactionId] = useState<string>('');
+
   const onCreateOrder = async (): Promise<string> => {
     try {
       const response = await paymentService.rentProperty({
@@ -21,6 +24,7 @@ export const PaypalButton = ({ propertyId, rentalPeriod }: PaypalButtonProps) =>
       });
 
       if (response.succeeded) {
+        setTransactionId(response.data?.transactionId);
         return response.data?.orderId || '';
       }
     } catch (error) {
@@ -31,29 +35,22 @@ export const PaypalButton = ({ propertyId, rentalPeriod }: PaypalButtonProps) =>
     return '';
   };
 
-  const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
+  const onApprove = async (data: OnApproveData) => {
     try {
-      const response = await fetch(`/api/orders/${data.orderID}/capture`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await paymentService.captureOrder({
+        transactionId: transactionId,
+        orderId: data.orderID,
       });
 
-      const orderData = await response.json();
-      const errorDetail = orderData?.details?.[0];
-
-      if (errorDetail?.issue === 'INSTRUMENT_DECLINED') {
-        return actions.restart();
-      } else if (errorDetail) {
-        throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
-      } else {
-        const transaction = orderData.purchase_units[0].payments.captures[0];
-        console.log(transaction);
-        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+      if (!response.succeeded) {
+        toast.error('Thuê thất bại, vui lòng thử lại sau.');
+        return;
       }
+
+      console.log(response.data);
     } catch (error) {
-      console.error(error);
+      toast.error('Thuê thất bại, vui lòng thử lại sau.');
+      throw error;
     }
   };
 

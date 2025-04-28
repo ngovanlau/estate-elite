@@ -26,6 +26,7 @@ message GetPropertyResponse {
 message CreatePropertyRentalRequest {
   string property_id = 1;
   int32 rental_period = 2;
+  string user_id = 3;
 }
 
 message CreatePropertyRentalResponse {

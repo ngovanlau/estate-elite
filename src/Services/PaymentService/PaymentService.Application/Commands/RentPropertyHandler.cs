@@ -95,7 +95,8 @@ public class RentPropertyHandler(
                 PaymentMethod = PaymentMethod.Paypal,
                 UserId = userId,
                 PropertyId = property.Id,
-                OrderId = paymentResult.OrderId
+                OrderId = paymentResult.OrderId,
+                RentalPeriod = request.RentalPeriod,
             };
 
             logger.LogInformation("Creating transaction record with TransactionId: {TransactionId}", transaction.Id);

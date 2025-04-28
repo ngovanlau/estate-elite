@@ -4,3 +4,8 @@ export interface RentPropertyRequest {
   returnUrl: string;
   cancelUrl: string;
 }
+
+export interface CaptureOrderRequest {
+  transactionId: string;
+  orderId: string;
+}

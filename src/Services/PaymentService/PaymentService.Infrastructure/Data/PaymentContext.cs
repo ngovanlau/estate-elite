@@ -46,6 +46,9 @@ public class PaymentContext(DbContextOptions<PaymentContext> options) : DbContex
 
             entity.Property(e => e.PropertyId)
                 .IsRequired();
+
+            entity.Property(e => e.RentalPeriod)
+                .IsRequired();
         });
     }
 }

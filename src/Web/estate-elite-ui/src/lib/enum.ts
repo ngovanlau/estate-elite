@@ -34,3 +34,11 @@ export enum PAYMENT_METHOD {
   PAYPAL = 'Paypal',
   BANK = 'Bank',
 }
+
+export enum TRANSACTION_STATUS {
+  PENDING = 'Pending',
+  COMPLETED = 'Completed',
+  FAILED = 'Failed',
+  REFUNDED = 'Refunded',
+  CANCELLED = 'Cancelled',
+}

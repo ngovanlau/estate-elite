@@ -13,4 +13,5 @@ public class Transaction : AuditableEntity
     public Guid UserId { get; set; }
     public Guid PropertyId { get; set; }
     public required string OrderId { get; set; }
+    public int RentalPeriod { get; set; }
 }

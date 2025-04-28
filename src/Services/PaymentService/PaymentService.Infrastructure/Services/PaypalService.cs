@@ -58,7 +58,7 @@ public class PaypalService : IPaypalService
             };
 
             var response = await _ordersController.CaptureOrderAsync(captureOrderInput, cancellationToken);
-            if (response.StatusCode != 200)
+            if (response.StatusCode != 201)
             {
                 _logger.LogWarning("Failed to capture PayPal order {OrderId}. Status code: {StatusCode}",
                     orderId, response.StatusCode);

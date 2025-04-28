@@ -42,6 +42,26 @@
 			}
 		},
 		{
+			"name": "PaymentService - Debug",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build-payment",
+			"program": "${workspaceFolder}/src/Services/PaymentService/PaymentService.API/bin/Debug/net9.0/PaymentService.API.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/Services/PaymentService/PaymentService.API",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			},
+			"launchSettingsProfile": "all",
+			"launchBrowser": {
+				"enabled": true
+			}
+		},
+		{
 			"name": "FunctionalService - Debug",
 			"type": "coreclr",
 			"request": "launch",
