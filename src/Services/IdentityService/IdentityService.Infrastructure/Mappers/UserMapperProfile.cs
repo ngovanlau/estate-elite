@@ -21,6 +21,7 @@ public class UserMapperProfile : Profile
             .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone + ""))
             .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => src.Avatar + ""))
             .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.SellerProfile != null ? src.SellerProfile.CompanyName : ""))
+            .ForMember(dest => dest.AcceptsPaypal, opt => opt.MapFrom(src => src.SellerProfile != null ? src.SellerProfile.AcceptsPaypal : false))
             .ForMember(dest => dest.PaypalEmail, opt => opt.MapFrom(src => src.SellerProfile != null ? src.SellerProfile.PaypalEmail + "" : ""))
             .ForMember(dest => dest.PaypalMerchantId, opt => opt.MapFrom(src => src.SellerProfile != null ? src.SellerProfile.PaypalMerchantId + "" : ""));
     }

@@ -42,8 +42,6 @@ public class PropertyProfile : Profile
                 Quantity = p.Quantity
             }).ToList()));
 
-        CreateMap<GetUserResponse, OwnerDto>();
-
         CreateMap<Property, GetPropertyResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))

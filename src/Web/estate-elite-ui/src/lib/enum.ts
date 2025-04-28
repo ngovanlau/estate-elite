@@ -29,3 +29,8 @@ export enum CURRENCY_UNIT {
   VND = 'VND',
   USD = 'USD',
 }
+
+export enum PAYMENT_METHOD {
+  PAYPAL = 'Paypal',
+  BANK = 'Bank',
+}

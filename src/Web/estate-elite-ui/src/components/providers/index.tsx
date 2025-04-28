@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { environment } from '@/lib/environment';
 
 export default function Providers({
   children,
@@ -32,8 +34,14 @@ export default function Providers({
   return (
     <Provider store={storeRef.current}>
       <QueryClientProvider client={queryClientRef.current}>
-        {children}
-        {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools />}
+        <PayPalScriptProvider
+          options={{
+            clientId: environment.paypalClientId,
+          }}
+        >
+          {children}
+          {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools />}
+        </PayPalScriptProvider>
       </QueryClientProvider>
     </Provider>
   );

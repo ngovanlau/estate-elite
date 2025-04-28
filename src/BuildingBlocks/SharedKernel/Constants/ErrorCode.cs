@@ -36,4 +36,5 @@ public static class ErrorCode
     public const string E117 = "Access token is invalid ";
     public const string E118 = "Refresh token is invalid or expired";
     public const string E119 = "Fail to create order";
+    public const string E120 = "Fail to capture order";
 }

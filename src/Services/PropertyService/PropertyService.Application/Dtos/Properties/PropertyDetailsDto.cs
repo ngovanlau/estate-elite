@@ -42,7 +42,7 @@ public sealed record OwnerDto
     public string? Avatar { get; set; }
     public string? Phone { get; set; }
     public string? CompanyName { get; set; }
-
+    public bool AcceptsPaypal { get; set; }
 }
 
 public sealed record RoomDetailsDto

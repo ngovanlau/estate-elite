@@ -34,6 +34,7 @@ try
 
     // Configuration Bindings
     builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
+    builder.Services.Configure<PaypalSetting>(configuration.GetSection("Paypal"));
     builder.Services.Configure<JsonOptions>(options =>
     {
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -48,7 +49,12 @@ try
     });
 
     // builder.Services.AddValidation();
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+        });
     builder.Services.AddOpenApiService();
     builder.Services.AddHealthChecks();
 

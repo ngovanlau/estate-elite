@@ -15,4 +15,11 @@ public class TransactionController(IMediator mediator) : BaseController(mediator
         var response = await _mediator.Send(request);
         return Ok(response);
     }
+
+    [HttpPost("capture-order"), Authorize(Policy = Policy.RequireBuyerRole)]
+    public async Task<IActionResult> CaptureOrder([FromBody] CaptureOrderRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
 }

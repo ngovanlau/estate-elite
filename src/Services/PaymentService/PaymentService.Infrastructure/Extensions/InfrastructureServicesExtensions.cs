@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentService.Application.Interfaces;
 using PaymentService.Infrastructure.Data;
+using PaymentService.Infrastructure.Repositories;
 using PaymentService.Infrastructure.Services;
 
 namespace PaymentService.Infrastructure.Extensions;
@@ -19,6 +20,7 @@ public static class InfrastructureServicesExtensions
         );
 
         // Repository
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
 
         // Auto mapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

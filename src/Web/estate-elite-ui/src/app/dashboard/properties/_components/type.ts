@@ -19,4 +19,3 @@ export interface Property {
 export type PropertyType = Property['type'];
 
 // Format helpers
-

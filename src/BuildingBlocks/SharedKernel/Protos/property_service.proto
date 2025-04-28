@@ -6,6 +6,7 @@ package property.service;
 
 service PropertyService {
   rpc GetProperty (GetPropertyRequest) returns (GetPropertyResponse);
+  rpc CreatePropertyRental (CreatePropertyRentalRequest) returns (CreatePropertyRentalResponse);
 }
 
 message GetPropertyRequest {
@@ -20,4 +21,13 @@ message GetPropertyResponse {
   double price = 5;
   string currency_unit = 6;
   string owner_id = 7;
+}
+
+message CreatePropertyRentalRequest {
+  string property_id = 1;
+  int32 rental_period = 2;
+}
+
+message CreatePropertyRentalResponse {
+  bool success = 1;
 }

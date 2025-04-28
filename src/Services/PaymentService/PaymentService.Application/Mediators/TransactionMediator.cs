@@ -11,5 +11,6 @@ public static class TransactionMediator
     public static void AddTransactionMediator(this MediatRServiceConfiguration configuration, ServiceLifetime life = ServiceLifetime.Scoped)
     {
         configuration.AddBehavior<IRequestHandler<RentPropertyRequest, ApiResponse>, RentPropertyHandler>(life);
+        configuration.AddBehavior<IRequestHandler<CaptureOrderRequest, ApiResponse>, CaptureOrderHandler>(life);
     }
 }

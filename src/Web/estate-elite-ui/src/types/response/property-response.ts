@@ -39,14 +39,16 @@ export interface PropertyDetails extends Omit<Property, 'ImageUrl'> {
     quantity: number;
   }[];
   utilities: string[];
-  owner: {
-    id: string;
-    fullName: string;
-    email: string;
-    phone?: string;
-    avatar?: string;
-    companyName?: string;
-  };
+  owner: Owner;
   images: string[];
   buildDate: string;
+}
+
+export interface Owner {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  companyName?: string;
 }

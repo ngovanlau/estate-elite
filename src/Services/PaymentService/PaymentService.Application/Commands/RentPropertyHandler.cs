@@ -1,7 +1,9 @@
 using AutoMapper;
+using DistributedCache.Redis;
 using FluentValidation;
 using Grpc.Net.Client;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
@@ -22,6 +24,7 @@ public class RentPropertyHandler(
     ICurrentUserService currentUserService,
     IPaypalService paypalService,
     IMapper mapper,
+    IDistributedCache cache,
     ILogger<RentPropertyHandler> logger) : IRequestHandler<RentPropertyRequest, ApiResponse>
 {
     public async Task<ApiResponse> Handle(RentPropertyRequest request, CancellationToken cancellationToken)
@@ -102,10 +105,14 @@ public class RentPropertyHandler(
                 return response.SetError(nameof(E119), E119);
             }
 
+            var cacheKey = CacheKeys.ForEntity<Transaction>(transaction.Id);
+            await cache.SetAsync(cacheKey, transaction, cancellationToken: cancellationToken);
+
             logger.LogInformation("Successfully processed rental request for PropertyId: {PropertyId}", request.PropertyId);
             return response.SetSuccess(new
             {
                 OrderId = paymentResult.OrderId,
+                TransactionId = transaction.Id,
                 Links = paymentResult.Links
             });
         }

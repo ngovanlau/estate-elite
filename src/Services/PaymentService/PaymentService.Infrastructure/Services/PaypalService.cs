@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PaymentService.Application.Dtos;
@@ -90,13 +89,12 @@ public class PaypalService : IPaypalService
 
             var createOrderInput = new CreateOrderInput
             {
-                Prefer = "return=representation",
                 Body = CreateOrderRequest(propertyTile, amount, currencyUnit, seller, transactionId, returnUrl, cancelUrl)
             };
 
             var response = await _ordersController.CreateOrderAsync(createOrderInput, cancellationToken);
 
-            if (response.StatusCode != 200 || response.Data.Status != OrderStatus.Created)
+            if (response.StatusCode != 201 || response.Data.Status != OrderStatus.Created)
             {
                 _logger.LogError("Failed to create PayPal order. Status: {Status}, StatusCode: {StatusCode}", response.Data?.Status, response.StatusCode);
                 throw new Exception("Failed to create PayPal order");

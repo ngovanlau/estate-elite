@@ -19,7 +19,7 @@ message GetUserResponse {
   optional string phone = 4;
   optional string avatar = 6;
   optional string company_name = 7;
-  bool accepts_payPal = 8;
+  bool accepts_paypal = 8;
   optional string paypal_email = 9;
   optional string paypal_merchant_id = 10;
 }
