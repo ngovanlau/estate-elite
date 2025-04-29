@@ -1,4 +1,3 @@
-using System;
 using SharedKernel.Entities;
 
 namespace PropertyService.Domain.Entities;
@@ -10,6 +9,6 @@ public class PropertyRental : AuditableEntity
     public DateTime EndDate { get; set; }
 
     public Guid PropertyId { get; set; }
-    public required Property Property { get; set; }
+    public Property? Property { get; set; }
 }
 

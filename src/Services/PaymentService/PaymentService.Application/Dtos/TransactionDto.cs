@@ -4,7 +4,7 @@ namespace PaymentService.Application.Dtos;
 
 public class TransactionDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public double Amount { get; set; }
     public CurrencyUnit CurrencyUnit { get; set; }
     public TransactionStatus Status { get; set; }

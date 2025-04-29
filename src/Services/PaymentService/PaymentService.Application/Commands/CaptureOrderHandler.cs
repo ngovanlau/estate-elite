@@ -92,7 +92,7 @@ public class CaptureOrderHandler(
 
             // Create property rental
             logger.LogInformation("Creating property rental for transaction {TransactionId}", request.TransactionId);
-            if (!await CreatePropertyRent(transaction.PropertyId, transaction.UserId, transaction.RentalPeriod, cancellationToken))
+            if (!await CreatePropertyRentAsync(transaction.PropertyId, transaction.UserId, transaction.RentalPeriod, cancellationToken))
             {
                 logger.LogError("Failed to create property rental for transaction {TransactionId}", request.TransactionId);
                 return response.SetError(nameof(E120), E120);
@@ -108,7 +108,7 @@ public class CaptureOrderHandler(
         }
     }
 
-    private async Task<bool> CreatePropertyRent(Guid propertyId, Guid userId, int rentalPeriod, CancellationToken cancellationToken)
+    private async Task<bool> CreatePropertyRentAsync(Guid propertyId, Guid userId, int rentalPeriod, CancellationToken cancellationToken)
     {
         try
         {

@@ -16,13 +16,7 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
 {
     private sealed record LastPropertyInfo(Guid Id, DateTime CreatedOn);
 
-    public async Task<bool> AddProperty(Property property, CancellationToken cancellationToken)
-    {
-        await context.Properties.AddAsync(property, cancellationToken);
-        return await SaveChangeAsync(cancellationToken);
-    }
-
-    // Keyset Pagination
+    // Offset-base Pagination
     public async Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, int pageNumber, CancellationToken cancellationToken = default)
     {
         var query = context.Available<Property>(false).Where(p => p.OwnerId == ownerId);
@@ -43,8 +37,8 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
         };
     }
 
-    // Keyset Pagination
-    public async Task<PageResult<PropertyDto>> GetDtoByIdAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
+    // Key-base Pagination
+    public async Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
     {
         return await GetPaginatedPropertyDtosAsync<PropertyDto>(
            query => query.Where(p => p.Status == PropertyStatus.Active),

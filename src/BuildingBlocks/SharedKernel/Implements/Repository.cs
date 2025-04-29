@@ -13,7 +13,7 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
     private readonly DbSet<T> _dbSet = context.Set<T>();
     protected readonly IMapper _mapper = mapper;
 
-    public async Task<bool> AddEntity(T entity, CancellationToken cancellationToken = default)
+    public async Task<bool> AddEntityAsync(T entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
         return await SaveChangeAsync(cancellationToken);
@@ -21,7 +21,15 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
 
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await context.Available<T>(false).FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        return await context.Available<T>().FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+    }
+
+    public async Task<T?> GetByIdWithIncludeAsync(
+        Guid id,
+        Func<IQueryable<T>, IQueryable<T>> include,
+        CancellationToken cancellationToken = default)
+    {
+        return await include(context.Available<T>()).FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
     public T Attach(T entity)
@@ -33,16 +41,8 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
 
     public async Task<bool> SaveChangeAsync(CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var res = await context.SaveChangesAsync(cancellationToken);
-            return res > 0;
-        }
-        catch
-        {
-
-        }
-        return false;
+        var res = await context.SaveChangesAsync(cancellationToken);
+        return res > 0;
     }
 
     public async Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)

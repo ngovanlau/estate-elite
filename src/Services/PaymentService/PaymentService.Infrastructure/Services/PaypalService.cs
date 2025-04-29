@@ -1,47 +1,16 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
-using PaypalServerSdk.Standard;
-using PaypalServerSdk.Standard.Authentication;
+using PaymentService.Infrastructure.PaymentProviders.Paypal;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
 using SharedKernel.Enums;
-using SharedKernel.Settings;
 
 namespace PaymentService.Infrastructure.Services;
 
-public class PaypalService : IPaypalService
+public class PaypalService(PaypalClientFactory factory, ILogger<PaypalService> logger) : IPaypalService
 {
-    private readonly PaypalSetting _setting;
-    private readonly ILogger _logger;
-    private readonly OrdersController _ordersController;
-
-    public PaypalService(
-        ILogger<PaypalService> logger,
-        IOptions<PaypalSetting> options)
-    {
-        _setting = options.Value;
-        _logger = logger;
-
-        var client = new PaypalServerSdkClient.Builder()
-            .ClientCredentialsAuth(
-                new ClientCredentialsAuthModel.Builder(
-                    _setting.ClientId,
-                    _setting.ClientSecret
-                )
-                .Build())
-            .Environment(_setting.UseSandbox
-                ? PaypalServerSdk.Standard.Environment.Sandbox
-                : PaypalServerSdk.Standard.Environment.Production)
-            .LoggingConfig(config => config
-                .LogLevel(LogLevel.Information)
-                .RequestConfig(reqConfig => reqConfig.Body(true))
-                .ResponseConfig(respConfig => respConfig.Headers(true))
-            ).Build();
-
-        _ordersController = client.OrdersController;
-    }
+    private readonly OrdersController _ordersController = factory.CreateClient().OrdersController;
 
     public async Task<bool> CaptureOrderAsync(string orderId, CancellationToken cancellationToken = default)
     {
@@ -60,7 +29,7 @@ public class PaypalService : IPaypalService
             var response = await _ordersController.CaptureOrderAsync(captureOrderInput, cancellationToken);
             if (response.StatusCode != 201)
             {
-                _logger.LogWarning("Failed to capture PayPal order {OrderId}. Status code: {StatusCode}",
+                logger.LogWarning("Failed to capture PayPal order {OrderId}. Status code: {StatusCode}",
                     orderId, response.StatusCode);
                 return false;
             }
@@ -69,7 +38,7 @@ public class PaypalService : IPaypalService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error capturing PayPal order {OrderId}", orderId);
+            logger.LogError(ex, "Error capturing PayPal order {OrderId}", orderId);
             throw;
         }
     }
@@ -96,7 +65,7 @@ public class PaypalService : IPaypalService
 
             if (response.StatusCode != 201 || response.Data.Status != OrderStatus.Created)
             {
-                _logger.LogError("Failed to create PayPal order. Status: {Status}, StatusCode: {StatusCode}", response.Data?.Status, response.StatusCode);
+                logger.LogError("Failed to create PayPal order. Status: {Status}, StatusCode: {StatusCode}", response.Data?.Status, response.StatusCode);
                 throw new Exception("Failed to create PayPal order");
             }
 
@@ -110,7 +79,7 @@ public class PaypalService : IPaypalService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create PayPal order");
+            logger.LogError(ex, "Failed to create PayPal order");
             throw;
         }
     }

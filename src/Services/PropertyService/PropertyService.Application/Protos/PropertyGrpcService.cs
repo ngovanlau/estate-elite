@@ -69,6 +69,12 @@ public class PropertyGrpcService : SharedKernel.Protos.PropertyService.PropertyS
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid property ID format"));
             }
 
+            if (!Guid.TryParse(request.UserId, out var userId))
+            {
+                _logger.LogWarning("Invalid property ID format: {UserId}", request.UserId);
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid property ID format"));
+            }
+
             var property = await _propertyRepository.GetByIdAsync(propertyId, context.CancellationToken);
             if (property == null)
             {
@@ -87,16 +93,17 @@ public class PropertyGrpcService : SharedKernel.Protos.PropertyService.PropertyS
 
             var propertyRental = new PropertyRental
             {
-                PropertyId = property.Id,
-                Property = property,
+                PropertyId = propertyId,
                 StartDate = startDate,
                 EndDate = endDate,
-                UserId = Guid.Parse(request.UserId),
+                UserId = userId,
+                CreatedBy = userId,
+                CreatedOn = DateTime.UtcNow,
             };
 
             property.Status = PropertyStatus.Completed;
 
-            res.Success = await _propertyRentalRepository.AddEntity(propertyRental, context.CancellationToken);
+            res.Success = await _propertyRentalRepository.AddEntityAsync(propertyRental, context.CancellationToken);
 
             _logger.LogInformation("Property rental creation {(Status)} for property ID: {PropertyId}",
                 res.Success ? "succeeded" : "failed", request.PropertyId);

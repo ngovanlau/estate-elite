@@ -1,4 +1,3 @@
-using System;
 using AutoMapper;
 using DistributedCache.Redis;
 using FluentValidation;
@@ -7,6 +6,7 @@ using IdentityService.Application.Interfaces;
 using IdentityService.Application.Requests.Users;
 using IdentityService.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SharedKernel.Extensions;
@@ -52,7 +52,8 @@ public class UpdateSellerProfileHandler(
             if (!success || user is null)
             {
                 logger.LogDebug("User {UserId} not found in cache, querying database", userId);
-                user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
+                user = await userRepository.GetByIdWithIncludeAsync(userId,
+                    query => query.Include(p => p.SellerProfile), cancellationToken);
 
                 if (user == null)
                 {

@@ -77,7 +77,7 @@ public class CreatePropertyHandler(
             }
 
             // Save property to generate ID
-            var data = await propertyRepository.AddProperty(property, cancellationToken);
+            var data = await propertyRepository.AddEntityAsync(property, cancellationToken);
             logger.LogInformation("Property created successfully. ID: {PropertyId}", property.Id);
 
             // Process utilities if present

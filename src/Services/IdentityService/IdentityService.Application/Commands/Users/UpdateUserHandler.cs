@@ -1,13 +1,13 @@
 using AutoMapper;
-using FluentValidation;
-using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 using DistributedCache.Redis;
-using IdentityService.Domain.Entities;
+using FluentValidation;
 using IdentityService.Application.Dtos.Users;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Requests.Users;
+using IdentityService.Domain.Entities;
+using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
 using SharedKernel.Responses;
@@ -54,7 +54,7 @@ public class UpdateUserHandler(
             if (!success || user is null || !user.IsActive)
             {
                 logger.LogInformation("Cache miss for user {UserId}, fetching from repository", userId);
-                user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
+                user = await userRepository.GetByIdAsync(userId, cancellationToken);
 
                 if (user == null)
                 {

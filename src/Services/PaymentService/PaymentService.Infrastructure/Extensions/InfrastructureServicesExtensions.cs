@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentService.Application.Interfaces;
 using PaymentService.Infrastructure.Data;
+using PaymentService.Infrastructure.PaymentProviders.Paypal;
 using PaymentService.Infrastructure.Repositories;
 using PaymentService.Infrastructure.Services;
 
@@ -27,6 +28,7 @@ public static class InfrastructureServicesExtensions
 
         // Dependency injection
         services.AddScoped<IPaypalService, PaypalService>();
+        services.AddSingleton<PaypalClientFactory>();
 
         return services;
     }

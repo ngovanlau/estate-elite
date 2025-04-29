@@ -54,7 +54,7 @@ public class UploadHandler(
             if (!success || user is null || !user.IsActive)
             {
                 logger.LogDebug("Cache miss: Fetching user from repository");
-                user = await userRepository.GetUserByIdAsync(userId, cancellationToken);
+                user = await userRepository.GetByIdAsync(userId, cancellationToken);
             }
             else
             {

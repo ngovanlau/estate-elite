@@ -48,11 +48,6 @@ public class UserRepository(IdentityContext context, IMapper mapper) : Repositor
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
-    {
-        return await context.Available<User>().FirstOrDefaultAsync(p => p.Id == userId, cancellationToken);
-    }
-
     public async Task<CurrentUserDto?> GetCurrentUserDtoByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         return await context.Available<User>(false)

@@ -33,7 +33,7 @@ public class GetPropertiesHandler(
 
             if (!success || pageResult is null || !pageResult.Items.Any())
             {
-                pageResult = await repository.GetDtoByIdAsync(request.PageSize, request.LastEntityId, cancellationToken);
+                pageResult = await repository.GetPropertyDtosAsync(request.PageSize, request.LastEntityId, cancellationToken);
                 if (!pageResult.Items.Any())
                 {
                     return res.SetError(nameof(E008), string.Format(E008, "Properties"));
