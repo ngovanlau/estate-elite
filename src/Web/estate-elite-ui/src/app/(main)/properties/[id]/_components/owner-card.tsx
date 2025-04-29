@@ -26,14 +26,16 @@ const OwnerCard = ({ owner, isRental, onRentClick }: OwnerCardProps) => {
             />
           </div>
           <div>
-            <h3 className="font-semibold">{owner.fullName}</h3>
-            {owner.companyName && <p className="text-sm text-gray-600">{owner.companyName}</p>}
+            <h3 className="font-bold">{owner.fullName}</h3>
+            {owner.companyName && (
+              <p className="text-sm text-gray-600">Công ty: {owner.companyName}</p>
+            )}
           </div>
         </div>
 
-        <div className="mb-6 space-y-3">
-          <p>{owner.email}</p>
-          <p>{owner.phone}</p>
+        <div className="mb-6 space-y-3 font-semibold">
+          <p>Email: {owner.email}</p>
+          <p>Số điện thoại: {owner.phone}</p>
         </div>
 
         <div className="space-y-3">

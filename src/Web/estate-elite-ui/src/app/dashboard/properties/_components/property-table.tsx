@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { LISTING_TYPE, PROPERTY_STATUS } from '@/lib/enum';
 import { OwnerProperty } from '@/types/response/property-response';
-import { formatPrice } from '@/lib/utils';
+import { formatCurrency, rentPeriodMap } from '@/lib/utils';
 
 interface PropertyTableProps {
   properties: OwnerProperty[];
@@ -44,7 +44,7 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
       },
       [PROPERTY_STATUS.ACTIVE]: {
         label: 'Đang bán',
-        variant: 'secondary',
+        variant: 'default',
       },
       [PROPERTY_STATUS.COMPLETED]: {
         label: 'Đã bán',
@@ -57,11 +57,11 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
         variant: 'outline',
       },
       [PROPERTY_STATUS.ACTIVE]: {
-        label: 'Đang cho thuê', // Changed from "Đang bán" to be more accurate for rentals
-        variant: 'destructive',
+        label: 'Đang cho thuê',
+        variant: 'default',
       },
       [PROPERTY_STATUS.COMPLETED]: {
-        label: 'Đã cho thuê', // Changed from "Đã bán" to be more accurate for rentals
+        label: 'Đã cho thuê',
         variant: 'destructive',
       },
     },
@@ -96,7 +96,8 @@ export function PropertyTable({ properties, onDelete, onEdit }: PropertyTablePro
                 <TableCell className="max-w-[200px] truncate">{property.address}</TableCell>
                 <TableCell>{listingTypeMap[property.listingType]}</TableCell>
                 <TableCell className="text-right">
-                  {formatPrice(property.price, property.listingType)}
+                  {formatCurrency(property.price, property.currencyUnit)}
+                  {property.rentPeriod && `/${rentPeriodMap[property.rentPeriod]}`}
                 </TableCell>
                 <TableCell>
                   <Badge variant={variant}>{label}</Badge>

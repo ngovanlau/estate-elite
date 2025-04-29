@@ -3,7 +3,7 @@ import { LISTING_TYPE } from '@/lib/enum';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { formatPrice } from '@/lib/utils';
+import { formatCurrency, rentPeriodMap } from '@/lib/utils';
 import { Property } from '@/types/response/property-response';
 import { useRouter } from 'next/navigation';
 
@@ -15,10 +15,10 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   const router = useRouter();
 
   const listingTypeMap = {
-    [LISTING_TYPE.SALE]: (
+    [LISTING_TYPE.RENT]: (
       <span className="rounded bg-amber-600 px-2.5 py-1 text-xs font-medium text-white">Thuê</span>
     ),
-    [LISTING_TYPE.RENT]: (
+    [LISTING_TYPE.SALE]: (
       <span className="rounded bg-blue-600 px-2.5 py-1 text-xs font-medium text-white">Bán</span>
     ),
   };
@@ -68,7 +68,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       <CardContent className="pb-2">
         <div className="grid grid-cols-3 gap-2 text-sm">
           <div className="rounded bg-slate-100 p-2 text-center">
-            <p className="font-medium">{formatPrice(property.price, property.listingType)}</p>
+            <p className="font-medium">
+              {' '}
+              {formatCurrency(property.price, property.currencyUnit)}
+              {property.rentPeriod && `/${rentPeriodMap[property.rentPeriod]}`}
+            </p>
             <p className="text-xs text-slate-500">Giá</p>
           </div>
           <div className="rounded bg-slate-100 p-2 text-center">

@@ -13,7 +13,7 @@ public class PropertyDto
     public CurrencyUnit CurrencyUnit { get; set; }
     public required string Type { get; set; }
     public double Area { get; set; }
-    public RentPeriod RentPeriod { get; set; }
+    public RentPeriod? RentPeriod { get; set; }
 
     [JsonIgnore]
     public string? ObjectName { get; set; }

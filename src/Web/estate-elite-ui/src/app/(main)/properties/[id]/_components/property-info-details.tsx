@@ -3,7 +3,7 @@
 import { LISTING_TYPE } from '@/lib/enum';
 import { formatCurrency } from '@/lib/utils';
 import { PropertyDetails } from '@/types/response/property-response';
-import { Badge, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import PropertyDetailsGallery from './property-details-gallery';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import PropertyOverview from './property-overview';
@@ -20,6 +20,15 @@ type PropertyDetailsProps = {
 
 export const PropertyInfoDetails = ({ details: propertyDetails }: PropertyDetailsProps) => {
   const [isRentalModalOpen, setRentalModalOpen] = useState<boolean>(false);
+
+  const listingTypeMap = {
+    [LISTING_TYPE.RENT]: (
+      <span className="rounded bg-amber-600 px-2.5 py-1 font-medium text-white">Thuê</span>
+    ),
+    [LISTING_TYPE.SALE]: (
+      <span className="rounded bg-blue-600 px-2.5 py-1 font-medium text-white">Bán</span>
+    ),
+  };
 
   const handleRentButtonClick = () => {
     setRentalModalOpen(true);
@@ -40,15 +49,9 @@ export const PropertyInfoDetails = ({ details: propertyDetails }: PropertyDetail
             </div>
 
             <div className="flex items-center gap-4">
-              <Badge
-                className={
-                  propertyDetails.listingType === LISTING_TYPE.SALE ? 'bg-blue-600' : 'bg-green-600'
-                }
-              >
-                {propertyDetails.listingType === LISTING_TYPE.SALE ? 'Bán' : 'Cho thuê'}
-              </Badge>
+              {listingTypeMap[propertyDetails.listingType]}
               <div className="text-2xl font-bold text-blue-700">
-                {formatCurrency(propertyDetails.price)}
+                {formatCurrency(propertyDetails.price, propertyDetails.currencyUnit)}
                 {propertyDetails.listingType === LISTING_TYPE.RENT && '/tháng'}
               </div>
             </div>
