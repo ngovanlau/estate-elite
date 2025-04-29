@@ -123,7 +123,7 @@ public class CreatePropertyHandler(
         {
             await transaction.RollbackAsync(cancellationToken);
             logger.LogError(ex, "Unexpected error while creating property: {ErrorMessage}", ex.Message);
-            return response.SetError(nameof(E000), E000, ex);
+                        return response.SetError(nameof(E000), E000);
         }
     }
 }

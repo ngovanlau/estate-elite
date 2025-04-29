@@ -61,7 +61,7 @@ public class GetPropertyDetailsHandler(
         }
         catch (Exception ex)
         {
-            return res.SetError(nameof(E000), E000, ex);
+            return res.SetError(nameof(E000), E000);
         }
     }
 

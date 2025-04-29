@@ -54,7 +54,7 @@ public class GetPropertiesHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error occurred while getting owner properties");
-            return res.SetError(nameof(E000), E000, ex);
+            return res.SetError(nameof(E000), E000);
         }
     }
 }

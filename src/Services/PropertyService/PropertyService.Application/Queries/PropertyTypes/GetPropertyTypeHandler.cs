@@ -46,7 +46,7 @@ public class GetPropertyTypeHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error occurred while retrieving property types: {ErrorMessage}", ex.Message);
-            return res.SetError(nameof(E000), E000, ex);
+            return res.SetError(nameof(E000), E000);
         }
     }
 }

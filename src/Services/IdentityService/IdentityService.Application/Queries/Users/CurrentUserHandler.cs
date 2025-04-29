@@ -49,7 +49,7 @@ public class CurrentUserHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to retrieve current user information");
-            return response.SetError(nameof(E000), E000, ex);
+                        return response.SetError(nameof(E000), E000);
         }
     }
 

@@ -27,7 +27,7 @@ public class CaptureOrderHandler(
 {
     public async Task<ApiResponse> Handle(CaptureOrderRequest request, CancellationToken cancellationToken)
     {
-        var response = new ApiResponse();
+        var res = new ApiResponse();
 
         try
         {
@@ -40,7 +40,7 @@ public class CaptureOrderHandler(
                 var errors = validationResult.Errors.ToDic();
                 logger.LogWarning("Validation failed for transaction {TransactionId}. Errors: {Errors}",
                     request.TransactionId, errors);
-                return response.SetError(nameof(E001), E001, errors);
+                return res.SetError(nameof(E001), E001, errors);
             }
 
             // Cache/DB lookup
@@ -60,7 +60,7 @@ public class CaptureOrderHandler(
             if (transaction is null)
             {
                 logger.LogWarning("Transaction {TransactionId} not found", request.TransactionId);
-                return response.SetError(nameof(E008), string.Format(E008, "Transaction"));
+                return res.SetError(nameof(E008), string.Format(E008, "Transaction"));
             }
 
             // Transaction status check
@@ -68,7 +68,7 @@ public class CaptureOrderHandler(
             {
                 logger.LogWarning("Transaction {TransactionId} is not in pending state. Current status: {Status}",
                     request.TransactionId, transaction.Status);
-                return response.SetError(nameof(E000), "Transaction is not pending");
+                return res.SetError(nameof(E000), "Transaction is not pending");
             }
 
             // PayPal capture
@@ -76,7 +76,7 @@ public class CaptureOrderHandler(
             if (!await paypalService.CaptureOrderAsync(request.OrderId, cancellationToken))
             {
                 logger.LogError("Failed to capture PayPal order {OrderId}", request.OrderId);
-                return response.SetError(nameof(E120), E120);
+                return res.SetError(nameof(E120), E120);
             }
 
             // Update transaction
@@ -84,7 +84,7 @@ public class CaptureOrderHandler(
             if (!await repository.SaveChangeAsync(cancellationToken))
             {
                 logger.LogError("Failed to save transaction {TransactionId} after PayPal capture", request.TransactionId);
-                return response.SetError(nameof(E120), E120);
+                return res.SetError(nameof(E120), E120);
             }
 
             await cache.RemoveAsync(cacheKey, cancellationToken);
@@ -95,16 +95,16 @@ public class CaptureOrderHandler(
             if (!await CreatePropertyRentAsync(transaction.PropertyId, transaction.UserId, transaction.RentalPeriod, cancellationToken))
             {
                 logger.LogError("Failed to create property rental for transaction {TransactionId}", request.TransactionId);
-                return response.SetError(nameof(E120), E120);
+                return res.SetError(nameof(E120), E120);
             }
 
             logger.LogInformation("Successfully processed transaction {TransactionId}", request.TransactionId);
-            return response.SetSuccess(mapper.Map<TransactionDto>(transaction));
+            return res.SetSuccess(mapper.Map<TransactionDto>(transaction));
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error while processing transaction {TransactionId}", request.TransactionId);
-            return response.SetError(nameof(E000), E000, ex.Message);
+            return res.SetError(nameof(E000), E000, ex.Message);
         }
     }
 

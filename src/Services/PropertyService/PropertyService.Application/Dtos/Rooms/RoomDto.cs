@@ -1,5 +1,3 @@
-using System;
-
 namespace PropertyService.Application.Dtos.Rooms;
 
 public class RoomDto

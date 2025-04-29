@@ -47,9 +47,17 @@ try
         config.AddAuthenticatorMediator();
         config.AddUserMediator();
     });
-
     builder.Services.AddValidation(Assembly.Load("IdentityService.Application"));
-    builder.Services.AddControllers();
+
+    // Controllers
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+        });
+
+    // Documentation & Monitoring
     builder.Services.AddOpenApiService();
     builder.Services.AddHealthChecks();
 

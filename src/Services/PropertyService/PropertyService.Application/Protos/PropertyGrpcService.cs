@@ -1,56 +1,51 @@
+using DistributedCache.Redis;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using SharedKernel.Enums;
 using SharedKernel.Protos;
+using StackExchange.Redis;
 
 namespace PropertyService.Application.Protos;
 
-public class PropertyGrpcService : SharedKernel.Protos.PropertyService.PropertyServiceBase
+public class PropertyGrpcService(
+    IPropertyRepository propertyRepository,
+    IPropertyRentalRepository propertyRentalRepository,
+    IConnectionMultiplexer connectionMultiplexer,
+    ILogger<PropertyGrpcService> logger) : SharedKernel.Protos.PropertyService.PropertyServiceBase
 {
-    private readonly IPropertyRepository _propertyRepository;
-    private readonly IPropertyRentalRepository _propertyRentalRepository;
-    private readonly ILogger<PropertyGrpcService> _logger;
-
-    public PropertyGrpcService(
-        IPropertyRepository propertyRepository,
-        IPropertyRentalRepository propertyRentalRepository,
-        ILogger<PropertyGrpcService> logger)
-    {
-        _propertyRepository = propertyRepository ?? throw new ArgumentNullException(nameof(propertyRepository));
-        _propertyRentalRepository = propertyRentalRepository ?? throw new ArgumentNullException(nameof(propertyRentalRepository));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
-
     public override async Task<GetPropertyResponse?> GetProperty(GetPropertyRequest request, ServerCallContext context)
     {
-        _logger.LogInformation("Attempting to get property with ID: {PropertyId}", request.Id);
+        logger.LogInformation("Attempting to get property with ID: {PropertyId}", request.Id);
 
         try
         {
             if (!Guid.TryParse(request.Id, out var propertyId))
             {
-                _logger.LogWarning("Invalid property ID format: {PropertyId}", request.Id);
+                logger.LogWarning("Invalid property ID format: {PropertyId}", request.Id);
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid property ID format"));
             }
 
-            var property = await _propertyRepository.GetDtoByIdAsync<GetPropertyResponse>(propertyId, context.CancellationToken);
+            var property = await propertyRepository.GetDtoByIdAsync<GetPropertyResponse>(
+                propertyId,
+                p => p.Status == PropertyStatus.Active,
+                context.CancellationToken);
 
             if (property == null)
             {
-                _logger.LogWarning("Property not found with ID: {PropertyId}", request.Id);
+                logger.LogWarning("Property not found with ID: {PropertyId}", request.Id);
             }
             else
             {
-                _logger.LogInformation("Successfully retrieved property with ID: {PropertyId}", request.Id);
+                logger.LogInformation("Successfully retrieved property with ID: {PropertyId}", request.Id);
             }
 
             return property;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while getting property with ID: {PropertyId}", request.Id);
+            logger.LogError(ex, "Error occurred while getting property with ID: {PropertyId}", request.Id);
             return null;
         }
     }
@@ -58,27 +53,27 @@ public class PropertyGrpcService : SharedKernel.Protos.PropertyService.PropertyS
     public override async Task<CreatePropertyRentalResponse> CreatePropertyRental(CreatePropertyRentalRequest request, ServerCallContext context)
     {
         var res = new CreatePropertyRentalResponse { Success = false };
-        _logger.LogInformation("Attempting to create property rental for property ID: {PropertyId} and user ID: {UserId}",
+        logger.LogInformation("Attempting to create property rental for property ID: {PropertyId} and user ID: {UserId}",
             request.PropertyId, request.UserId);
 
         try
         {
             if (!Guid.TryParse(request.PropertyId, out var propertyId))
             {
-                _logger.LogWarning("Invalid property ID format: {PropertyId}", request.PropertyId);
+                logger.LogWarning("Invalid property ID format: {PropertyId}", request.PropertyId);
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid property ID format"));
             }
 
             if (!Guid.TryParse(request.UserId, out var userId))
             {
-                _logger.LogWarning("Invalid property ID format: {UserId}", request.UserId);
+                logger.LogWarning("Invalid property ID format: {UserId}", request.UserId);
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid property ID format"));
             }
 
-            var property = await _propertyRepository.GetByIdAsync(propertyId, context.CancellationToken);
+            var property = await propertyRepository.GetByIdAsync(propertyId, context.CancellationToken);
             if (property == null)
             {
-                _logger.LogWarning("Property not found with ID: {PropertyId}", request.PropertyId);
+                logger.LogWarning("Property not found with ID: {PropertyId}", request.PropertyId);
                 throw new RpcException(new Status(StatusCode.NotFound, "Property not found"));
             }
 
@@ -87,7 +82,7 @@ public class PropertyGrpcService : SharedKernel.Protos.PropertyService.PropertyS
 
             if (endDate == startDate)
             {
-                _logger.LogWarning("Invalid rent period type: {RentPeriod}", property.RentPeriod);
+                logger.LogWarning("Invalid rent period type: {RentPeriod}", property.RentPeriod);
                 return res;
             }
 
@@ -103,16 +98,18 @@ public class PropertyGrpcService : SharedKernel.Protos.PropertyService.PropertyS
 
             property.Status = PropertyStatus.Completed;
 
-            res.Success = await _propertyRentalRepository.AddEntityAsync(propertyRental, context.CancellationToken);
+            res.Success = await propertyRentalRepository.AddEntityAsync(propertyRental, context.CancellationToken);
 
-            _logger.LogInformation("Property rental creation {(Status)} for property ID: {PropertyId}",
+            logger.LogInformation("Property rental creation {(Status)} for property ID: {PropertyId}",
                 res.Success ? "succeeded" : "failed", request.PropertyId);
+
+            await RedisCacheService.ClearCacheByPrefixAsync(connectionMultiplexer, $"{nameof(Property)}:");
 
             return res;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while creating property rental for property ID: {PropertyId}", request.PropertyId);
+            logger.LogError(ex, "Error occurred while creating property rental for property ID: {PropertyId}", request.PropertyId);
             return res;
         }
     }

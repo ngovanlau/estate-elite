@@ -15,7 +15,6 @@ public class SerilogRequestLoggingMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        // Push additional information into the diagnostic context for Serilog
         using (LogContext.PushProperty("RequestHost", httpContext.Request.Host.Value))
         using (LogContext.PushProperty("UserAgent", httpContext.Request.Headers["User-Agent"]))
         using (LogContext.PushProperty("RemoteIp", httpContext.Connection.RemoteIpAddress?.ToString()))
@@ -26,29 +25,30 @@ public class SerilogRequestLoggingMiddleware
                 LogContext.PushProperty("UserId", httpContext.User.Identity.Name);
             }
 
-            // Log the request start
-            Log.Information("HTTP {RequestMethod} {RequestPath} started", httpContext.Request.Method, httpContext.Request.Path);
-            Log.Information("RequestHost: {RequestHost}");
-            Log.Information("UserAgent: {UserAgent}");
-            Log.Information("RemoteIp: {RemoteIp}");
-            Log.Information("TraceId: {TraceId}");
-            if (httpContext.User.Identity?.IsAuthenticated == true)
-            {
-                Log.Information("UserId: {UserId}");
-            }
+            Log.Information("HTTP {RequestMethod} {RequestPath} started",
+                httpContext.Request.Method, httpContext.Request.Path);
 
-            // Process the request
             var startTime = DateTime.UtcNow;
-            await _next(httpContext);
-            var elapsed = DateTime.UtcNow - startTime;
+            try
+            {
+                await _next(httpContext);
+                var elapsed = DateTime.UtcNow - startTime;
 
-            // Log the response with enriched properties
-            Log.Information("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms",
-                httpContext.Request.Method,
-                httpContext.Request.Path,
-                httpContext.Response.StatusCode,
-                elapsed.TotalMilliseconds);
+                Log.Information("HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {ElapsedMilliseconds} ms",
+                    httpContext.Request.Method,
+                    httpContext.Request.Path,
+                    httpContext.Response.StatusCode,
+                    elapsed.TotalMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                var elapsed = DateTime.UtcNow - startTime;
+                Log.Error(ex, "HTTP {RequestMethod} {RequestPath} failed after {ElapsedMilliseconds} ms",
+                    httpContext.Request.Method,
+                    httpContext.Request.Path,
+                    elapsed.TotalMilliseconds);
+                throw; // Re-throw to maintain the original behavior
+            }
         }
     }
-
 }

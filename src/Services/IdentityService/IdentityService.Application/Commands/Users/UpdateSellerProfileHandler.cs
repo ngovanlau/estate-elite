@@ -121,7 +121,7 @@ public class UpdateSellerProfileHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error updating seller profile for user {UserId}", currentUserService.Id);
-            return res.SetError(nameof(E000), E000, ex);
+            return res.SetError(nameof(E000), E000);
         }
     }
 }

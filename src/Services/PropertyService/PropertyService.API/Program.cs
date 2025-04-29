@@ -11,6 +11,7 @@ using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()
@@ -41,9 +42,15 @@ try
         config.AddRoomMediator();
         config.AddPropertyMediator();
     });
+    builder.Services.AddValidation(Assembly.Load("PropertyService.Application"));
 
     // Controllers
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+        });
 
     // Documentation & Monitoring
     builder.Services.AddOpenApiService();
@@ -54,7 +61,6 @@ try
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);
     builder.Services.AddInfrastructureServices(configuration);
-    builder.Services.AddValidation(Assembly.Load("PropertyService.Application"));
 
     // Register Event Bus and dependencies
     builder.Services.AddEventBusServices(configuration);

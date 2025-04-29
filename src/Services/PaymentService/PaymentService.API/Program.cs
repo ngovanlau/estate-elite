@@ -47,14 +47,17 @@ try
 
         config.AddTransactionMediator();
     });
+    builder.Services.AddValidation(Assembly.Load("PaymentService.Application"));
 
-    // builder.Services.AddValidation();
+    // Controllers
     builder.Services.AddControllers()
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
         });
+
+    // Documentation & Monitoring
     builder.Services.AddOpenApiService();
     builder.Services.AddHealthChecks();
 
@@ -63,7 +66,6 @@ try
     builder.Services.AddInfrastructureServices(configuration);
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);
-    builder.Services.AddValidation(Assembly.Load("PaymentService.Application"));
 
     // Event Bus
     builder.Services.AddEventBusServices(configuration);

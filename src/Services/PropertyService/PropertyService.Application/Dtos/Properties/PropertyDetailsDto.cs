@@ -1,4 +1,3 @@
-using SharedKernel.Commons;
 using SharedKernel.Enums;
 using System.Text.Json.Serialization;
 
@@ -9,29 +8,20 @@ public class PropertyDetailsDto
     public required Guid Id { get; set; }
     public required string Title { get; set; }
     public required string Address { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ListingType ListingType { get; set; }
-
     public double Price { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public CurrencyUnit CurrencyUnit { get; set; }
-
     public required string Type { get; set; }
     public double Area { get; set; }
     public List<string> Images { get; set; } = [];
-
-    [JsonIgnore]
-    public Guid OwnerId { get; set; }
-
-    public required OwnerDto Owner { get; set; }
     public List<RoomDetailsDto> Rooms { get; set; } = [];
     public List<string> Utilities { get; set; } = [];
     public string? Description { get; set; }
-
-    [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime BuildDate { get; set; }
+
+    [JsonIgnore]
+    public Guid OwnerId { get; set; }
+    public required OwnerDto Owner { get; set; }
 }
 
 public sealed record OwnerDto

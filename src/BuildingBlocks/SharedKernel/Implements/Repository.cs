@@ -5,6 +5,7 @@ using SharedKernel.Entities;
 using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace SharedKernel.Implements;
 
@@ -59,8 +60,23 @@ public abstract class Repository<T>(DbContext context, IMapper mapper) : IReposi
 
     public async Task<TDto?> GetDtoByIdAsync<TDto>(Guid id, CancellationToken cancellationToken = default) where TDto : class
     {
-        return await context.Available<T>(false)
-            .Where(p => p.Id == id)
+        return await GetDtoByIdAsync<TDto>(id, null, cancellationToken);
+    }
+
+    public async Task<TDto?> GetDtoByIdAsync<TDto>(
+        Guid id,
+        Expression<Func<T, bool>>? additionalCondition = null,
+        CancellationToken cancellationToken = default) where TDto : class
+    {
+        var query = context.Available<T>(false)
+                .Where(p => p.Id == id);
+
+        if (additionalCondition != null)
+        {
+            query = query.Where(additionalCondition);
+        }
+
+        return await query
             .ProjectTo<TDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }

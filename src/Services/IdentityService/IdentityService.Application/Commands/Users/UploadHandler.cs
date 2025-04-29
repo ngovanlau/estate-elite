@@ -97,7 +97,7 @@ public class UploadHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Upload process failed: UserId={UserId}", currentUserService.Id);
-            return res.SetError(nameof(E000), E000, ex);
+            return res.SetError(nameof(E000), E000);
         }
     }
 

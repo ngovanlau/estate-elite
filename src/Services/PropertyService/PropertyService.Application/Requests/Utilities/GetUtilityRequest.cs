@@ -5,5 +5,4 @@ namespace PropertyService.Application.Requests.Utilities;
 
 public class GetUtilityRequest : IRequest<ApiResponse>
 {
-
 }

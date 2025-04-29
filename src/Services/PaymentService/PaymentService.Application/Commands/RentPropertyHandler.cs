@@ -29,7 +29,7 @@ public class RentPropertyHandler(
 {
     public async Task<ApiResponse> Handle(RentPropertyRequest request, CancellationToken cancellationToken)
     {
-        var response = new ApiResponse();
+        var res = new ApiResponse();
 
         try
         {
@@ -39,14 +39,14 @@ public class RentPropertyHandler(
             {
                 var errors = validationResult.Errors.ToDic();
                 logger.LogWarning("Validation failed for RentPropertyRequest: {Errors}", errors);
-                return response.SetError(nameof(E000), E000, errors);
+                return res.SetError(nameof(E000), E000, errors);
             }
 
             // Check current user
             if (currentUserService.Id is null)
             {
                 logger.LogWarning("Current user ID not found");
-                return response.SetError(nameof(E103), E103);
+                return res.SetError(nameof(E103), E103);
             }
             var userId = currentUserService.Id.Value;
 
@@ -61,7 +61,7 @@ public class RentPropertyHandler(
             {
                 logger.LogError("Property or owner not found. PropertyId: {PropertyId}, OwnerId: {OwnerId}",
                     request.PropertyId, property?.OwnerId);
-                return response.SetError(nameof(E008), string.Format(E008, "Property or owner"));
+                return res.SetError(nameof(E008), string.Format(E008, "Property or owner"));
             }
 
             // Calculate amount
@@ -83,7 +83,7 @@ public class RentPropertyHandler(
             if (!paymentResult.Success)
             {
                 logger.LogError("Failed to create PayPal order for PropertyId: {PropertyId}", request.PropertyId);
-                return response.SetError(nameof(E119), E119);
+                return res.SetError(nameof(E119), E119);
             }
 
             // Create transaction record
@@ -103,14 +103,14 @@ public class RentPropertyHandler(
             if (!await repository.CreateTransaction(transaction, cancellationToken))
             {
                 logger.LogError("Failed to create transaction record for TransactionId: {TransactionId}", transaction.Id);
-                return response.SetError(nameof(E119), E119);
+                return res.SetError(nameof(E119), E119);
             }
 
             var cacheKey = CacheKeys.ForEntity<Transaction>(transaction.Id);
             await cache.SetAsync(cacheKey, transaction, cancellationToken: cancellationToken);
 
             logger.LogInformation("Successfully processed rental request for PropertyId: {PropertyId}", request.PropertyId);
-            return response.SetSuccess(new
+            return res.SetSuccess(new
             {
                 OrderId = paymentResult.OrderId,
                 TransactionId = transaction.Id,
@@ -120,7 +120,7 @@ public class RentPropertyHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error occurred while processing rental request");
-            return response.SetError(nameof(E000), E000, ex);
+            return res.SetError(nameof(E000), E000);
         }
     }
 
