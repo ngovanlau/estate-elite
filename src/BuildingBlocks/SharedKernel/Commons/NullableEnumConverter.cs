@@ -3,14 +3,20 @@ using System.Text.Json.Serialization;
 
 public class NullableEnumConverter<T> : JsonConverter<T?> where T : struct, Enum
 {
-    private readonly JsonStringEnumConverter _baseConverter = new();
+    private readonly JsonConverter<T> _enumConverter;
+
+    public NullableEnumConverter(JsonStringEnumConverter stringEnumConverter)
+    {
+        // Tạo converter cho kiểu enum không nullable (T)
+        _enumConverter = (JsonConverter<T>)stringEnumConverter.CreateConverter(typeof(T), new JsonSerializerOptions());
+    }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
             return null;
 
-        return JsonSerializer.Deserialize<T>(ref reader, options);
+        return _enumConverter.Read(ref reader, typeof(T), options);
     }
 
     public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
@@ -18,6 +24,6 @@ public class NullableEnumConverter<T> : JsonConverter<T?> where T : struct, Enum
         if (value == null)
             writer.WriteNullValue();
         else
-            JsonSerializer.Serialize(writer, value.Value, options);
+            _enumConverter.Write(writer, value.Value, options);
     }
 }
