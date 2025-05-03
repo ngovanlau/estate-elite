@@ -31,6 +31,10 @@ class IdentityService extends BaseService {
     return this.instance.post('authentication/login', request);
   };
 
+  public googleLogin = (idToken: string): Promise<ApiResponse<Token>> => {
+    return this.instance.post('authentication/google-login', { idToken });
+  };
+
   public uploadAvatar = (formData: FormData): Promise<ApiResponse<string>> => {
     return this.instance.patchForm('user/upload-avatar', formData);
   };

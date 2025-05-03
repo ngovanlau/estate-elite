@@ -15,6 +15,7 @@ public partial class User : AuditableEntity
     public string? Avatar { get; set; }
     public string? Background { get; set; }
     public bool IsActive { get; set; }
+    public string? GoogleId { get; set; }
 
     public SellerProfile? SellerProfile { get; set; }
 }

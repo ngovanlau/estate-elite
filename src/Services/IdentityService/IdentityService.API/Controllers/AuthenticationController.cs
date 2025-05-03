@@ -1,11 +1,10 @@
-
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using IdentityService.Application.Requests.Authentications;
+using IdentityService.Application.Interfaces;
+using SharedKernel.Controllers;
 
 namespace IdentityService.API.Controllers;
-
-using Application.Requests.Authentications;
-using SharedKernel.Controllers;
 
 public class AuthenticationController(IMediator mediator) : BaseController(mediator)
 {
@@ -39,6 +38,13 @@ public class AuthenticationController(IMediator mediator) : BaseController(media
 
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+    {
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+    [HttpPost("google-login")]
+    public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleAuthRequest request)
     {
         var response = await _mediator.Send(request);
         return Ok(response);

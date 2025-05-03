@@ -17,7 +17,6 @@ public static class AuthenticationExtension
         services.Configure<JwtSetting>(configuration.GetSection("Jwt"));
 
         var jwtSetting = configuration.GetSection("Jwt").Get<JwtSetting>();
-
         if (jwtSetting is null)
         {
             throw new ArgumentNullException(nameof(jwtSetting), "Jwt settings are not configured.");

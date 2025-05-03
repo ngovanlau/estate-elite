@@ -5,5 +5,6 @@ export const environment = {
 
   apiTimeout: process.env.NEXT_PUBLIC_API_TIMEOUT || '10000',
 
+  googleOauthClientId: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID || '',
   paypalClientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
 };

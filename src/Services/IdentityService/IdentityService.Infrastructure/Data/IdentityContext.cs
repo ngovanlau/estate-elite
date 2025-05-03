@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using IdentityService.Domain.Entities;
+using SharedKernel.Enums;
+using SharedKernel.Extensions;
 
 namespace IdentityService.Infrastructure.Data;
-
-using Domain.Entities;
-using SharedKernel.Extensions;
 
 public class IdentityContext(DbContextOptions<IdentityContext> options) : DbContext(options)
 {
@@ -34,6 +34,7 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
             entity.Property(e => e.FullName)
                 .IsRequired()
                 .HasMaxLength(30);
+
             entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(50);
@@ -58,8 +59,11 @@ public class IdentityContext(DbContextOptions<IdentityContext> options) : DbCont
             entity.Property(u => u.Background)
                 .HasMaxLength(255);
 
+            entity.Property(e => e.GoogleId)
+                .HasMaxLength(255);
+
             // Relationship
-            entity.HasOne(u => u.SellerProfile)
+            entity.HasOne(e => e.SellerProfile)
                 .WithOne()
                 .HasForeignKey<SellerProfile>(e => e.UserId);
 

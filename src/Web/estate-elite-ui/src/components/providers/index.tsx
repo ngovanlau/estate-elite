@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { environment } from '@/lib/environment';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export default function Providers({
   children,
@@ -34,14 +35,16 @@ export default function Providers({
   return (
     <Provider store={storeRef.current}>
       <QueryClientProvider client={queryClientRef.current}>
-        <PayPalScriptProvider
-          options={{
-            clientId: environment.paypalClientId,
-          }}
-        >
-          {children}
-          {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools />}
-        </PayPalScriptProvider>
+        <GoogleOAuthProvider clientId={environment.googleOauthClientId}>
+          <PayPalScriptProvider
+            options={{
+              clientId: environment.paypalClientId,
+            }}
+          >
+            {children}
+            {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools />}
+          </PayPalScriptProvider>
+        </GoogleOAuthProvider>
       </QueryClientProvider>
     </Provider>
   );

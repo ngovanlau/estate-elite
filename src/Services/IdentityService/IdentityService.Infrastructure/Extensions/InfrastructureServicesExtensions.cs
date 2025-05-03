@@ -30,6 +30,7 @@ public static class InfrastructureServicesExtensions
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IConfirmationCodeGenerator, ConfirmationCodeGenerator>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IGoogleService, GoogleService>();
 
         return services;
     }

@@ -28,6 +28,8 @@ import { useAppDispatch } from '@/lib/hooks';
 import { loginFailure, loginStart, loginSuccess } from '@/redux/slices/auth-slice';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { Token } from '@/types/response/identity-response';
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
@@ -54,8 +56,7 @@ export const LoginForm = () => {
 
       const loginResponse = await identityService.login(request);
       if (loginResponse.succeeded && loginResponse.data) {
-        setCookie(ACCESS_TOKEN_NAME, loginResponse.data.accessToken);
-        setCookie(REFRESH_TOKEN_NAME, loginResponse.data.refreshToken);
+        handleAfterLogin(loginResponse.data);
       } else {
         if (loginResponse.code === 'E114') {
           form.setError('password', {
@@ -67,6 +68,33 @@ export const LoginForm = () => {
 
         throw new Error('message' in loginResponse ? loginResponse.message : 'Đăng nhập thất bại');
       }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Đăng nhập thất bại';
+      dispatch(loginFailure(errorMessage));
+      throw error;
+    }
+  };
+
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    try {
+      const response = await identityService.googleLogin(credentialResponse.credential || '');
+      if (response.succeeded && response.data) {
+        handleAfterLogin(response.data);
+      } else {
+        toast.error('Đăng nhập thất bại');
+        throw new Error('message' in response ? response.message : 'Đăng nhập thất bại');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Đăng nhập thất bại';
+      dispatch(loginFailure(errorMessage));
+      throw error;
+    }
+  };
+
+  const handleAfterLogin = async (response: Token) => {
+    try {
+      setCookie(ACCESS_TOKEN_NAME, response.accessToken);
+      setCookie(REFRESH_TOKEN_NAME, response.refreshToken);
 
       const getCurrentUserResponse = await identityService.getCurrentUser();
       if (getCurrentUserResponse.succeeded && getCurrentUserResponse.data) {
@@ -75,8 +103,8 @@ export const LoginForm = () => {
         dispatch(
           loginSuccess({
             currentUser,
-            accessToken: loginResponse.data.accessToken,
-            refreshToken: loginResponse.data.refreshToken,
+            accessToken: response.accessToken,
+            refreshToken: response.refreshToken,
           })
         );
       } else {
@@ -110,7 +138,6 @@ export const LoginForm = () => {
           Đăng nhập vào tài khoản của bạn để quản lý bất động sản
         </CardDescription>
       </CardHeader>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleLogin)}>
           <CardContent className="space-y-4">
@@ -152,6 +179,16 @@ export const LoginForm = () => {
           </CardFooter>
         </form>
       </Form>
+      <div className="mx-6">
+        <GoogleLogin
+          shape="square"
+          logo_alignment="center"
+          onSuccess={handleGoogleLogin}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        />
+      </div>
     </Card>
   );
 };

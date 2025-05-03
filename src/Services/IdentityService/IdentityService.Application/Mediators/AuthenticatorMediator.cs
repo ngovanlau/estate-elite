@@ -1,11 +1,10 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using IdentityService.Application.Commands.Authentications;
+using IdentityService.Application.Requests.Authentications;
+using SharedKernel.Responses;
 
 namespace IdentityService.Application.Mediators;
-
-using Commands.Authentications;
-using Requests.Authentications;
-using SharedKernel.Responses;
 
 public static class AuthenticatorMediator
 {
@@ -16,5 +15,6 @@ public static class AuthenticatorMediator
         configuration.AddBehavior<IRequestHandler<LoginRequest, ApiResponse>, LoginHandler>(life);
         configuration.AddBehavior<IRequestHandler<ResendCodeRequest, ApiResponse>, ResendCodeHandler>(life);
         configuration.AddBehavior<IRequestHandler<RefreshTokenRequest, ApiResponse>, RefreshTokenHandler>(life);
+        configuration.AddBehavior<IRequestHandler<GoogleAuthRequest, ApiResponse>, GoogleAuthHandler>(life);
     }
 }

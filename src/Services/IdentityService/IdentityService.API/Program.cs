@@ -34,6 +34,7 @@ try
               .Enrich.FromLogContext());
 
     // Configuration Bindings
+    builder.Services.Configure<GoogleSetting>(configuration.GetSection("Google"));
     builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
     builder.Services.Configure<JsonOptions>(options =>
     {
@@ -48,6 +49,7 @@ try
         config.AddUserMediator();
     });
     builder.Services.AddValidation(Assembly.Load("IdentityService.Application"));
+    builder.Services.AddHttpClient();
 
     // Controllers
     builder.Services.AddControllers()
