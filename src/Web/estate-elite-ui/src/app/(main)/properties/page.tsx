@@ -2,22 +2,28 @@
 
 import PropertyCard from '@/app/_components/property-card';
 import propertyService from '@/services/property-service';
-import toast from 'react-hot-toast';
 import { Property } from '@/types/response/property-response';
 import { PAGE_SIZE } from '@/lib/constant';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { InfiniteScroll } from '@/components/infinite-scroll';
 import { Button } from '@/components/ui/button';
+import { useSearchParams } from 'next/navigation';
 
 export default function PropertyListingPage() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status, error } = useInfiniteQuery({
-    queryKey: ['properties'],
+  const searchParams = useSearchParams();
+  const address = searchParams.get('address');
+  const propertyTypeId = searchParams.get('property-type-id');
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery({
+    queryKey: ['properties', address, propertyTypeId],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await propertyService.getProperties({
         pageNumber: pageParam,
         pageSize: PAGE_SIZE,
         lastEntityId: lastEntityId,
+        address: address || undefined,
+        propertyTypeId: propertyTypeId || undefined,
       });
 
       if (!response.succeeded) {
@@ -43,12 +49,12 @@ export default function PropertyListingPage() {
   const allProperties = data?.pages.flatMap((page) => page.properties) || [];
   const lastEntityId = data?.pages[data.pages.length - 1]?.lastEntityId;
 
-  if (status === 'error') {
-    toast.error(`Lỗi khi tải danh sách bất động sản: ${error.message}`);
-    return (
-      <div className="py-10 text-center">Lỗi khi tải danh sách bất động sản. Vui lòng thử lại.</div>
-    );
-  }
+  // if (status === 'error') {
+  //   toast.error(`Lỗi khi tải danh sách bất động sản: ${error.message}`);
+  //   return (
+  //     <div className="py-10 text-center">Lỗi khi tải danh sách bất động sản. Vui lòng thử lại.</div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto py-8">

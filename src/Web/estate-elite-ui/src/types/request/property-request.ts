@@ -1,4 +1,5 @@
 import { LISTING_TYPE, RENT_PERIOD } from '@/lib/enum';
+import { PageRequest } from './base-request';
 
 export interface CreatePropertyRequest {
   title: string;
@@ -23,4 +24,9 @@ export interface CreatePropertyRequest {
   }[];
   utilityIds?: string[];
   images: File[];
+}
+
+export interface GetPropertiesRequest extends PageRequest {
+  address?: string;
+  propertyTypeId?: string;
 }

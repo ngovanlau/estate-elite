@@ -9,7 +9,7 @@ import {
   Room,
   Utility,
 } from '@/types/response/property-response';
-import { CreatePropertyRequest } from '@/types/request/property-request';
+import { CreatePropertyRequest, GetPropertiesRequest } from '@/types/request/property-request';
 import { PageRequest } from '@/types/request/base-request';
 
 class PropertyService extends BaseService {
@@ -78,11 +78,17 @@ class PropertyService extends BaseService {
     return this.instance.get(url);
   };
 
-  public getProperties = (request: PageRequest): Promise<PageApiResponse<Property[]>> => {
+  public getProperties = (request: GetPropertiesRequest): Promise<PageApiResponse<Property[]>> => {
     let url = `/property?pageSize=${request.pageSize}&pageNumber=${request.pageNumber}`;
+
     if (request.lastEntityId) {
       url += `&lastEntityId=${request.lastEntityId}`;
     }
+
+    if (request.address) url = `${url}&address=${request.address}`;
+
+    if (request.propertyTypeId) url = `${url}&propertyTypeId=${request.propertyTypeId}`;
+
     return this.instance.get(url);
   };
 

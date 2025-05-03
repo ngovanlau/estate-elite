@@ -1,14 +1,15 @@
-namespace PropertyService.Application.Interfaces;
-
+using System.Linq.Expressions;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Commons;
 using SharedKernel.Interfaces;
 
+namespace PropertyService.Application.Interfaces;
+
 public interface IPropertyRepository : IRepository<Property>
 {
     Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, int pageNumber, CancellationToken cancellationToken = default);
-    Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default);
+    Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, Expression<Func<Property, bool>>? predicate = null, CancellationToken cancellationToken = default);
 
     Task<PageResult<TDto>> GetPaginatedPropertyDtosAsync<TDto>(
         Func<IQueryable<Property>, IQueryable<Property>> filter,

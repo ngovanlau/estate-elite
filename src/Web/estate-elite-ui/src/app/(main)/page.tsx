@@ -1,7 +1,41 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
+import propertyService from '@/services/property-service';
+import { PropertyType } from '@/types/response/property-response';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function HomePage() {
+  const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([]);
+  const [selectPropertyType, setSelectPropertyType] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const router = useRouter();
+
+  const handleSearchClick = () => {
+    router.push(`properties?address=${address}&property-type-id=${selectPropertyType}`);
+  };
+
+  const fetchPropertyTypes = async () => {
+    try {
+      const response = await propertyService.getPropertyType();
+      if (response.succeeded) {
+        setPropertyTypes(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPropertyTypes();
+  }, []);
+
+  useEffect(() => {
+    setSelectPropertyType(propertyTypes[0]?.id);
+  }, [propertyTypes]);
+
   return (
     <div className="space-y-16">
       {/* Hero Section */}
@@ -18,18 +52,31 @@ export default function HomePage() {
                 type="text"
                 placeholder="Nhập địa điểm, khu vực..."
                 className="w-full rounded-md border p-3"
+                onChange={(e) => setAddress(e.target.value)}
               />
             </div>
             <div>
-              <select className="w-full rounded-md border p-3">
-                <option value="">Loại bất động sản</option>
-                <option value="apartment">Căn hộ</option>
-                <option value="house">Nhà phố</option>
-                <option value="villa">Biệt thự</option>
+              <select
+                onChange={(e) => setSelectPropertyType(e.target.value)}
+                className="w-full rounded-md border p-3"
+              >
+                {propertyTypes.map((type) => (
+                  <option
+                    key={type.id}
+                    value={type.id}
+                  >
+                    {type.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
-              <Button className="h-12 w-full p-3">Tìm kiếm</Button>
+              <Button
+                onClick={handleSearchClick}
+                className="h-12 w-full p-3"
+              >
+                Tìm kiếm
+              </Button>
             </div>
           </div>
         </div>

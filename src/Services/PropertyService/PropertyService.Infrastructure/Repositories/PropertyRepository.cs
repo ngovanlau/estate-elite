@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Dtos.Properties;
@@ -38,10 +39,18 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
     }
 
     // Key-base Pagination
-    public async Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default)
+    public async Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, Expression<Func<Property, bool>>? predicate = null, CancellationToken cancellationToken = default)
     {
         return await GetPaginatedPropertyDtosAsync<PropertyDto>(
-           query => query.Where(p => p.Status == PropertyStatus.Active),
+           query =>
+            {
+                var filteredQuery = query.Where(p => p.Status == PropertyStatus.Active);
+                if (predicate != null)
+                {
+                    filteredQuery = filteredQuery.Where(predicate);
+                }
+                return filteredQuery;
+            },
            pageSize,
            lastPropertyId,
            cancellationToken);
@@ -49,7 +58,7 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
 
     public async Task<PageResult<TDto>> GetPaginatedPropertyDtosAsync<TDto>(Func<IQueryable<Property>, IQueryable<Property>> filter, int pageSize, Guid? lastPropertyId = null, CancellationToken cancellationToken = default) where TDto : class
     {
-        var baseQuery = context.Available<Property>(false);
+        var baseQuery = context.Available<Property>(false).Include(p => p.Address);
         var query = filter(baseQuery);
 
         var totalRecords = await query.CountAsync(cancellationToken);
