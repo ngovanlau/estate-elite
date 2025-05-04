@@ -9,8 +9,17 @@ import { Loader2 } from 'lucide-react';
 import { InfiniteScroll } from '@/components/infinite-scroll';
 import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function PropertyListingPage() {
+export default function PropertiesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PropertiesPageContent />
+    </Suspense>
+  );
+}
+
+function PropertiesPageContent() {
   const searchParams = useSearchParams();
   const address = searchParams.get('address');
   const propertyTypeId = searchParams.get('property-type-id');

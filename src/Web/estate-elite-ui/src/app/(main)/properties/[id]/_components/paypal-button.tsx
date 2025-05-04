@@ -1,6 +1,7 @@
 'use client';
 
 import paymentService from '@/services/payment-service';
+import { CaptureOrderResponse } from '@/types/response/payment-response';
 import { OnApproveData } from '@paypal/paypal-js';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useState } from 'react';
@@ -9,9 +10,14 @@ import toast from 'react-hot-toast';
 type PaypalButtonProps = {
   propertyId: string;
   rentalPeriod: number;
+  handlePaymentSuccess: (orderData: CaptureOrderResponse) => void;
 };
 
-export const PaypalButton = ({ propertyId, rentalPeriod }: PaypalButtonProps) => {
+export const PaypalButton = ({
+  propertyId,
+  rentalPeriod,
+  handlePaymentSuccess,
+}: PaypalButtonProps) => {
   const [transactionId, setTransactionId] = useState<string>('');
 
   const onCreateOrder = async (): Promise<string> => {
@@ -46,8 +52,7 @@ export const PaypalButton = ({ propertyId, rentalPeriod }: PaypalButtonProps) =>
         toast.error('Thuê thất bại, vui lòng thử lại sau.');
         return;
       }
-
-      console.log(response.data);
+      handlePaymentSuccess(response.data);
     } catch (error) {
       toast.error('Thuê thất bại, vui lòng thử lại sau.');
       throw error;

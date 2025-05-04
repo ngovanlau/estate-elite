@@ -1,3 +1,5 @@
+'use client';
+
 import { Eye, Heart, MapPin } from 'lucide-react';
 import { LISTING_TYPE } from '@/lib/enum';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

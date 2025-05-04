@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import PropertyCard from '../_components/property-card';
 import { AreaCategory } from '../_components/area-category';
 
 export default function HomePage() {
@@ -199,14 +198,12 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Property Card 1 */}
+            {/* Property Card 1
             <PropertyCard />
-
             {/* Property Card 2 */}
-            <PropertyCard />
-
+            {/* <PropertyCard /> */}
             {/* Property Card 3 */}
-            <PropertyCard />
+            {/* <PropertyCard /> */}
           </div>
         </div>
       </section>

@@ -17,14 +17,21 @@ import PaymentMethodSelector from './payment-method-selector';
 import { PropertyDetails } from '@/types/response/property-response';
 import { PaypalButton } from './paypal-button';
 import { PAYMENT_METHOD } from '@/lib/enum';
+import { CaptureOrderResponse } from '@/types/response/payment-response';
 
 type RentalDialogProps = {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   property: PropertyDetails;
+  handlePaymentSuccess: (orderData: CaptureOrderResponse) => void;
 };
 
-export const RentalDialog = ({ isOpen, onOpenChange, property }: RentalDialogProps) => {
+export const RentalDialog = ({
+  isOpen,
+  onOpenChange,
+  property,
+  handlePaymentSuccess,
+}: RentalDialogProps) => {
   const [rentalPeriod, setRentalPeriod] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.PAYPAL);
 
@@ -33,6 +40,7 @@ export const RentalDialog = ({ isOpen, onOpenChange, property }: RentalDialogPro
       <PaypalButton
         propertyId={property.id}
         rentalPeriod={rentalPeriod}
+        handlePaymentSuccess={handlePaymentSuccess}
       />
     ),
     [PAYMENT_METHOD.BANK]: <Button type="submit">Xác nhận</Button>,

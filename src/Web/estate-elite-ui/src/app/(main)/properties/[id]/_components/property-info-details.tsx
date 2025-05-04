@@ -13,6 +13,8 @@ import OwnerCard from './owner-card';
 import ActionsCard from './action-card';
 import { RentalDialog } from './rental-dialog';
 import { useState } from 'react';
+import PaymentSuccessDialog from './payment-success-dialog';
+import { CaptureOrderResponse } from '@/types/response/payment-response';
 
 type PropertyDetailsProps = {
   details: PropertyDetails;
@@ -20,6 +22,8 @@ type PropertyDetailsProps = {
 
 export const PropertyInfoDetails = ({ details: propertyDetails }: PropertyDetailsProps) => {
   const [isRentalModalOpen, setRentalModalOpen] = useState<boolean>(false);
+  const [isPaymentSuccessDialogOpen, setIsPaymentSuccessDialogOpen] = useState<boolean>(false);
+  const [orderData, setOrderData] = useState<CaptureOrderResponse>();
 
   const listingTypeMap = {
     [LISTING_TYPE.RENT]: (
@@ -32,6 +36,16 @@ export const PropertyInfoDetails = ({ details: propertyDetails }: PropertyDetail
 
   const handleRentButtonClick = () => {
     setRentalModalOpen(true);
+  };
+
+  const handleClosePaymentSuccessDialog = () => {
+    setIsPaymentSuccessDialogOpen(false);
+  };
+
+  const handlePaymentSuccess = (orderData: CaptureOrderResponse) => {
+    setOrderData(orderData);
+    setRentalModalOpen(false);
+    setIsPaymentSuccessDialogOpen(true);
   };
 
   return (
@@ -113,6 +127,13 @@ export const PropertyInfoDetails = ({ details: propertyDetails }: PropertyDetail
         isOpen={isRentalModalOpen}
         onOpenChange={setRentalModalOpen}
         property={propertyDetails}
+        handlePaymentSuccess={handlePaymentSuccess}
+      />
+
+      <PaymentSuccessDialog
+        isOpen={isPaymentSuccessDialogOpen}
+        onClose={handleClosePaymentSuccessDialog}
+        orderData={orderData}
       />
     </div>
   );

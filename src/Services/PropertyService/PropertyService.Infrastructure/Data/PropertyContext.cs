@@ -17,6 +17,7 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
     public DbSet<PropertyRoom> PropertyRooms { get; set; }
     public DbSet<Utility> Utilities { get; set; }
     public DbSet<PropertyUtility> PropertyUtilities { get; set; }
+    public DbSet<PropertyRental> PropertyRentals { get; set; }
     public DbSet<PropertyView> PropertyViews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
