@@ -101,6 +101,7 @@ public class PropertyRepository(
     {
         return await context.Available<Property>(false)
             .Include(p => p.Views)
+            .Where(p => p.Status == PropertyStatus.Active)
             .ProjectTo<PropertyDto>(_mapper.ConfigurationProvider)
             .OrderByDescending(p => p.ViewCount)
             .Take(quantity)
