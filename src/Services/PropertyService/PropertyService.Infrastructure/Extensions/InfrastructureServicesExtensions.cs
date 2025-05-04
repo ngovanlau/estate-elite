@@ -6,6 +6,7 @@ namespace PropertyService.Infrastructure.Extensions;
 
 using Application.Interfaces;
 using Data;
+using PropertyService.Infrastructure.Utilities;
 using Repositories;
 
 public static class InfrastructureServicesExtensions
@@ -32,6 +33,8 @@ public static class InfrastructureServicesExtensions
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         // Dependency injection
+        services.AddScoped<IPropertyViewRepository, PropertyViewRepository>();
+        services.AddScoped<IViewTracker, ViewTracker>();
 
         return services;
     }

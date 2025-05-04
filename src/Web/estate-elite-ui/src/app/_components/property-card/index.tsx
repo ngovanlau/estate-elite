@@ -57,7 +57,7 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           </CardTitle>
           <div className="flex items-center text-sm text-slate-500">
             <Eye className="mr-1 h-4 w-4" />
-            230
+            {property.viewCount}
           </div>
         </div>
         <CardDescription className="flex items-center text-sm text-slate-500">

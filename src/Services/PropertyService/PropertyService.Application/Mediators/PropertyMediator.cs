@@ -15,5 +15,7 @@ public static class PropertyMediator
         configuration.AddBehavior<IRequestHandler<GetOwnerPropertiesRequest, PageApiResponse>, GetOwnerPropertiesHandler>(life);
         configuration.AddBehavior<IRequestHandler<GetPropertiesRequest, PageApiResponse>, GetPropertiesHandler>(life);
         configuration.AddBehavior<IRequestHandler<GetPropertyDetailsRequest, ApiResponse>, GetPropertyDetailsHandler>(life);
+        configuration.AddBehavior<IRequestHandler<TrackViewRequest>, TrackViewHandler>(life);
+        configuration.AddBehavior<IRequestHandler<GetMostViewPropertiesRequest, ApiResponse>, GetMostViewPropertiesHandler>(life);
     }
 }

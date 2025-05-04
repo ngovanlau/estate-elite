@@ -2,13 +2,15 @@
 
 import { Button } from '@/components/ui/button';
 import propertyService from '@/services/property-service';
-import { PropertyType } from '@/types/response/property-response';
+import { Property, PropertyType } from '@/types/response/property-response';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import PropertyCard from '../_components/property-card';
 
 export default function HomePage() {
   const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([]);
+  const [mostViewProperties, setMostViewProperties] = useState<Property[]>([]);
   const [selectPropertyType, setSelectPropertyType] = useState<string>('');
   const [address, setAddress] = useState<string>('');
   const router = useRouter();
@@ -28,8 +30,20 @@ export default function HomePage() {
     }
   };
 
+  const fetchMostViewProperties = async () => {
+    try {
+      const response = await propertyService.getMostViewProperties(3);
+      if (response.succeeded) {
+        setMostViewProperties(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchPropertyTypes();
+    fetchMostViewProperties();
   }, []);
 
   useEffect(() => {
@@ -92,33 +106,12 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Property cards would go here */}
-          <div className="overflow-hidden rounded-lg bg-white shadow-md">
-            <div className="h-48 bg-gray-300"></div>
-            <div className="p-4">
-              <h3 className="mb-2 text-lg font-bold">Căn hộ cao cấp Central Park</h3>
-              <p className="mb-2 text-gray-600">Quận 1, TP. Hồ Chí Minh</p>
-              <p className="text-lg font-bold text-blue-600">4.5 tỷ</p>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-lg bg-white shadow-md">
-            <div className="h-48 bg-gray-300"></div>
-            <div className="p-4">
-              <h3 className="mb-2 text-lg font-bold">Nhà phố Garden Homes</h3>
-              <p className="mb-2 text-gray-600">Quận 9, TP. Hồ Chí Minh</p>
-              <p className="text-lg font-bold text-blue-600">3.2 tỷ</p>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-lg bg-white shadow-md">
-            <div className="h-48 bg-gray-300"></div>
-            <div className="p-4">
-              <h3 className="mb-2 text-lg font-bold">Biệt thự Ocean View</h3>
-              <p className="mb-2 text-gray-600">Vũng Tàu</p>
-              <p className="text-lg font-bold text-blue-600">7.8 tỷ</p>
-            </div>
-          </div>
+          {mostViewProperties.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+            />
+          ))}
         </div>
       </section>
 

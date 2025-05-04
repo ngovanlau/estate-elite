@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { logout, selectIsAuthenticated, selectUser } from '@/redux/slices/auth-slice';
+import { USER_ROLE } from '@/lib/enum';
 
 export function Header() {
   const pathname = usePathname();
@@ -148,9 +149,11 @@ export function Header() {
                 <DropdownMenuItem asChild>
                   <Link href="/favorites">Bất động sản yêu thích</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Bảng điều khiển</Link>
-                </DropdownMenuItem>
+                {currentUser?.role && currentUser.role === USER_ROLE.SELLER && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">Bảng điều khiển</Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>Đăng xuất</DropdownMenuItem>
               </DropdownMenuContent>

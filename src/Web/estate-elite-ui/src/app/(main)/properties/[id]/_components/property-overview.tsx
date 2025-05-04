@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Ruler, BedDouble } from 'lucide-react';
+import { Ruler, BedDouble, ChartBarStacked } from 'lucide-react';
 import dayjs from 'dayjs';
 
 type Room = {
@@ -11,12 +11,19 @@ type Room = {
 
 type PropertyOverviewProps = {
   area: number;
+  propertyType: string;
   rooms: Room[];
   buildDate?: string;
   description: string;
 };
 
-const PropertyOverview = ({ area, rooms, buildDate, description }: PropertyOverviewProps) => {
+const PropertyOverview = ({
+  area,
+  propertyType,
+  rooms,
+  buildDate,
+  description,
+}: PropertyOverviewProps) => {
   return (
     <Card>
       <CardContent className="pt-6">
@@ -25,6 +32,12 @@ const PropertyOverview = ({ area, rooms, buildDate, description }: PropertyOverv
             <Ruler className="mb-2 h-6 w-6 text-blue-600" />
             <span className="text-lg font-semibold">{area}</span>
             <span className="text-sm text-gray-500">m²</span>
+          </div>
+
+          <div className="flex flex-col items-center rounded-lg bg-gray-50 p-4">
+            <ChartBarStacked className="mb-2 h-6 w-6 text-blue-600" />
+            <p className="font-medium">{propertyType}</p>
+            <p className="text-xs text-slate-500">Loại</p>
           </div>
 
           {rooms.map((room, index) => (

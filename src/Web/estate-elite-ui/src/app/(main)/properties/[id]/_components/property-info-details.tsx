@@ -74,6 +74,7 @@ export const PropertyInfoDetails = ({ details: propertyDetails }: PropertyDetail
               className="mt-4"
             >
               <PropertyOverview
+                propertyType={propertyDetails.type}
                 area={propertyDetails.area}
                 rooms={propertyDetails.rooms}
                 buildDate={propertyDetails.buildDate}

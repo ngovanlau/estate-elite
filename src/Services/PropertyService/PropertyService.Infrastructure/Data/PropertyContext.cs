@@ -17,6 +17,7 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
     public DbSet<PropertyRoom> PropertyRooms { get; set; }
     public DbSet<Utility> Utilities { get; set; }
     public DbSet<PropertyUtility> PropertyUtilities { get; set; }
+    public DbSet<PropertyView> PropertyViews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -254,6 +255,11 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
                 .HasForeignKey(e => e.PropertyId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.HasMany(e => e.Views)
+                .WithOne()
+                .HasForeignKey(e => e.PropertyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Relationship with PropertyUtility (many-to-many)
             entity.HasMany(e => e.Utilities)
                 .WithMany(p => p.Properties)
@@ -396,6 +402,32 @@ public class PropertyContext(DbContextOptions<PropertyContext> options) : DbCont
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => e.PropertyId);
             entity.HasIndex(e => new { e.StartDate, e.EndDate });
+        });
+
+        modelBuilder.Entity<PropertyView>(entity =>
+        {
+            // Table name
+            entity.ToTable("PropertyViews");
+
+            // Audit properties (inherited from AuditableEntity)
+            entity.ConfigureAuditProperties();
+
+            // Primary key
+            entity.HasKey(pv => pv.Id);
+
+            // Required properties
+            entity.Property(pv => pv.IpAddress)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.Property(pv => pv.PropertyId)
+                .IsRequired();
+
+            // Optional properties
+            entity.Property(pv => pv.UserId);
+
+            entity.Property(pv => pv.UserAgent)
+                .HasMaxLength(500);
         });
     }
 }

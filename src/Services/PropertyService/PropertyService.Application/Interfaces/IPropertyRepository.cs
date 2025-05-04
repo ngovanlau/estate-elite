@@ -10,6 +10,7 @@ public interface IPropertyRepository : IRepository<Property>
 {
     Task<PageResult<OwnerPropertyDto>> GetOwnerPropertyDtosAsync(Guid ownerId, int pageSize, int pageNumber, CancellationToken cancellationToken = default);
     Task<PageResult<PropertyDto>> GetPropertyDtosAsync(int pageSize, Guid? lastPropertyId = null, Expression<Func<Property, bool>>? predicate = null, CancellationToken cancellationToken = default);
+    Task<IEnumerable<PropertyDto>> GetMostViewPropertyDtosAsync(int quantity, CancellationToken cancellationToken = default);
 
     Task<PageResult<TDto>> GetPaginatedPropertyDtosAsync<TDto>(
         Func<IQueryable<Property>, IQueryable<Property>> filter,

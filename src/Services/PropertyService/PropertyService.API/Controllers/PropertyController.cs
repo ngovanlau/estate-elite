@@ -33,10 +33,23 @@ public class PropertyController(IMediator mediator) : BaseController(mediator)
     [HttpGet("{id}"), Authorize]
     public async Task<IActionResult> GetPropertyDetails([FromRoute] Guid id)
     {
+        await _mediator.Send(new TrackViewRequest(
+            id,
+            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            Request.Headers.UserAgent));
+
         var request = new GetPropertyDetailsRequest
         {
             Id = id
         };
+        var response = await _mediator.Send(request);
+        return Ok(response);
+    }
+
+
+    [HttpGet("most-view"), Authorize]
+    public async Task<IActionResult> GetMostProperties([FromQuery] GetMostViewPropertiesRequest request)
+    {
         var response = await _mediator.Send(request);
         return Ok(response);
     }

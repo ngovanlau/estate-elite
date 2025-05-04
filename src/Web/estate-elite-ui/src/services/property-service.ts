@@ -95,6 +95,10 @@ class PropertyService extends BaseService {
   public getPropertyDetails = (id: string): Promise<ApiResponse<PropertyDetails>> => {
     return this.instance.get(`/property/${id}`);
   };
+
+  public getMostViewProperties = (quantity: number): Promise<ApiResponse<Property[]>> => {
+    return this.instance.get(`/property/most-view?quantity=${quantity}`);
+  };
 }
 
 const propertyService = new PropertyService();

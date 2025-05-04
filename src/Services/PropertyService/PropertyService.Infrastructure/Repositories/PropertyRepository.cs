@@ -13,7 +13,9 @@ using SharedKernel.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 
-public class PropertyRepository(PropertyContext context, IMapper mapper) : Repository<Property>(context, mapper), IPropertyRepository
+public class PropertyRepository(
+    PropertyContext context,
+    IMapper mapper) : Repository<Property>(context, mapper), IPropertyRepository
 {
     private sealed record LastPropertyInfo(Guid Id, DateTime CreatedOn);
 
@@ -44,7 +46,9 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
         return await GetPaginatedPropertyDtosAsync<PropertyDto>(
            query =>
             {
-                var filteredQuery = query.Where(p => p.Status == PropertyStatus.Active);
+                var filteredQuery = query
+                .Include(p => p.Views)
+                .Where(p => p.Status == PropertyStatus.Active);
                 if (predicate != null)
                 {
                     filteredQuery = filteredQuery.Where(predicate);
@@ -91,5 +95,15 @@ public class PropertyRepository(PropertyContext context, IMapper mapper) : Repos
             Items = items,
             TotalRecords = totalRecords
         };
+    }
+
+    public async Task<IEnumerable<PropertyDto>> GetMostViewPropertyDtosAsync(int quantity, CancellationToken cancellationToken = default)
+    {
+        return await context.Available<Property>(false)
+            .Include(p => p.Views)
+            .ProjectTo<PropertyDto>(_mapper.ConfigurationProvider)
+            .OrderByDescending(p => p.ViewCount)
+            .Take(quantity)
+            .ToListAsync(cancellationToken);
     }
 }

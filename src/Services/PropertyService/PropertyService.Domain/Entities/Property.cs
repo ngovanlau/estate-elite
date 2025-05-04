@@ -26,4 +26,5 @@ public class Property : AuditableEntity
     public ICollection<PropertyRoom> PropertyRooms { get; set; } = [];
     public ICollection<Utility> Utilities { get; set; } = [];
     public ICollection<Image> Images { get; set; } = [];
+    public ICollection<PropertyView> Views { get; set; } = [];
 }

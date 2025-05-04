@@ -25,6 +25,7 @@ export interface Property {
   area: number;
   type: string;
   currencyUnit: CURRENCY_UNIT;
+  viewCount: number;
   imageUrl: string;
 }
 

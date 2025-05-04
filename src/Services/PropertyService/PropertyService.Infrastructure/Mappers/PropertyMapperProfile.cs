@@ -29,7 +29,8 @@ public class PropertyProfile : Profile
             .ForMember(dest => dest.ObjectName, opt => opt.MapFrom(src => src.Images.Select(p => p.ObjectName).FirstOrDefault()))
             .ForMember(dest => dest.ImageUrl, opt => opt.Ignore())
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address.Details))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name))
+            .ForMember(dest => dest.ViewCount, opt => opt.MapFrom(src => src.Views.Count()));
 
         CreateMap<Property, PropertyDetailsDto>()
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address.Details))
