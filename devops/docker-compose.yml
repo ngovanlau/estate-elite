@@ -15,11 +15,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lau"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U lau"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
     restart: unless-stopped
 
   redis:
@@ -81,242 +81,244 @@ services:
     restart: unless-stopped
 
   # Application Services
-  functional-service-1:
-    build:
-      context: ../src
-      dockerfile: functional-service.dockerfile
-    container_name: functional-service-container-1
-    ports:
-      - "5000:5000"
-      - "5100:5100"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-    volumes:
-      - functional_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # functional-service-1:
+  #   build:
+  #     context: ../src
+  #     dockerfile: functional-service.dockerfile
+  #   container_name: functional-service-container-1
+  #   ports:
+  #     - "5000:5000"
+  #     - "5100:5100"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #   volumes:
+  #     - functional_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  functional-service-2:
-    build:
-      context: ../src
-      dockerfile: functional-service.dockerfile
-    container_name: functional-service-container-2
-    ports:
-      - "5200:5000"
-      - "5300:5100"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-    volumes:
-      - functional_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # functional-service-2:
+  #   build:
+  #     context: ../src
+  #     dockerfile: functional-service.dockerfile
+  #   container_name: functional-service-container-2
+  #   ports:
+  #     - "5200:5000"
+  #     - "5300:5100"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #   volumes:
+  #     - functional_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  identity-service-1:
-    build:
-      context: ../src
-      dockerfile: identity-service.dockerfile
-    container_name: identity-service-container-1
-    ports:
-      - "5001:5001"
-      - "5101:5101"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-    volumes:
-      - identity_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # identity-service-1:
+  #   build:
+  #     context: ../src
+  #     dockerfile: identity-service.dockerfile
+  #   container_name: identity-service-container-1
+  #   ports:
+  #     - "5001:5001"
+  #     - "5101:5101"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #   volumes:
+  #     - identity_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  identity-service-2:
-    build:
-      context: ../src
-      dockerfile: identity-service.dockerfile
-    container_name: identity-service-container-2
-    ports:
-      - "5201:5001"
-      - "5301:5101"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-    volumes:
-      - identity_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # identity-service-2:
+  #   build:
+  #     context: ../src
+  #     dockerfile: identity-service.dockerfile
+  #   container_name: identity-service-container-2
+  #   ports:
+  #     - "5201:5001"
+  #     - "5301:5101"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #   volumes:
+  #     - identity_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  payment-service-1:
-    build:
-      context: ../src
-      dockerfile: payment-service.dockerfile
-    container_name: payment-service-container-1
-    ports:
-      - "5002:5002"
-      - "5102:5102"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-    volumes:
-      - payment_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # payment-service-1:
+  #   build:
+  #     context: ../src
+  #     dockerfile: payment-service.dockerfile
+  #   container_name: payment-service-container-1
+  #   ports:
+  #     - "5002:5002"
+  #     - "5102:5102"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #   volumes:
+  #     - payment_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  payment-service-2:
-    build:
-      context: ../src
-      dockerfile: payment-service.dockerfile
-    container_name: payment-service-container-2
-    ports:
-      - "5202:5002"
-      - "5302:5102"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-    volumes:
-      - payment_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # payment-service-2:
+  #   build:
+  #     context: ../src
+  #     dockerfile: payment-service.dockerfile
+  #   container_name: payment-service-container-2
+  #   ports:
+  #     - "5202:5002"
+  #     - "5302:5102"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #   volumes:
+  #     - payment_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  property-service-1:
-    build:
-      context: ../src
-      dockerfile: property-service.dockerfile
-    container_name: property-service-container-1
-    ports:
-      - "5003:5003"
-      - "5103:5103"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-      - MinIO__Endpoint=minio:9000
-      - MinIO__AccessKey=minioadmin
-      - MinIO__SecretKey=minioadmin
-    volumes:
-      - property_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # property-service-1:
+  #   build:
+  #     context: ../src
+  #     dockerfile: property-service.dockerfile
+  #   container_name: property-service-container-1
+  #   ports:
+  #     - "5003:5003"
+  #     - "5103:5103"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #     - MinIO__Endpoint=minio:9000
+  #     - MinIO__AccessKey=minioadmin
+  #     - MinIO__SecretKey=minioadmin
+  #   volumes:
+  #     - property_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
-  property-service-2:
-    build:
-      context: ../src
-      dockerfile: property-service.dockerfile
-    container_name: property-service-container-2
-    ports:
-      - "5203:5003"
-      - "5303:5103"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-      - MinIO__Endpoint=minio:9000
-      - MinIO__AccessKey=minioadmin
-      - MinIO__SecretKey=minioadmin
-    volumes:
-      - property_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
+  # property-service-2:
+  #   build:
+  #     context: ../src
+  #     dockerfile: property-service.dockerfile
+  #   container_name: property-service-container-2
+  #   ports:
+  #     - "5203:5003"
+  #     - "5303:5103"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
+  #     - ConnectionStrings__Redis=redis:6379,password=lau2962003
+  #     - RabbitMQ__Host=rabbitmq
+  #     - RabbitMQ__Username=lau
+  #     - RabbitMQ__Password=lau2962003
+  #     - MinIO__Endpoint=minio:9000
+  #     - MinIO__AccessKey=minioadmin
+  #     - MinIO__SecretKey=minioadmin
+  #   volumes:
+  #     - property_logs:/app/logs
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     minio:
+  #       condition: service_healthy
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
 
   nginx:
-    image: nginx:latest
+    build:
+      context: ./nginx
+      dockerfile: nginx.dockerfile
     container_name: nginx-container
     ports:
       - "80:80"
@@ -325,15 +327,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      - functional-service-1
-      - functional-service-2
-      - identity-service-1
-      - identity-service-2
-      - payment-service-1
-      - payment-service-2
-      - property-service-1
-      - property-service-2
     networks:
       - app_network
     restart: unless-stopped
@@ -347,7 +340,7 @@ volumes:
   redis-data:
   minio_data:
   rabbitmq_data:
-  functional_logs:
-  identity_logs:
-  payment_logs:
-  property_logs:
+  # functional_logs:
+  # identity_logs:
+  # payment_logs:
+  # property_logs:
