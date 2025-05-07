@@ -2,25 +2,25 @@ version: "3.8"
 
 # Common environment variables extracted for consistency and easier management
 x-common-variables: &common-variables
-  POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
-  POSTGRES_PORT: ${POSTGRES_PORT:-5432}
-  POSTGRES_DB: ${POSTGRES_DB:-estate_elite}
-  POSTGRES_USER: ${POSTGRES_USER:-estate_user}
-  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongPasswordHere}
-  REDIS_HOST: ${REDIS_HOST:-redis}
-  REDIS_PORT: ${REDIS_PORT:-6379}
-  REDIS_PASSWORD: ${REDIS_PASSWORD:-strongRedisPasswordHere}
-  RABBITMQ_HOST: ${RABBITMQ_HOST:-rabbitmq}
-  RABBITMQ_USER: ${RABBITMQ_USER:-estate_user}
-  RABBITMQ_PASS: ${RABBITMQ_PASSWORD:-strongRabbitPasswordHere}
-  RABBITMQ_VHOST: ${RABBITMQ_VHOST:-/}
-  RABBITMQ_PORT: ${RABBITMQ_PORT:-5672}
-  RABBITMQ_RETRY_COUNT: ${RABBITMQ_RETRY_COUNT:-10}
-  MINIO_HOST: ${MINIO_HOST:-minio}
-  MINIO_PORT: ${MINIO_PORT:-9000}
-  MINIO_ROOT_USER: ${MINIO_USER:-miniouser}
-  MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-strongMinioPasswordHere}
-  MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
+  POSTGRES_HOST: ${POSTGRES_HOST}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_DB: ${POSTGRES_DB}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  REDIS_HOST: ${REDIS_HOST}
+  REDIS_PORT: ${REDIS_PORT}
+  REDIS_PASSWORD: ${REDIS_PASSWORD}
+  RABBITMQ_HOST: ${RABBITMQ_HOST}
+  RABBITMQ_USER: ${RABBITMQ_USER}
+  RABBITMQ_PASS: ${RABBITMQ_PASSWORD}
+  RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+  RABBITMQ_PORT: ${RABBITMQ_PORT}
+  RABBITMQ_RETRY_COUNT: ${RABBITMQ_RETRY_COUNT}
+  MINIO_HOST: ${MINIO_HOST}
+  MINIO_PORT: ${MINIO_PORT}
+  MINIO_ROOT_USER: ${MINIO_USER}
+  MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+  MINIO_USE_SSL: ${MINIO_USE_SSL}
 
 # Common service settings for application services
 x-service-defaults: &service-defaults
@@ -37,22 +37,22 @@ x-service-defaults: &service-defaults
 x-microservice-defaults: &microservice-defaults
   <<: *service-defaults
   environment:
-    - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT:-Development}
-    - ConnectionStrings__PostgresConnection=Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=${POSTGRES_DB:-estate_elite};Username=${POSTGRES_USER:-estate_user};Password=${POSTGRES_PASSWORD:-strongPasswordHere}
-    - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere}
-    - RabbitMQ__HostName=${RABBITMQ_HOST:-rabbitmq}
-    - RabbitMQ__UserName=${RABBITMQ_USER:-estate_user}
-    - RabbitMQ__Password=${RABBITMQ_PASSWORD:-strongRabbitPasswordHere}
-    - RabbitMQ__VirtualHost=${RABBITMQ_VHOST:-/}
-    - RabbitMQ__Port=${RABBITMQ_PORT:-5672}
-    - RabbitMQ__RetryCount=${RABBITMQ_RETRY_COUNT:-10}
+    - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    - ConnectionStrings__PostgresConnection=Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD}
+    - RabbitMQ__HostName=${RABBITMQ_HOST}
+    - RabbitMQ__UserName=${RABBITMQ_USER}
+    - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    - RabbitMQ__VirtualHost=${RABBITMQ_VHOST}
+    - RabbitMQ__Port=${RABBITMQ_PORT}
+    - RabbitMQ__RetryCount=${RABBITMQ_RETRY_COUNT}
     - JWT__SecretKey=${JWT_SECRET_KEY}
-    - JWT__Issuer=${JWT_ISSUER:-https://localhost:5001}
-    - JWT__Audience=${JWT_AUDIENCE:-https://localhost:3000}
-    - JWT__AccessTokenExpirationInMinutes=${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:-30}
-    - JWT__RefreshTokenExpirationInDays=${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:-1}
-    - JWT__RefreshTokenSlidingExpirationInMinutes=${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES:-30}
-    - JWT__TokenType=${JWT_TOKEN_TYPE:-Bearer}
+    - JWT__Issuer=${JWT_ISSUER}
+    - JWT__Audience=${JWT_AUDIENCE}
+    - JWT__AccessTokenExpirationInMinutes=${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES}
+    - JWT__RefreshTokenExpirationInDays=${JWT_REFRESH_TOKEN_EXPIRATION_DAYS}
+    - JWT__RefreshTokenSlidingExpirationInMinutes=${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES}
+    - JWT__TokenType=${JWT_TOKEN_TYPE}
     - Serilog__MinimumLevel__Default=Information
     - Serilog__MinimumLevel__Override__Microsoft=Warning
     - Serilog__MinimumLevel__Override__System=Warning
@@ -71,18 +71,18 @@ services:
   postgres:
     <<: *service-defaults
     image: postgres:16-alpine
-    container_name: ${PROJECT_PREFIX:-estate}-postgres
+    container_name: ${PROJECT_PREFIX}-postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-estate_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongPasswordHere}
-      POSTGRES_DB: ${POSTGRES_DB:-estate_elite}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-estate_user}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -90,21 +90,14 @@ services:
   redis:
     <<: *service-defaults
     image: redis:alpine
-    container_name: ${PROJECT_PREFIX:-estate}-redis
-    command: redis-server --requirepass ${REDIS_PASSWORD:-strongRedisPasswordHere} --appendonly yes
+    container_name: ${PROJECT_PREFIX}-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
-      test:
-        [
-          "CMD",
-          "redis-cli",
-          "-a",
-          "${REDIS_PASSWORD:-strongRedisPasswordHere}",
-          "ping",
-        ]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -112,15 +105,15 @@ services:
   minio:
     <<: *service-defaults
     image: minio/minio:latest
-    container_name: ${PROJECT_PREFIX:-estate}-minio
+    container_name: ${PROJECT_PREFIX}-minio
     ports:
-      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_PORT}:9000"
       - "${MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - minio_data:/data
     environment:
-      MINIO_ROOT_USER: ${MINIO_USER:-miniouser}
-      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-strongMinioPasswordHere}
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -131,13 +124,13 @@ services:
   rabbitmq:
     <<: *service-defaults
     image: rabbitmq:management-alpine
-    container_name: ${PROJECT_PREFIX:-estate}-rabbitmq
+    container_name: ${PROJECT_PREFIX}-rabbitmq
     ports:
-      - "${RABBITMQ_PORT:-5672}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-estate_user}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-strongRabbitPasswordHere}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
@@ -150,71 +143,71 @@ services:
   functional-service-1:
     <<: *microservice-defaults
     build:
-      context: ${FUNCTIONAL_SERVICE_CONTEXT:-../src}
-      dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE:-functional-service.dockerfile}
+      context: ${FUNCTIONAL_SERVICE_CONTEXT}
+      dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-functional-service-1
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-functional-service-1
     ports:
-      - "${FUNCTIONAL_HTTP_PORT_1:-5000}:5000"
-      - "${FUNCTIONAL_HTTPS_PORT_1:-5100}:5100"
+      - "${FUNCTIONAL_HTTP_PORT_1}:5000"
+      - "${FUNCTIONAL_HTTPS_PORT_1}:5100"
     environment:
       - ServiceName=Functional
-      - SmtpSetting__Server=${SMTP_SERVER:-smtp.gmail.com}
-      - SmtpSetting__Port=${SMTP_PORT:-587}
+      - SmtpSetting__Server=${SMTP_SERVER}
+      - SmtpSetting__Port=${SMTP_PORT}
       - SmtpSetting__Username=${SMTP_USERNAME}
       - SmtpSetting__Password=${SMTP_PASSWORD}
       - SmtpSetting__SenderEmail=${SMTP_SENDER_EMAIL}
-      - SmtpSetting__SenderName=${SMTP_SENDER_NAME:-"Estate Elite"}
+      - SmtpSetting__SenderName=${SMTP_SENDER_NAME}
     volumes:
       - functional_logs:/app/logs
 
   functional-service-2:
     <<: *microservice-defaults
     build:
-      context: ${FUNCTIONAL_SERVICE_CONTEXT:-../src}
-      dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE:-functional-service.dockerfile}
+      context: ${FUNCTIONAL_SERVICE_CONTEXT}
+      dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-functional-service-2
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-functional-service-2
     ports:
-      - "${FUNCTIONAL_HTTP_PORT_2:-5200}:5000"
-      - "${FUNCTIONAL_HTTPS_PORT_2:-5300}:5100"
+      - "${FUNCTIONAL_HTTP_PORT_2}:5000"
+      - "${FUNCTIONAL_HTTPS_PORT_2}:5100"
     environment:
       - ServiceName=Functional
-      - SmtpSetting__Server=${SMTP_SERVER:-smtp.gmail.com}
-      - SmtpSetting__Port=${SMTP_PORT:-587}
+      - SmtpSetting__Server=${SMTP_SERVER}
+      - SmtpSetting__Port=${SMTP_PORT}
       - SmtpSetting__Username=${SMTP_USERNAME}
       - SmtpSetting__Password=${SMTP_PASSWORD}
       - SmtpSetting__SenderEmail=${SMTP_SENDER_EMAIL}
-      - SmtpSetting__SenderName=${SMTP_SENDER_NAME:-"Estate Elite"}
+      - SmtpSetting__SenderName=${SMTP_SENDER_NAME}
     volumes:
       - functional_logs:/app/logs
 
   identity-service-1:
     <<: *microservice-defaults
     build:
-      context: ${IDENTITY_SERVICE_CONTEXT:-../src}
-      dockerfile: ${IDENTITY_SERVICE_DOCKERFILE:-identity-service.dockerfile}
+      context: ${IDENTITY_SERVICE_CONTEXT}
+      dockerfile: ${IDENTITY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-identity-service-1
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-identity-service-1
     ports:
-      - "${IDENTITY_HTTP_PORT_1:-5001}:5001"
-      - "${IDENTITY_HTTPS_PORT_1:-5101}:5101"
+      - "${IDENTITY_HTTP_PORT_1}:5001"
+      - "${IDENTITY_HTTPS_PORT_1}:5101"
     environment:
       - ServiceName=Identity
-      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
-      - Minio__AccessKey=${MINIO_USER:-miniouser}
-      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
-      - Minio__UseSSL=${MINIO_USE_SSL:-false}
-      - Minio__BucketName=${MINIO_IDENTITY_BUCKET:-identity-service}
+      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
+      - Minio__AccessKey=${MINIO_USER}
+      - Minio__SecretKey=${MINIO_PASSWORD}
+      - Minio__UseSSL=${MINIO_USE_SSL}
+      - Minio__BucketName=${MINIO_IDENTITY_BUCKET}
       - Google__ClientId=${GOOGLE_CLIENT_ID}
       - Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
-      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS:-0123456789}
-      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH:-6}
-      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES:-5}
-      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS:-3}
+      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS}
+      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH}
+      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES}
+      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS}
     volumes:
       - identity_logs:/app/logs
     depends_on:
@@ -224,27 +217,27 @@ services:
   identity-service-2:
     <<: *microservice-defaults
     build:
-      context: ${IDENTITY_SERVICE_CONTEXT:-../src}
-      dockerfile: ${IDENTITY_SERVICE_DOCKERFILE:-identity-service.dockerfile}
+      context: ${IDENTITY_SERVICE_CONTEXT}
+      dockerfile: ${IDENTITY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-identity-service-2
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-identity-service-2
     ports:
-      - "${IDENTITY_HTTP_PORT_2:-5201}:5001"
-      - "${IDENTITY_HTTPS_PORT_2:-5301}:5101"
+      - "${IDENTITY_HTTP_PORT_2}:5001"
+      - "${IDENTITY_HTTPS_PORT_2}:5101"
     environment:
       - ServiceName=Identity
-      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
-      - Minio__AccessKey=${MINIO_USER:-miniouser}
-      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
-      - Minio__UseSSL=${MINIO_USE_SSL:-false}
-      - Minio__BucketName=${MINIO_IDENTITY_BUCKET:-identity-service}
+      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
+      - Minio__AccessKey=${MINIO_USER}
+      - Minio__SecretKey=${MINIO_PASSWORD}
+      - Minio__UseSSL=${MINIO_USE_SSL}
+      - Minio__BucketName=${MINIO_IDENTITY_BUCKET}
       - Google__ClientId=${GOOGLE_CLIENT_ID}
       - Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
-      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS:-0123456789}
-      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH:-6}
-      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES:-5}
-      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS:-3}
+      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS}
+      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH}
+      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES}
+      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS}
     volumes:
       - identity_logs:/app/logs
     depends_on:
@@ -254,62 +247,62 @@ services:
   payment-service-1:
     <<: *microservice-defaults
     build:
-      context: ${PAYMENT_SERVICE_CONTEXT:-../src}
-      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE:-payment-service.dockerfile}
+      context: ${PAYMENT_SERVICE_CONTEXT}
+      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-payment-service-1
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-payment-service-1
     ports:
-      - "${PAYMENT_HTTP_PORT_1:-5003}:5003"
-      - "${PAYMENT_HTTPS_PORT_1:-5103}:5103"
+      - "${PAYMENT_HTTP_PORT_1}:5003"
+      - "${PAYMENT_HTTPS_PORT_1}:5103"
     environment:
       - ServiceName=PaymentService
-      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=2
+      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
       - Paypal__ClientId=${PAYPAL_CLIENT_ID}
       - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
-      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX:-true}
+      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX}
     volumes:
       - payment_logs:/app/logs
 
   payment-service-2:
     <<: *microservice-defaults
     build:
-      context: ${PAYMENT_SERVICE_CONTEXT:-../src}
-      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE:-payment-service.dockerfile}
+      context: ${PAYMENT_SERVICE_CONTEXT}
+      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-payment-service-2
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-payment-service-2
     ports:
-      - "${PAYMENT_HTTP_PORT_2:-5202}:5002"
-      - "${PAYMENT_HTTPS_PORT_2:-5302}:5102"
+      - "${PAYMENT_HTTP_PORT_2}:5002"
+      - "${PAYMENT_HTTPS_PORT_2}:5102"
     environment:
       - ServiceName=PaymentService
-      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=2
+      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
       - Paypal__ClientId=${PAYPAL_CLIENT_ID}
       - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
-      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX:-true}
+      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX}
     volumes:
       - payment_logs:/app/logs
 
   property-service-1:
     <<: *microservice-defaults
     build:
-      context: ${PROPERTY_SERVICE_CONTEXT:-../src}
-      dockerfile: ${PROPERTY_SERVICE_DOCKERFILE:-property-service.dockerfile}
+      context: ${PROPERTY_SERVICE_CONTEXT}
+      dockerfile: ${PROPERTY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-property-service-1
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-property-service-1
     ports:
-      - "${PROPERTY_HTTP_PORT_1:-5002}:5002"
-      - "${PROPERTY_HTTPS_PORT_1:-5102}:5102"
+      - "${PROPERTY_HTTP_PORT_1}:5002"
+      - "${PROPERTY_HTTPS_PORT_1}:5102"
     environment:
       - ServiceName=Property
-      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=1
-      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
-      - Minio__AccessKey=${MINIO_USER:-miniouser}
-      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
-      - Minio__UseSSL=${MINIO_USE_SSL:-false}
-      - Minio__BucketName=${MINIO_PROPERTY_BUCKET:-property-service}
+      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
+      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
+      - Minio__AccessKey=${MINIO_USER}
+      - Minio__SecretKey=${MINIO_PASSWORD}
+      - Minio__UseSSL=${MINIO_USE_SSL}
+      - Minio__BucketName=${MINIO_PROPERTY_BUCKET}
     volumes:
       - property_logs:/app/logs
     depends_on:
@@ -319,22 +312,22 @@ services:
   property-service-2:
     <<: *microservice-defaults
     build:
-      context: ${PROPERTY_SERVICE_CONTEXT:-../src}
-      dockerfile: ${PROPERTY_SERVICE_DOCKERFILE:-property-service.dockerfile}
+      context: ${PROPERTY_SERVICE_CONTEXT}
+      dockerfile: ${PROPERTY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT:-Development}
-    container_name: ${PROJECT_PREFIX:-estate}-property-service-2
+        - ENVIRONMENT=${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-property-service-2
     ports:
-      - "${PROPERTY_HTTP_PORT_2:-5203}:5003"
-      - "${PROPERTY_HTTPS_PORT_2:-5303}:5103"
+      - "${PROPERTY_HTTP_PORT_2}:5003"
+      - "${PROPERTY_HTTPS_PORT_2}:5103"
     environment:
       - ServiceName=Property
-      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=1
-      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
-      - Minio__AccessKey=${MINIO_USER:-miniouser}
-      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
-      - Minio__UseSSL=${MINIO_USE_SSL:-false}
-      - Minio__BucketName=${MINIO_PROPERTY_BUCKET:-property-service}
+      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
+      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
+      - Minio__AccessKey=${MINIO_USER}
+      - Minio__SecretKey=${MINIO_PASSWORD}
+      - Minio__UseSSL=${MINIO_USE_SSL}
+      - Minio__BucketName=${MINIO_PROPERTY_BUCKET}
     volumes:
       - property_logs:/app/logs
     depends_on:
@@ -344,12 +337,12 @@ services:
   nginx:
     <<: *service-defaults
     build:
-      context: ${NGINX_CONTEXT:-./nginx}
-      dockerfile: ${NGINX_DOCKERFILE:-nginx.dockerfile}
-    container_name: ${PROJECT_PREFIX:-estate}-nginx
+      context: ${NGINX_CONTEXT}
+      dockerfile: ${NGINX_DOCKERFILE}
+    container_name: ${PROJECT_PREFIX}-nginx
     ports:
-      - "${HTTP_PORT:-80}:80"
-      - "${HTTPS_PORT:-443}:443"
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
@@ -368,22 +361,22 @@ services:
 networks:
   app_network:
     driver: bridge
-    name: ${PROJECT_PREFIX:-estate}_network
+    name: ${PROJECT_PREFIX}_network
 
 volumes:
   postgres_data:
-    name: ${PROJECT_PREFIX:-estate}_postgres_data
+    name: ${PROJECT_PREFIX}_postgres_data
   redis_data:
-    name: ${PROJECT_PREFIX:-estate}_redis_data
+    name: ${PROJECT_PREFIX}_redis_data
   minio_data:
-    name: ${PROJECT_PREFIX:-estate}_minio_data
+    name: ${PROJECT_PREFIX}_minio_data
   rabbitmq_data:
-    name: ${PROJECT_PREFIX:-estate}_rabbitmq_data
+    name: ${PROJECT_PREFIX}_rabbitmq_data
   functional_logs:
-    name: ${PROJECT_PREFIX:-estate}_functional_logs
+    name: ${PROJECT_PREFIX}_functional_logs
   identity_logs:
-    name: ${PROJECT_PREFIX:-estate}_identity_logs
+    name: ${PROJECT_PREFIX}_identity_logs
   payment_logs:
-    name: ${PROJECT_PREFIX:-estate}_payment_logs
+    name: ${PROJECT_PREFIX}_payment_logs
   property_logs:
-    name: ${PROJECT_PREFIX:-estate}_property_logs
+    name: ${PROJECT_PREFIX}_property_logs
