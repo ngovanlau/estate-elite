@@ -1,5 +1,3 @@
-version: "3.8"
-
 # Common environment variables extracted for consistency and easier management
 x-common-variables: &common-variables
   POSTGRES_HOST: ${POSTGRES_HOST}
@@ -36,28 +34,28 @@ x-service-defaults: &service-defaults
 # Common settings for microservices
 x-microservice-defaults: &microservice-defaults
   <<: *service-defaults
-  environment:
-    - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
-    - ConnectionStrings__PostgresConnection=Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-    - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD}
-    - RabbitMQ__HostName=${RABBITMQ_HOST}
-    - RabbitMQ__UserName=${RABBITMQ_USER}
-    - RabbitMQ__Password=${RABBITMQ_PASSWORD}
-    - RabbitMQ__VirtualHost=${RABBITMQ_VHOST}
-    - RabbitMQ__Port=${RABBITMQ_PORT}
-    - RabbitMQ__RetryCount=${RABBITMQ_RETRY_COUNT}
-    - JWT__SecretKey=${JWT_SECRET_KEY}
-    - JWT__Issuer=${JWT_ISSUER}
-    - JWT__Audience=${JWT_AUDIENCE}
-    - JWT__AccessTokenExpirationInMinutes=${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES}
-    - JWT__RefreshTokenExpirationInDays=${JWT_REFRESH_TOKEN_EXPIRATION_DAYS}
-    - JWT__RefreshTokenSlidingExpirationInMinutes=${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES}
-    - JWT__TokenType=${JWT_TOKEN_TYPE}
-    - Serilog__MinimumLevel__Default=Information
-    - Serilog__MinimumLevel__Override__Microsoft=Warning
-    - Serilog__MinimumLevel__Override__System=Warning
-    - Serilog__MinimumLevel__Override__Microsoft.AspNetCore=Warning
-    - Serilog__MinimumLevel__Override__Microsoft.EntityFrameworkCore=Warning
+  environment: &microservice-env
+    ConnectionStrings__PostgresConnection: "Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
+    ConnectionStrings__RedisConnection: "${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0"
+    ASPNETCORE_ENVIRONMENT: "${ENVIRONMENT}"
+    RabbitMQ__HostName: "${RABBITMQ_HOST}"
+    RabbitMQ__UserName: "${RABBITMQ_USER}"
+    RabbitMQ__Password: "${RABBITMQ_PASSWORD}"
+    RabbitMQ__VirtualHost: "${RABBITMQ_VHOST}"
+    RabbitMQ__Port: "${RABBITMQ_PORT}"
+    RabbitMQ__RetryCount: "${RABBITMQ_RETRY_COUNT}"
+    JWT__SecretKey: "${JWT_SECRET_KEY}"
+    JWT__Issuer: "${JWT_ISSUER}"
+    JWT__Audience: "${JWT_AUDIENCE}"
+    JWT__AccessTokenExpirationInMinutes: "${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES}"
+    JWT__RefreshTokenExpirationInDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS}"
+    JWT__RefreshTokenSlidingExpirationInMinutes: "${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES}"
+    JWT__TokenType: "${JWT_TOKEN_TYPE}"
+    Serilog__MinimumLevel__Default: "Information"
+    Serilog__MinimumLevel__Override__Microsoft: "Warning"
+    Serilog__MinimumLevel__Override__System: "Warning"
+    Serilog__MinimumLevel__Override__Microsoft.AspNetCore: "Warning"
+    Serilog__MinimumLevel__Override__Microsoft.EntityFrameworkCore: "Warning"
   depends_on:
     postgres:
       condition: service_healthy
@@ -161,6 +159,12 @@ services:
       - SmtpSetting__SenderName=${SMTP_SENDER_NAME}
     volumes:
       - functional_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   functional-service-2:
     <<: *microservice-defaults
@@ -183,6 +187,12 @@ services:
       - SmtpSetting__SenderName=${SMTP_SENDER_NAME}
     volumes:
       - functional_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   identity-service-1:
     <<: *microservice-defaults
@@ -196,23 +206,30 @@ services:
       - "${IDENTITY_HTTP_PORT_1}:5001"
       - "${IDENTITY_HTTPS_PORT_1}:5101"
     environment:
-      - ServiceName=Identity
-      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
-      - Minio__AccessKey=${MINIO_USER}
-      - Minio__SecretKey=${MINIO_PASSWORD}
-      - Minio__UseSSL=${MINIO_USE_SSL}
-      - Minio__BucketName=${MINIO_IDENTITY_BUCKET}
-      - Google__ClientId=${GOOGLE_CLIENT_ID}
-      - Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
-      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS}
-      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH}
-      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES}
-      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS}
+      <<: *microservice-env
+      ServiceName: "Identity"
+      Minio__Endpoint: "http://${MINIO_HOST}:${MINIO_PORT}"
+      Minio__AccessKey: "${MINIO_USER}"
+      Minio__SecretKey: "${MINIO_PASSWORD}"
+      Minio__UseSSL: "${MINIO_USE_SSL}"
+      Minio__BucketName: "${MINIO_IDENTITY_BUCKET}"
+      Google__ClientId: "${GOOGLE_CLIENT_ID}"
+      Google__ClientSecret: "${GOOGLE_CLIENT_SECRET}"
+      ConfirmationCode__AllowedChars: "${CONFIRMATION_CODE_ALLOWED_CHARS}"
+      ConfirmationCode__CodeLength: "${CONFIRMATION_CODE_LENGTH}"
+      ConfirmationCode__ExpirationTimeInMinutes: "${CONFIRMATION_CODE_EXPIRATION_MINUTES}"
+      ConfirmationCode__MaximumAttempts: "${CONFIRMATION_CODE_MAX_ATTEMPTS}"
     volumes:
       - identity_logs:/app/logs
     depends_on:
       minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   identity-service-2:
     <<: *microservice-defaults
@@ -227,6 +244,7 @@ services:
       - "${IDENTITY_HTTPS_PORT_2}:5101"
     environment:
       - ServiceName=Identity
+      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
       - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
       - Minio__AccessKey=${MINIO_USER}
       - Minio__SecretKey=${MINIO_PASSWORD}
@@ -243,6 +261,12 @@ services:
     depends_on:
       minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   payment-service-1:
     <<: *microservice-defaults
@@ -256,13 +280,19 @@ services:
       - "${PAYMENT_HTTP_PORT_1}:5003"
       - "${PAYMENT_HTTPS_PORT_1}:5103"
     environment:
-      - ServiceName=PaymentService
+      - ServiceName=Payment
       - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
       - Paypal__ClientId=${PAYPAL_CLIENT_ID}
       - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
       - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX}
     volumes:
       - payment_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   payment-service-2:
     <<: *microservice-defaults
@@ -273,16 +303,22 @@ services:
         - ENVIRONMENT=${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-payment-service-2
     ports:
-      - "${PAYMENT_HTTP_PORT_2}:5002"
-      - "${PAYMENT_HTTPS_PORT_2}:5102"
+      - "${PAYMENT_HTTP_PORT_2}:5003"
+      - "${PAYMENT_HTTPS_PORT_2}:5103"
     environment:
-      - ServiceName=PaymentService
+      - ServiceName=Payment
       - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
       - Paypal__ClientId=${PAYPAL_CLIENT_ID}
       - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
       - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX}
     volumes:
       - payment_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   property-service-1:
     <<: *microservice-defaults
@@ -308,6 +344,12 @@ services:
     depends_on:
       minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   property-service-2:
     <<: *microservice-defaults
@@ -318,8 +360,8 @@ services:
         - ENVIRONMENT=${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-property-service-2
     ports:
-      - "${PROPERTY_HTTP_PORT_2}:5003"
-      - "${PROPERTY_HTTPS_PORT_2}:5103"
+      - "${PROPERTY_HTTP_PORT_2}:5002"
+      - "${PROPERTY_HTTPS_PORT_2}:5102"
     environment:
       - ServiceName=Property
       - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
@@ -333,6 +375,12 @@ services:
     depends_on:
       minio:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   nginx:
     <<: *service-defaults
@@ -349,14 +397,19 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./nginx/logs:/var/log/nginx
     depends_on:
-      - functional-service-1
-      - functional-service-2
+      # - functional-service-1
+      # - functional-service-2
       - identity-service-1
-      - identity-service-2
-      - payment-service-1
-      - payment-service-2
-      - property-service-1
-      - property-service-2
+      # - identity-service-2
+      # - payment-service-1
+      # - payment-service-2
+      # - property-service-1
+      # - property-service-2
+    healthcheck:
+      test: ["CMD", "service", "nginx", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
   app_network:
