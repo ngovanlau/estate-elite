@@ -1,346 +1,389 @@
 version: "3.8"
 
+# Common environment variables extracted for consistency and easier management
+x-common-variables: &common-variables
+  POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
+  POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+  POSTGRES_DB: ${POSTGRES_DB:-estate_elite}
+  POSTGRES_USER: ${POSTGRES_USER:-estate_user}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongPasswordHere}
+  REDIS_HOST: ${REDIS_HOST:-redis}
+  REDIS_PORT: ${REDIS_PORT:-6379}
+  REDIS_PASSWORD: ${REDIS_PASSWORD:-strongRedisPasswordHere}
+  RABBITMQ_HOST: ${RABBITMQ_HOST:-rabbitmq}
+  RABBITMQ_USER: ${RABBITMQ_USER:-estate_user}
+  RABBITMQ_PASS: ${RABBITMQ_PASSWORD:-strongRabbitPasswordHere}
+  RABBITMQ_VHOST: ${RABBITMQ_VHOST:-/}
+  RABBITMQ_PORT: ${RABBITMQ_PORT:-5672}
+  RABBITMQ_RETRY_COUNT: ${RABBITMQ_RETRY_COUNT:-10}
+  MINIO_HOST: ${MINIO_HOST:-minio}
+  MINIO_PORT: ${MINIO_PORT:-9000}
+  MINIO_ROOT_USER: ${MINIO_USER:-miniouser}
+  MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-strongMinioPasswordHere}
+  MINIO_USE_SSL: ${MINIO_USE_SSL:-false}
+
+# Common service settings for application services
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  networks:
+    - app_network
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+# Common settings for microservices
+x-microservice-defaults: &microservice-defaults
+  <<: *service-defaults
+  environment:
+    - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT:-Development}
+    - ConnectionStrings__PostgresConnection=Host=${POSTGRES_HOST:-postgres};Port=${POSTGRES_PORT:-5432};Database=${POSTGRES_DB:-estate_elite};Username=${POSTGRES_USER:-estate_user};Password=${POSTGRES_PASSWORD:-strongPasswordHere}
+    - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere}
+    - RabbitMQ__HostName=${RABBITMQ_HOST:-rabbitmq}
+    - RabbitMQ__UserName=${RABBITMQ_USER:-estate_user}
+    - RabbitMQ__Password=${RABBITMQ_PASSWORD:-strongRabbitPasswordHere}
+    - RabbitMQ__VirtualHost=${RABBITMQ_VHOST:-/}
+    - RabbitMQ__Port=${RABBITMQ_PORT:-5672}
+    - RabbitMQ__RetryCount=${RABBITMQ_RETRY_COUNT:-10}
+    - JWT__SecretKey=${JWT_SECRET_KEY}
+    - JWT__Issuer=${JWT_ISSUER:-https://localhost:5001}
+    - JWT__Audience=${JWT_AUDIENCE:-https://localhost:3000}
+    - JWT__AccessTokenExpirationInMinutes=${JWT_ACCESS_TOKEN_EXPIRATION_MINUTES:-30}
+    - JWT__RefreshTokenExpirationInDays=${JWT_REFRESH_TOKEN_EXPIRATION_DAYS:-1}
+    - JWT__RefreshTokenSlidingExpirationInMinutes=${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES:-30}
+    - JWT__TokenType=${JWT_TOKEN_TYPE:-Bearer}
+    - Serilog__MinimumLevel__Default=Information
+    - Serilog__MinimumLevel__Override__Microsoft=Warning
+    - Serilog__MinimumLevel__Override__System=Warning
+    - Serilog__MinimumLevel__Override__Microsoft.AspNetCore=Warning
+    - Serilog__MinimumLevel__Override__Microsoft.EntityFrameworkCore=Warning
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    rabbitmq:
+      condition: service_healthy
+
 services:
   # Infrastructure Services
   postgres:
-    image: postgres
-    container_name: postgres-container
+    <<: *service-defaults
+    image: postgres:16-alpine
+    container_name: ${PROJECT_PREFIX:-estate}-postgres
     environment:
-      POSTGRES_USER: lau
-      POSTGRES_PASSWORD: lau2962003
-      POSTGRES_DB: estate_elite
+      POSTGRES_USER: ${POSTGRES_USER:-estate_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongPasswordHere}
+      POSTGRES_DB: ${POSTGRES_DB:-estate_elite}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_network
+      - ./postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lau"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-estate_user}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
   redis:
-    image: redis
-    container_name: redis-container
-    command: redis-server --requirepass lau2962003 --appendonly yes
+    <<: *service-defaults
+    image: redis:alpine
+    container_name: ${PROJECT_PREFIX:-estate}-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-strongRedisPasswordHere} --appendonly yes
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
-      - redis-data:/data
-    networks:
-      - app_network
+      - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "lau2962003", "ping"]
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "-a",
+          "${REDIS_PASSWORD:-strongRedisPasswordHere}",
+          "ping",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
   minio:
-    image: minio/minio
-    container_name: minio-container
+    <<: *service-defaults
+    image: minio/minio:latest
+    container_name: ${PROJECT_PREFIX:-estate}-minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - minio_data:/data
-    networks:
-      - app_network
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: ${MINIO_USER:-miniouser}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-strongMinioPasswordHere}
     command: server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 5
-    restart: unless-stopped
 
   rabbitmq:
-    image: rabbitmq:management
-    container_name: rabbitmq-container
+    <<: *service-defaults
+    image: rabbitmq:management-alpine
+    container_name: ${PROJECT_PREFIX:-estate}-rabbitmq
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=lau
-      - RABBITMQ_DEFAULT_PASS=lau2962003
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-estate_user}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-strongRabbitPasswordHere}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - app_network
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 30s
       timeout: 10s
       retries: 5
-    restart: unless-stopped
 
   # Application Services
   functional-service-1:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: functional-service.dockerfile
-    container_name: functional-service-container-1
+      context: ${FUNCTIONAL_SERVICE_CONTEXT:-../src}
+      dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE:-functional-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-functional-service-1
     ports:
-      - "5000:5000"
-      - "5100:5100"
+      - "${FUNCTIONAL_HTTP_PORT_1:-5000}:5000"
+      - "${FUNCTIONAL_HTTPS_PORT_1:-5100}:5100"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
+      - ServiceName=Functional
+      - SmtpSetting__Server=${SMTP_SERVER:-smtp.gmail.com}
+      - SmtpSetting__Port=${SMTP_PORT:-587}
+      - SmtpSetting__Username=${SMTP_USERNAME}
+      - SmtpSetting__Password=${SMTP_PASSWORD}
+      - SmtpSetting__SenderEmail=${SMTP_SENDER_EMAIL}
+      - SmtpSetting__SenderName=${SMTP_SENDER_NAME:-"Estate Elite"}
     volumes:
       - functional_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   functional-service-2:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: functional-service.dockerfile
-    container_name: functional-service-container-2
+      context: ${FUNCTIONAL_SERVICE_CONTEXT:-../src}
+      dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE:-functional-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-functional-service-2
     ports:
-      - "5200:5000"
-      - "5300:5100"
+      - "${FUNCTIONAL_HTTP_PORT_2:-5200}:5000"
+      - "${FUNCTIONAL_HTTPS_PORT_2:-5300}:5100"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
+      - ServiceName=Functional
+      - SmtpSetting__Server=${SMTP_SERVER:-smtp.gmail.com}
+      - SmtpSetting__Port=${SMTP_PORT:-587}
+      - SmtpSetting__Username=${SMTP_USERNAME}
+      - SmtpSetting__Password=${SMTP_PASSWORD}
+      - SmtpSetting__SenderEmail=${SMTP_SENDER_EMAIL}
+      - SmtpSetting__SenderName=${SMTP_SENDER_NAME:-"Estate Elite"}
     volumes:
       - functional_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   identity-service-1:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: identity-service.dockerfile
-    container_name: identity-service-container-1
+      context: ${IDENTITY_SERVICE_CONTEXT:-../src}
+      dockerfile: ${IDENTITY_SERVICE_DOCKERFILE:-identity-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-identity-service-1
     ports:
-      - "5001:5001"
-      - "5101:5101"
+      - "${IDENTITY_HTTP_PORT_1:-5001}:5001"
+      - "${IDENTITY_HTTPS_PORT_1:-5101}:5101"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
+      - ServiceName=Identity
+      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
+      - Minio__AccessKey=${MINIO_USER:-miniouser}
+      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
+      - Minio__UseSSL=${MINIO_USE_SSL:-false}
+      - Minio__BucketName=${MINIO_IDENTITY_BUCKET:-identity-service}
+      - Google__ClientId=${GOOGLE_CLIENT_ID}
+      - Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
+      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS:-0123456789}
+      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH:-6}
+      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES:-5}
+      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS:-3}
     volumes:
       - identity_logs:/app/logs
     depends_on:
-      postgres:
+      minio:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   identity-service-2:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: identity-service.dockerfile
-    container_name: identity-service-container-2
+      context: ${IDENTITY_SERVICE_CONTEXT:-../src}
+      dockerfile: ${IDENTITY_SERVICE_DOCKERFILE:-identity-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-identity-service-2
     ports:
-      - "5201:5001"
-      - "5301:5101"
+      - "${IDENTITY_HTTP_PORT_2:-5201}:5001"
+      - "${IDENTITY_HTTPS_PORT_2:-5301}:5101"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
+      - ServiceName=Identity
+      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
+      - Minio__AccessKey=${MINIO_USER:-miniouser}
+      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
+      - Minio__UseSSL=${MINIO_USE_SSL:-false}
+      - Minio__BucketName=${MINIO_IDENTITY_BUCKET:-identity-service}
+      - Google__ClientId=${GOOGLE_CLIENT_ID}
+      - Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
+      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS:-0123456789}
+      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH:-6}
+      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES:-5}
+      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS:-3}
     volumes:
       - identity_logs:/app/logs
     depends_on:
-      postgres:
+      minio:
         condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   payment-service-1:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: payment-service.dockerfile
-    container_name: payment-service-container-1
+      context: ${PAYMENT_SERVICE_CONTEXT:-../src}
+      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE:-payment-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-payment-service-1
     ports:
-      - "5002:5002"
-      - "5102:5102"
+      - "${PAYMENT_HTTP_PORT_1:-5003}:5003"
+      - "${PAYMENT_HTTPS_PORT_1:-5103}:5103"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
+      - ServiceName=PaymentService
+      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=2
+      - Paypal__ClientId=${PAYPAL_CLIENT_ID}
+      - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
+      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX:-true}
     volumes:
       - payment_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   payment-service-2:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: payment-service.dockerfile
-    container_name: payment-service-container-2
+      context: ${PAYMENT_SERVICE_CONTEXT:-../src}
+      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE:-payment-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-payment-service-2
     ports:
-      - "5202:5002"
-      - "5302:5102"
+      - "${PAYMENT_HTTP_PORT_2:-5202}:5002"
+      - "${PAYMENT_HTTPS_PORT_2:-5302}:5102"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
+      - ServiceName=PaymentService
+      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=2
+      - Paypal__ClientId=${PAYPAL_CLIENT_ID}
+      - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
+      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX:-true}
     volumes:
       - payment_logs:/app/logs
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   property-service-1:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: property-service.dockerfile
-    container_name: property-service-container-1
+      context: ${PROPERTY_SERVICE_CONTEXT:-../src}
+      dockerfile: ${PROPERTY_SERVICE_DOCKERFILE:-property-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-property-service-1
     ports:
-      - "5003:5003"
-      - "5103:5103"
+      - "${PROPERTY_HTTP_PORT_1:-5002}:5002"
+      - "${PROPERTY_HTTPS_PORT_1:-5102}:5102"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-      - MinIO__Endpoint=minio:9000
-      - MinIO__AccessKey=minioadmin
-      - MinIO__SecretKey=minioadmin
+      - ServiceName=Property
+      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=1
+      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
+      - Minio__AccessKey=${MINIO_USER:-miniouser}
+      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
+      - Minio__UseSSL=${MINIO_USE_SSL:-false}
+      - Minio__BucketName=${MINIO_PROPERTY_BUCKET:-property-service}
     volumes:
       - property_logs:/app/logs
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
       minio:
         condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   property-service-2:
+    <<: *microservice-defaults
     build:
-      context: ../src
-      dockerfile: property-service.dockerfile
-    container_name: property-service-container-2
+      context: ${PROPERTY_SERVICE_CONTEXT:-../src}
+      dockerfile: ${PROPERTY_SERVICE_DOCKERFILE:-property-service.dockerfile}
+      args:
+        - ENVIRONMENT=${ENVIRONMENT:-Development}
+    container_name: ${PROJECT_PREFIX:-estate}-property-service-2
     ports:
-      - "5203:5003"
-      - "5303:5103"
+      - "${PROPERTY_HTTP_PORT_2:-5203}:5003"
+      - "${PROPERTY_HTTPS_PORT_2:-5303}:5103"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PostgresConnection=Host=postgres;Port=5432;Database=estate_elite;Username=lau;Password=lau2962003
-      - ConnectionStrings__Redis=redis:6379,password=lau2962003
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=lau
-      - RabbitMQ__Password=lau2962003
-      - MinIO__Endpoint=minio:9000
-      - MinIO__AccessKey=minioadmin
-      - MinIO__SecretKey=minioadmin
+      - ServiceName=Property
+      - ConnectionStrings__Redis=${REDIS_HOST:-redis}:${REDIS_PORT:-6379},password=${REDIS_PASSWORD:-strongRedisPasswordHere},defaultDatabase=1
+      - Minio__Endpoint=http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
+      - Minio__AccessKey=${MINIO_USER:-miniouser}
+      - Minio__SecretKey=${MINIO_PASSWORD:-strongMinioPasswordHere}
+      - Minio__UseSSL=${MINIO_USE_SSL:-false}
+      - Minio__BucketName=${MINIO_PROPERTY_BUCKET:-property-service}
     volumes:
       - property_logs:/app/logs
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
       minio:
         condition: service_healthy
-    networks:
-      - app_network
-    restart: unless-stopped
 
   nginx:
+    <<: *service-defaults
     build:
-      context: ./nginx
-      dockerfile: nginx.dockerfile
-    container_name: nginx-container
+      context: ${NGINX_CONTEXT:-./nginx}
+      dockerfile: ${NGINX_DOCKERFILE:-nginx.dockerfile}
+    container_name: ${PROJECT_PREFIX:-estate}-nginx
     ports:
-      - "80:80"
-      - "443:443"
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
-    networks:
-      - app_network
-    restart: unless-stopped
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - functional-service-1
+      - functional-service-2
+      - identity-service-1
+      - identity-service-2
+      - payment-service-1
+      - payment-service-2
+      - property-service-1
+      - property-service-2
 
 networks:
   app_network:
     driver: bridge
+    name: ${PROJECT_PREFIX:-estate}_network
 
 volumes:
   postgres_data:
-  redis-data:
+    name: ${PROJECT_PREFIX:-estate}_postgres_data
+  redis_data:
+    name: ${PROJECT_PREFIX:-estate}_redis_data
   minio_data:
+    name: ${PROJECT_PREFIX:-estate}_minio_data
   rabbitmq_data:
+    name: ${PROJECT_PREFIX:-estate}_rabbitmq_data
   functional_logs:
+    name: ${PROJECT_PREFIX:-estate}_functional_logs
   identity_logs:
+    name: ${PROJECT_PREFIX:-estate}_identity_logs
   payment_logs:
+    name: ${PROJECT_PREFIX:-estate}_payment_logs
   property_logs:
+    name: ${PROJECT_PREFIX:-estate}_property_logs
