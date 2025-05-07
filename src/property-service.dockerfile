@@ -17,7 +17,7 @@ COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Red
 RUN dotnet restore Services/PropertyService/PropertyService.API/PropertyService.API.csproj
 
 # Copy everything else and maintain directory structure
-COPY Services/ /src/Services/
+COPY Services/PropertyService/ /src/Services/PropertyService/
 COPY BuildingBlocks/ /src/BuildingBlocks/
 
 # Build the project

@@ -14,7 +14,7 @@ COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Red
 RUN dotnet restore Services/FunctionalService/FunctionalService.csproj
 
 # Copy everything else and maintain directory structure
-COPY Services/ /src/Services/
+COPY Services/FunctionalService/ /src/Services/FunctionalService/
 COPY BuildingBlocks/ /src/BuildingBlocks/
 
 # Build the project

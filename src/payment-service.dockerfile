@@ -17,7 +17,7 @@ COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Red
 RUN dotnet restore Services/PaymentService/PaymentService.API/PaymentService.API.csproj
 
 # Copy everything else and maintain directory structure
-COPY Services/ /src/Services/
+COPY Services/PaymentService/ /src/Services/PaymentService/
 COPY BuildingBlocks/ /src/BuildingBlocks/
 
 # Build the project

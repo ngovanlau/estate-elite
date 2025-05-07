@@ -17,7 +17,7 @@ COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Red
 RUN dotnet restore Services/IdentityService/IdentityService.API/IdentityService.API.csproj
 
 # Copy everything else and maintain directory structure
-COPY Services/ /src/Services/
+COPY Services/IdentityService/ /src/Services/IdentityService/
 COPY BuildingBlocks/ /src/BuildingBlocks/
 
 # Build the project
