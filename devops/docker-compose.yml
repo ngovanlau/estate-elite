@@ -143,7 +143,7 @@ services:
   functional-service-1:
     <<: *microservice-defaults
     build:
-      context: ${FUNCTIONAL_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -165,7 +165,7 @@ services:
   functional-service-2:
     <<: *microservice-defaults
     build:
-      context: ${FUNCTIONAL_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -187,7 +187,7 @@ services:
   identity-service-1:
     <<: *microservice-defaults
     build:
-      context: ${IDENTITY_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${IDENTITY_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -217,7 +217,7 @@ services:
   identity-service-2:
     <<: *microservice-defaults
     build:
-      context: ${IDENTITY_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${IDENTITY_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -247,7 +247,7 @@ services:
   payment-service-1:
     <<: *microservice-defaults
     build:
-      context: ${PAYMENT_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -267,7 +267,7 @@ services:
   payment-service-2:
     <<: *microservice-defaults
     build:
-      context: ${PAYMENT_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -287,7 +287,7 @@ services:
   property-service-1:
     <<: *microservice-defaults
     build:
-      context: ${PROPERTY_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${PROPERTY_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
@@ -312,7 +312,7 @@ services:
   property-service-2:
     <<: *microservice-defaults
     build:
-      context: ${PROPERTY_SERVICE_CONTEXT}
+      context: ${SERVICE_CONTEXT}
       dockerfile: ${PROPERTY_SERVICE_DOCKERFILE}
       args:
         - ENVIRONMENT=${ENVIRONMENT}
