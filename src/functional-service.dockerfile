@@ -40,4 +40,4 @@ RUN mkdir -p /app/logs
 EXPOSE 5000
 EXPOSE 5100
 
-ENTRYPOINT ["dotnet", "FunctionalService.API.dll"]
+ENTRYPOINT ["dotnet", "FunctionalService.dll"]

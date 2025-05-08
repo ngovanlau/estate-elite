@@ -110,6 +110,8 @@ try
         }
     });
 
+    builder.Services.AddDataProtection();
+
     var app = builder.Build();
 
     // Configure middleware pipeline

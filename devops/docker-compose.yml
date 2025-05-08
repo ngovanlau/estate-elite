@@ -32,11 +32,10 @@ x-service-defaults: &service-defaults
       max-file: "3"
 
 # Common settings for microservices
-x-microservice-defaults: &microservice-defaults
+x-microservices-defaults: &microservices-defaults
   <<: *service-defaults
-  environment: &microservice-env
+  environment: &microservices-environment
     ConnectionStrings__PostgresConnection: "Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
-    ConnectionStrings__RedisConnection: "${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0"
     ASPNETCORE_ENVIRONMENT: "${ENVIRONMENT}"
     RabbitMQ__HostName: "${RABBITMQ_HOST}"
     RabbitMQ__UserName: "${RABBITMQ_USER}"
@@ -63,6 +62,55 @@ x-microservice-defaults: &microservice-defaults
       condition: service_healthy
     rabbitmq:
       condition: service_healthy
+
+x-minio-environment: &minio-environment
+  Minio__Endpoint: http://${MINIO_HOST}:${MINIO_PORT}
+  Minio__AccessKey: ${MINIO_USER}
+  Minio__SecretKey: ${MINIO_PASSWORD}
+  Minio__UseSSL: ${MINIO_USE_SSL}
+  Minio__BucketName: ${MINIO_IDENTITY_BUCKET}
+
+x-functional-service-environment: &functional-service-environment
+  <<: *microservices-environment
+  ServiceName: Functional
+  SmtpSetting__Server: ${SMTP_SERVER}
+  SmtpSetting__Port: ${SMTP_PORT}
+  SmtpSetting__Username: ${SMTP_USERNAME}
+  SmtpSetting__Password: ${SMTP_PASSWORD}
+  SmtpSetting__SenderEmail: ${SMTP_SENDER_EMAIL}
+  SmtpSetting__SenderName: ${SMTP_SENDER_NAME}
+
+x-identity-service-environment: &identity-service-environment
+  <<: [*microservices-environment, *minio-environment]
+  ServiceName: Identity
+  ConnectionStrings__Redis: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
+  Google__ClientId: ${GOOGLE_CLIENT_ID}
+  Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
+  ConfirmationCode__AllowedChars: ${CONFIRMATION_CODE_ALLOWED_CHARS}
+  ConfirmationCode__CodeLength: ${CONFIRMATION_CODE_LENGTH}
+  ConfirmationCode__ExpirationTimeInMinutes: ${CONFIRMATION_CODE_EXPIRATION_MINUTES}
+  ConfirmationCode__MaximumAttempts: ${CONFIRMATION_CODE_MAX_ATTEMPTS}
+  # Cấu hình DataProtection
+  DataProtection__CertificateThumbprint: ${DATA_PROTECTION_CERT_THUMBPRINT:-}
+  DataProtection__UseX509Certificate: ${DATA_PROTECTION_USE_CERT:-false}
+
+x-property-service-environment: &property-service-environment
+  <<: [*microservices-environment, *minio-environment]
+  ServiceName: Property
+  ConnectionStrings__Redis: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
+  Minio__Endpoint: http://${MINIO_HOST}:${MINIO_PORT}
+  Minio__AccessKey: ${MINIO_USER}
+  Minio__SecretKey: ${MINIO_PASSWORD}
+  Minio__UseSSL: ${MINIO_USE_SSL}
+  Minio__BucketName: ${MINIO_PROPERTY_BUCKET}
+
+x-payment-service-environment: &payment-service-environment
+  <<: *microservices-environment
+  ServiceName: Payment
+  ConnectionStrings__Redis: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
+  Paypal__ClientId: ${PAYPAL_CLIENT_ID}
+  Paypal__ClientSecret: ${PAYPAL_CLIENT_SECRET}
+  Paypal__UseSandbox: ${PAYPAL_USE_SANDBOX}
 
 services:
   # Infrastructure Services
@@ -139,88 +187,74 @@ services:
 
   # Application Services
   functional-service-1:
-    <<: *microservice-defaults
+    <<: *microservices-defaults
     build:
       context: ${SERVICE_CONTEXT}
       dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT}
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-functional-service-1
     ports:
       - "${FUNCTIONAL_HTTP_PORT_1}:5000"
       - "${FUNCTIONAL_HTTPS_PORT_1}:5100"
-    environment:
-      - ServiceName=Functional
-      - SmtpSetting__Server=${SMTP_SERVER}
-      - SmtpSetting__Port=${SMTP_PORT}
-      - SmtpSetting__Username=${SMTP_USERNAME}
-      - SmtpSetting__Password=${SMTP_PASSWORD}
-      - SmtpSetting__SenderEmail=${SMTP_SENDER_EMAIL}
-      - SmtpSetting__SenderName=${SMTP_SENDER_NAME}
+    environment: *functional-service-environment
     volumes:
       - functional_logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${FUNCTIONAL_HTTP_PORT_1}/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 20s
 
   functional-service-2:
-    <<: *microservice-defaults
+    <<: *microservices-defaults
     build:
       context: ${SERVICE_CONTEXT}
       dockerfile: ${FUNCTIONAL_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT}
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-functional-service-2
     ports:
       - "${FUNCTIONAL_HTTP_PORT_2}:5000"
       - "${FUNCTIONAL_HTTPS_PORT_2}:5100"
-    environment:
-      - ServiceName=Functional
-      - SmtpSetting__Server=${SMTP_SERVER}
-      - SmtpSetting__Port=${SMTP_PORT}
-      - SmtpSetting__Username=${SMTP_USERNAME}
-      - SmtpSetting__Password=${SMTP_PASSWORD}
-      - SmtpSetting__SenderEmail=${SMTP_SENDER_EMAIL}
-      - SmtpSetting__SenderName=${SMTP_SENDER_NAME}
+    environment: *functional-service-environment
     volumes:
       - functional_logs:/app/logs
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:${FUNCTIONAL_HTTP_PORT_2}/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 20s
 
   identity-service-1:
-    <<: *microservice-defaults
+    <<: *microservices-defaults
     build:
       context: ${SERVICE_CONTEXT}
       dockerfile: ${IDENTITY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT}
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-identity-service-1
     ports:
       - "${IDENTITY_HTTP_PORT_1}:5001"
       - "${IDENTITY_HTTPS_PORT_1}:5101"
-    environment:
-      <<: *microservice-env
-      ServiceName: "Identity"
-      Minio__Endpoint: "http://${MINIO_HOST}:${MINIO_PORT}"
-      Minio__AccessKey: "${MINIO_USER}"
-      Minio__SecretKey: "${MINIO_PASSWORD}"
-      Minio__UseSSL: "${MINIO_USE_SSL}"
-      Minio__BucketName: "${MINIO_IDENTITY_BUCKET}"
-      Google__ClientId: "${GOOGLE_CLIENT_ID}"
-      Google__ClientSecret: "${GOOGLE_CLIENT_SECRET}"
-      ConfirmationCode__AllowedChars: "${CONFIRMATION_CODE_ALLOWED_CHARS}"
-      ConfirmationCode__CodeLength: "${CONFIRMATION_CODE_LENGTH}"
-      ConfirmationCode__ExpirationTimeInMinutes: "${CONFIRMATION_CODE_EXPIRATION_MINUTES}"
-      ConfirmationCode__MaximumAttempts: "${CONFIRMATION_CODE_MAX_ATTEMPTS}"
+    environment: *identity-service-environment
     volumes:
       - identity_logs:/app/logs
+      - dataprotection_keys:/root/.aspnet/DataProtection-Keys # Volume cho DataProtection keys
     depends_on:
       minio:
         condition: service_healthy
@@ -232,32 +266,20 @@ services:
       start_period: 20s
 
   identity-service-2:
-    <<: *microservice-defaults
+    <<: *microservices-defaults
     build:
       context: ${SERVICE_CONTEXT}
       dockerfile: ${IDENTITY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT}
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-identity-service-2
     ports:
       - "${IDENTITY_HTTP_PORT_2}:5001"
       - "${IDENTITY_HTTPS_PORT_2}:5101"
-    environment:
-      - ServiceName=Identity
-      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
-      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
-      - Minio__AccessKey=${MINIO_USER}
-      - Minio__SecretKey=${MINIO_PASSWORD}
-      - Minio__UseSSL=${MINIO_USE_SSL}
-      - Minio__BucketName=${MINIO_IDENTITY_BUCKET}
-      - Google__ClientId=${GOOGLE_CLIENT_ID}
-      - Google__ClientSecret=${GOOGLE_CLIENT_SECRET}
-      - ConfirmationCode__AllowedChars=${CONFIRMATION_CODE_ALLOWED_CHARS}
-      - ConfirmationCode__CodeLength=${CONFIRMATION_CODE_LENGTH}
-      - ConfirmationCode__ExpirationTimeInMinutes=${CONFIRMATION_CODE_EXPIRATION_MINUTES}
-      - ConfirmationCode__MaximumAttempts=${CONFIRMATION_CODE_MAX_ATTEMPTS}
+    environment: *identity-service-environment
     volumes:
       - identity_logs:/app/logs
+      - dataprotection_keys:/root/.aspnet/DataProtection-Keys # Volume cho DataProtection keys
     depends_on:
       minio:
         condition: service_healthy
@@ -268,77 +290,18 @@ services:
       retries: 3
       start_period: 20s
 
-  payment-service-1:
-    <<: *microservice-defaults
-    build:
-      context: ${SERVICE_CONTEXT}
-      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
-      args:
-        - ENVIRONMENT=${ENVIRONMENT}
-    container_name: ${PROJECT_PREFIX}-payment-service-1
-    ports:
-      - "${PAYMENT_HTTP_PORT_1}:5003"
-      - "${PAYMENT_HTTPS_PORT_1}:5103"
-    environment:
-      - ServiceName=Payment
-      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
-      - Paypal__ClientId=${PAYPAL_CLIENT_ID}
-      - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
-      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX}
-    volumes:
-      - payment_logs:/app/logs
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
-  payment-service-2:
-    <<: *microservice-defaults
-    build:
-      context: ${SERVICE_CONTEXT}
-      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
-      args:
-        - ENVIRONMENT=${ENVIRONMENT}
-    container_name: ${PROJECT_PREFIX}-payment-service-2
-    ports:
-      - "${PAYMENT_HTTP_PORT_2}:5003"
-      - "${PAYMENT_HTTPS_PORT_2}:5103"
-    environment:
-      - ServiceName=Payment
-      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
-      - Paypal__ClientId=${PAYPAL_CLIENT_ID}
-      - Paypal__ClientSecret=${PAYPAL_CLIENT_SECRET}
-      - Paypal__UseSandbox=${PAYPAL_USE_SANDBOX}
-    volumes:
-      - payment_logs:/app/logs
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
   property-service-1:
-    <<: *microservice-defaults
+    <<: *microservices-defaults
     build:
       context: ${SERVICE_CONTEXT}
       dockerfile: ${PROPERTY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT}
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-property-service-1
     ports:
       - "${PROPERTY_HTTP_PORT_1}:5002"
       - "${PROPERTY_HTTPS_PORT_1}:5102"
-    environment:
-      - ServiceName=Property
-      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
-      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
-      - Minio__AccessKey=${MINIO_USER}
-      - Minio__SecretKey=${MINIO_PASSWORD}
-      - Minio__UseSSL=${MINIO_USE_SSL}
-      - Minio__BucketName=${MINIO_PROPERTY_BUCKET}
+    environment: *property-service-environment
     volumes:
       - property_logs:/app/logs
     depends_on:
@@ -352,24 +315,17 @@ services:
       start_period: 20s
 
   property-service-2:
-    <<: *microservice-defaults
+    <<: *microservices-defaults
     build:
       context: ${SERVICE_CONTEXT}
       dockerfile: ${PROPERTY_SERVICE_DOCKERFILE}
       args:
-        - ENVIRONMENT=${ENVIRONMENT}
+        ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-property-service-2
     ports:
       - "${PROPERTY_HTTP_PORT_2}:5002"
       - "${PROPERTY_HTTPS_PORT_2}:5102"
-    environment:
-      - ServiceName=Property
-      - ConnectionStrings__Redis=${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
-      - Minio__Endpoint=http://${MINIO_HOST}:${MINIO_PORT}
-      - Minio__AccessKey=${MINIO_USER}
-      - Minio__SecretKey=${MINIO_PASSWORD}
-      - Minio__UseSSL=${MINIO_USE_SSL}
-      - Minio__BucketName=${MINIO_PROPERTY_BUCKET}
+    environment: *property-service-environment
     volumes:
       - property_logs:/app/logs
     depends_on:
@@ -377,6 +333,50 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  payment-service-1:
+    <<: *microservices-defaults
+    build:
+      context: ${SERVICE_CONTEXT}
+      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-payment-service-1
+    ports:
+      - "${PAYMENT_HTTP_PORT_1}:5003"
+      - "${PAYMENT_HTTPS_PORT_1}:5103"
+    environment: *payment-service-environment
+    volumes:
+      - payment_logs:/app/logs
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://localhost:${PAYMENT_HTTP_PORT_1}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  payment-service-2:
+    <<: *microservices-defaults
+    build:
+      context: ${SERVICE_CONTEXT}
+      dockerfile: ${PAYMENT_SERVICE_DOCKERFILE}
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+    container_name: ${PROJECT_PREFIX}-payment-service-2
+    ports:
+      - "${PAYMENT_HTTP_PORT_2}:5003"
+      - "${PAYMENT_HTTPS_PORT_2}:5103"
+    environment: *payment-service-environment
+    volumes:
+      - payment_logs:/app/logs
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://localhost:${PAYMENT_HTTP_PORT_2}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -397,14 +397,14 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./nginx/logs:/var/log/nginx
     depends_on:
-      # - functional-service-1
-      # - functional-service-2
+      - functional-service-1
+      - functional-service-2
       - identity-service-1
-      # - identity-service-2
-      # - payment-service-1
-      # - payment-service-2
-      # - property-service-1
-      # - property-service-2
+      - identity-service-2
+      - property-service-1
+      - property-service-2
+      - payment-service-1
+      - payment-service-2
     healthcheck:
       test: ["CMD", "service", "nginx", "status"]
       interval: 30s
@@ -429,7 +429,9 @@ volumes:
     name: ${PROJECT_PREFIX}_functional_logs
   identity_logs:
     name: ${PROJECT_PREFIX}_identity_logs
-  payment_logs:
-    name: ${PROJECT_PREFIX}_payment_logs
   property_logs:
     name: ${PROJECT_PREFIX}_property_logs
+  payment_logs:
+    name: ${PROJECT_PREFIX}_payment_logs
+  dataprotection_keys: # Volume mới cho DataProtection keys
+    name: ${PROJECT_PREFIX}_dataprotection_keys

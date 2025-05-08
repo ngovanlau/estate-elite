@@ -152,6 +152,8 @@ try
     await dbContext.Database.MigrateAsync();
     Log.Information("Database migrations applied successfully");
 
+    builder.Services.AddDataProtection();
+
     await app.RunAsync();
 }
 catch (Exception ex)
