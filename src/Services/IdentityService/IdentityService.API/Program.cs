@@ -5,6 +5,7 @@ using IdentityService.Application.Protos;
 using IdentityService.Infrastructure.Data;
 using IdentityService.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -39,6 +40,17 @@ try
     builder.Services.Configure<JsonOptions>(options =>
     {
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+    // Cấu hình Forwarded Headers để ứng dụng nhận biết đúng scheme (https) từ Nginx
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        // Khi chạy sau reverse proxy, bạn cần xóa các proxy/mạng đã biết mặc định
+        // vì proxy (Nginx) không nằm trên cùng máy (localhost) từ góc độ của container app.
+        options.KnownNetworks.Clear();
+        options.KnownProxies.Clear();
     });
 
     // Application Services
@@ -99,13 +111,7 @@ try
             // Fallback configuration
             options.ListenAnyIP(5001, listenOptions =>
             {
-                listenOptions.Protocols = HttpProtocols.Http1;
-            });
-
-            options.ListenAnyIP(5101, listenOptions =>
-            {
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                listenOptions.UseHttps();
             });
         }
     });
@@ -114,19 +120,19 @@ try
 
     var app = builder.Build();
 
+    app.UseForwardedHeaders();
+
     // Configure middleware pipeline
     if (env.IsDevelopment())
     {
         app.UseDeveloperExceptionPage();
 
-        // API Documentation
         app.UseSwagger();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity Service API v1"));
     }
     else
     {
         app.UseExceptionHandler("/error");
-        app.UseHsts();
     }
 
     // Middleware Pipeline

@@ -194,20 +194,13 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-functional-service-1
-    ports:
-      - "${FUNCTIONAL_HTTP_PORT_1}:5000"
-      - "${FUNCTIONAL_HTTPS_PORT_1}:5100"
-    environment: *functional-service-environment
+    environment:
+      <<: *functional-service-environment
+      ASPNETCORE_URLS: "http://*:5000"
     volumes:
       - functional_logs:/app/logs
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${FUNCTIONAL_HTTP_PORT_1}/health",
-        ]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -221,20 +214,13 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-functional-service-2
-    ports:
-      - "${FUNCTIONAL_HTTP_PORT_2}:5000"
-      - "${FUNCTIONAL_HTTPS_PORT_2}:5100"
-    environment: *functional-service-environment
+    environment:
+      <<: *functional-service-environment
+      ASPNETCORE_URLS: "http://*:5000"
     volumes:
       - functional_logs:/app/logs
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://localhost:${FUNCTIONAL_HTTP_PORT_2}/health",
-        ]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -248,13 +234,12 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-identity-service-1
-    ports:
-      - "${IDENTITY_HTTP_PORT_1}:5001"
-      - "${IDENTITY_HTTPS_PORT_1}:5101"
-    environment: *identity-service-environment
+    environment:
+      <<: *identity-service-environment
+      ASPNETCORE_URLS: "http://*:5001"
     volumes:
       - identity_logs:/app/logs
-      - dataprotection_keys:/root/.aspnet/DataProtection-Keys # Volume cho DataProtection keys
+      - dataprotection_keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       minio:
         condition: service_healthy
@@ -273,13 +258,12 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-identity-service-2
-    ports:
-      - "${IDENTITY_HTTP_PORT_2}:5001"
-      - "${IDENTITY_HTTPS_PORT_2}:5101"
-    environment: *identity-service-environment
+    environment:
+      <<: *identity-service-environment
+      ASPNETCORE_URLS: "http://*:5001"
     volumes:
       - identity_logs:/app/logs
-      - dataprotection_keys:/root/.aspnet/DataProtection-Keys # Volume cho DataProtection keys
+      - dataprotection_keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       minio:
         condition: service_healthy
@@ -298,10 +282,9 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-property-service-1
-    ports:
-      - "${PROPERTY_HTTP_PORT_1}:5002"
-      - "${PROPERTY_HTTPS_PORT_1}:5102"
-    environment: *property-service-environment
+    environment:
+      <<: *property-service-environment
+      ASPNETCORE_URLS: "http://*:5002"
     volumes:
       - property_logs:/app/logs
     depends_on:
@@ -322,10 +305,9 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-property-service-2
-    ports:
-      - "${PROPERTY_HTTP_PORT_2}:5002"
-      - "${PROPERTY_HTTPS_PORT_2}:5102"
-    environment: *property-service-environment
+    environment:
+      <<: *property-service-environment
+      ASPNETCORE_URLS: "http://*:5002"
     volumes:
       - property_logs:/app/logs
     depends_on:
@@ -346,15 +328,13 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-payment-service-1
-    ports:
-      - "${PAYMENT_HTTP_PORT_1}:5003"
-      - "${PAYMENT_HTTPS_PORT_1}:5103"
-    environment: *payment-service-environment
+    environment:
+      <<: *payment-service-environment
+      ASPNETCORE_URLS: "http://*:5003"
     volumes:
       - payment_logs:/app/logs
     healthcheck:
-      test:
-        ["CMD", "curl", "-f", "http://localhost:${PAYMENT_HTTP_PORT_1}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -368,15 +348,13 @@ services:
       args:
         ENVIRONMENT: ${ENVIRONMENT}
     container_name: ${PROJECT_PREFIX}-payment-service-2
-    ports:
-      - "${PAYMENT_HTTP_PORT_2}:5003"
-      - "${PAYMENT_HTTPS_PORT_2}:5103"
-    environment: *payment-service-environment
+    environment:
+      <<: *payment-service-environment
+      ASPNETCORE_URLS: "http://*:5003"
     volumes:
       - payment_logs:/app/logs
     healthcheck:
-      test:
-        ["CMD", "curl", "-f", "http://localhost:${PAYMENT_HTTP_PORT_2}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5003/health"]
       interval: 30s
       timeout: 10s
       retries: 3
