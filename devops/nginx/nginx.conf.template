@@ -1,0 +1,254 @@
+user nginx;
+worker_processes auto; # Automatically determine the number of CPU cores
+
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+    multi_accept on;    # Accept as many connections as possible
+    use epoll;          # Efficient connection processing for Linux
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log main;
+    error_log   /var/log/nginx/error.log warn;
+
+    # Performance optimizations
+    sendfile        on;
+    tcp_nopush      on;  # Optimize data sending
+    tcp_nodelay     on;  # Disable Nagle's algorithm
+    keepalive_timeout  65;
+    keepalive_requests 100;  # Number of requests per connection
+    client_body_buffer_size 128k;
+    client_max_body_size 10m;
+    client_body_timeout 60s;
+    client_header_timeout 60s;
+
+    # File descriptor caching
+    open_file_cache max=1000 inactive=20s;
+    open_file_cache_valid 30s;
+    open_file_cache_min_uses 2;
+    open_file_cache_errors on;
+
+    # Enable compression
+    gzip  on;
+    gzip_comp_level 6;
+    gzip_min_length 1000;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_vary on;
+
+    # Security headers
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:;" always;
+
+    # Định nghĩa zone cho rate limiting
+    limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s; # 10 requests per second
+
+    # --- Upstream Definitions ---
+    upstream identity_service {
+        least_conn;
+        server ${PROJECT_PREFIX}-identity-service-1:${IDENTITY_HTTP_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-identity-service-2:${IDENTITY_HTTP_PORT} backup;
+        keepalive 32;
+    }
+
+    upstream functional_service {
+        least_conn;
+        server ${PROJECT_PREFIX}-functional-service-1:${FUNCTIONAL_HTTP_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-functional-service-2:${FUNCTIONAL_HTTP_PORT} backup;
+        keepalive 32;
+    }
+
+    upstream property_service {
+        least_conn;
+        server ${PROJECT_PREFIX}-property-service-1:${PROPERTY_HTTP_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-property-service-2:${PROPERTY_HTTP_PORT} backup;
+        keepalive 32;
+    }
+
+    upstream payment_service {
+        least_conn;
+        server ${PROJECT_PREFIX}-payment-service-1:${PAYMENT_HTTP_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-payment-service-2:${PAYMENT_HTTP_PORT} backup;
+        keepalive 32;
+    }
+    # --- End Upstream Definitions ---
+
+    # Server block for HTTP (Port 80) - Redirect to HTTPS
+    server {
+        listen 80;
+        listen [::]:80;
+        server_name localhost estate-elite.com www.estate-elite.com;
+
+        # Monitor URI for health checks
+        location /health {
+            access_log off;
+            return 200 "Nginx is healthy\n";
+        }
+
+        location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    # Server block for HTTPS (Port 443)
+    server {
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
+        server_name localhost estate-elite.com www.estate-elite.com;
+
+        # SSL Configuration
+        ssl_certificate /etc/nginx/ssl/domain.crt;
+        ssl_certificate_key /etc/nginx/ssl/domain.key;
+
+        # Optimized SSL
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384';
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+        ssl_session_tickets off;
+        ssl_dhparam /etc/nginx/ssl/dhparam.pem; # Generate this file separately
+
+        # HSTS (HTTP Strict Transport Security)
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+
+        # Health check endpoint
+        location /health {
+            access_log off;
+            return 200 "Nginx is healthy\n";
+        }
+
+        # --- Location Blocks for Microservices ---
+        location /identity/ {
+            proxy_pass http://identity_service/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port $server_port;
+            
+            # Connection optimization
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            
+            # Timeouts
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            # Rate limiting
+            limit_req zone=one burst=5 nodelay;
+            
+            # Buffer sizes
+            proxy_buffer_size 16k;
+            proxy_buffers 8 16k;
+            proxy_busy_buffers_size 32k;
+        }
+
+        location /functional/ {
+            proxy_pass http://functional_service/;            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port $server_port;
+            
+            # Connection optimization
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            
+            # Timeouts
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            # Rate limiting
+            limit_req zone=one burst=5 nodelay;
+            
+            # Buffer sizes
+            proxy_buffer_size 16k;
+            proxy_buffers 8 16k;
+            proxy_busy_buffers_size 32k;
+        }
+
+        location /property/ {
+            proxy_pass http://property_service/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port $server_port;
+            
+            # Connection optimization
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            
+            # Timeouts
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            # Rate limiting
+            limit_req zone=one burst=5 nodelay;
+            
+            # Buffer sizes
+            proxy_buffer_size 16k;
+            proxy_buffers 8 16k;
+            proxy_busy_buffers_size 32k;
+        }
+
+        location /payment/ {
+            proxy_pass http://payment_service/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port $server_port;
+            
+            # Connection optimization
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            
+            # Timeouts
+            proxy_connect_timeout 5s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+            
+            # Rate limiting
+            limit_req zone=one burst=5 nodelay;
+            
+            # Buffer sizes
+            proxy_buffer_size 16k;
+            proxy_buffers 8 16k;
+            proxy_busy_buffers_size 32k;
+        }
+        # --- End Location Blocks ---
+
+        # Custom logging for HTTPS
+        access_log /var/log/nginx/https_access.log main;
+        error_log /var/log/nginx/https_error.log warn;
+
+        # Default location for static files if needed
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+            try_files $uri $uri/ =404;
+        }
+    }
+}

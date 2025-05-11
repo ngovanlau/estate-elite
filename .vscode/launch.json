@@ -16,7 +16,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "all",
+			"launchSettingsProfile": "http",
 			"launchBrowser": {
 				"enabled": true
 			}
@@ -36,7 +36,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "all",
+			"launchSettingsProfile": "http",
 			"launchBrowser": {
 				"enabled": true
 			}
@@ -56,7 +56,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "all",
+			"launchSettingsProfile": "http",
 			"launchBrowser": {
 				"enabled": true
 			}
@@ -76,7 +76,7 @@
 			"sourceFileMap": {
 				"/Views": "${workspaceFolder}/Views"
 			},
-			"launchSettingsProfile": "https",
+			"launchSettingsProfile": "http",
 			"launchBrowser": {
 				"enabled": true
 			}

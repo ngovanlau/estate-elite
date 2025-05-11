@@ -67,7 +67,7 @@
 				"--project",
 				"${workspaceFolder}/src/Services/IdentityService/IdentityService.API/IdentityService.API.csproj",
 				"--launch-profile",
-				"all"
+				"http"
 			],
 			"problemMatcher": "$msCompile"
 		},
@@ -80,7 +80,7 @@
 				"--project",
 				"${workspaceFolder}/src/Services/PropertyService/PropertyService.API/PropertyService.API.csproj",
 				"--launch-profile",
-				"all"
+				"http"
 			],
 			"problemMatcher": "$msCompile"
 		},
@@ -93,7 +93,7 @@
 				"--project",
 				"${workspaceFolder}/src/Services/PaymentService/PaymentService.API/PaymentService.API.csproj",
 				"--launch-profile",
-				"all"
+				"http"
 			],
 			"problemMatcher": "$msCompile"
 		},
@@ -106,7 +106,7 @@
 				"--project",
 				"${workspaceFolder}/src/Services/FunctionalService/FunctionalService.csproj",
 				"--launch-profile",
-				"https"
+				"http"
 			],
 			"problemMatcher": "$msCompile"
 		},
