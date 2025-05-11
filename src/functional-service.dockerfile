@@ -38,6 +38,5 @@ RUN mkdir -p /app/logs
 
 # Expose both HTTP and HTTPS ports
 EXPOSE 5000
-EXPOSE 5100
 
 ENTRYPOINT ["dotnet", "FunctionalService.dll"]

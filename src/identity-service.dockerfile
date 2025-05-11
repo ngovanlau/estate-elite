@@ -41,6 +41,5 @@ RUN mkdir -p /app/logs
 
 # Expose both HTTP and HTTPS ports
 EXPOSE 5001
-EXPOSE 5101
 
 ENTRYPOINT ["dotnet", "IdentityService.API.dll"]

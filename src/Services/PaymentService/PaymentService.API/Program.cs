@@ -97,16 +97,12 @@ try
             // Fallback configuration
             options.ListenAnyIP(5003, listenOptions =>
             {
-                listenOptions.Protocols = HttpProtocols.Http1;
-            });
-
-            options.ListenAnyIP(5103, listenOptions =>
-            {
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                listenOptions.UseHttps();
             });
         }
     });
+
+    builder.Services.AddDataProtection();
 
     var app = builder.Build();
 
@@ -142,7 +138,6 @@ try
     app.MapHealthChecks("/health");
 
     // gRPC Endpoints
-    // app.MapGrpcService<UserGrpcService>();
 
     // Apply database migrations
     using var scope = app.Services.CreateScope();

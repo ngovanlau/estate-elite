@@ -5,6 +5,7 @@ using FunctionalService.Interfaces;
 using FunctionalService.Services;
 using FunctionalService.Settings;
 using Serilog;
+using SharedKernel.Extensions;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()
@@ -38,6 +39,8 @@ try
 
     // Event Handlers
     builder.Services.AddTransient<SendConfirmationCodeEventHandler>();
+
+    builder.Services.AddDataProtection();
 
     var app = builder.Build();
 

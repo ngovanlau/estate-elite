@@ -42,13 +42,11 @@ try
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-    // Cấu hình Forwarded Headers để ứng dụng nhận biết đúng scheme (https) từ Nginx
+    // Forwarded Headers Configuration
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders =
             ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-        // Khi chạy sau reverse proxy, bạn cần xóa các proxy/mạng đã biết mặc định
-        // vì proxy (Nginx) không nằm trên cùng máy (localhost) từ góc độ của container app.
         options.KnownNetworks.Clear();
         options.KnownProxies.Clear();
     });
@@ -133,6 +131,7 @@ try
     else
     {
         app.UseExceptionHandler("/error");
+        app.UseHsts();
     }
 
     // Middleware Pipeline

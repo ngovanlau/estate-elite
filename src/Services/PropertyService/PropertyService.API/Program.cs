@@ -92,16 +92,12 @@ try
             // Fallback configuration
             options.ListenAnyIP(5002, listenOptions =>
             {
-                listenOptions.Protocols = HttpProtocols.Http1;
-            });
-
-            options.ListenAnyIP(5102, listenOptions =>
-            {
                 listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                listenOptions.UseHttps();
             });
         }
     });
+
+    builder.Services.AddDataProtection();
 
     builder.Services.AddDataProtection();
 

@@ -41,6 +41,5 @@ RUN mkdir -p /app/logs
 
 # Expose both HTTP and HTTPS ports
 EXPOSE 5003
-EXPOSE 5103
 
 ENTRYPOINT ["dotnet", "PropertyService.API.dll"]

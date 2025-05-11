@@ -5,31 +5,10 @@
 			"commandName": "Project",
 			"dotnetRunMessages": true,
 			"launchBrowser": false,
-			"applicationUrl": "http://localhost:5001",
+			"applicationUrl": "http://*:5001",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ASPNETCORE_Kestrel__Endpoints__Http__Protocols": "Http1"
-			}
-		},
-		"https": {
-			"commandName": "Project",
-			"dotnetRunMessages": true,
-			"launchBrowser": false,
-			"applicationUrl": "https://localhost:5101",
-			"environmentVariables": {
-				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ASPNETCORE_Kestrel__Endpoints__Https__Protocols": "Http1AndHttp2"
-			}
-		},
-		"all": {
-			"commandName": "Project",
-			"dotnetRunMessages": true,
-			"launchBrowser": false,
-			"applicationUrl": "http://localhost:5001;https://localhost:5101",
-			"environmentVariables": {
-				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ASPNETCORE_Kestrel__Endpoints__Http__Protocols": "Http1",
-				"ASPNETCORE_Kestrel__Endpoints__Https__Protocols": "Http1AndHttp2"
+				"ASPNETCORE_Kestrel__Endpoints__Http__Protocols": "Http1AndHttp2"
 			}
 		}
 	}

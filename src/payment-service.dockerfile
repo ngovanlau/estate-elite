@@ -41,6 +41,5 @@ RUN mkdir -p /app/logs
 
 # Expose both HTTP and HTTPS ports
 EXPOSE 5002
-EXPOSE 5102
 
 ENTRYPOINT ["dotnet", "PaymentService.API.dll"]
