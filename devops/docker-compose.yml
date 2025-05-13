@@ -65,7 +65,9 @@ x-identity-service-environment: &identity-service-environment
   <<: [*microservices-environment, *minio-environment]
   ServiceName: Identity
   ASPNETCORE_URLS: "http://*:${IDENTITY_HTTP_PORT}"
-  ConnectionStrings__Redis: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
+  Kestrel__Endpoints__Grpc__Url: http://*:50051
+  Kestrel__Endpoints__Grpc__Protocols: Http2
+  ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
   Google__ClientId: ${GOOGLE_CLIENT_ID}
   Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
   ConfirmationCode__AllowedChars: ${CONFIRMATION_CODE_ALLOWED_CHARS}
@@ -80,7 +82,9 @@ x-property-service-environment: &property-service-environment
   <<: [*microservices-environment, *minio-environment]
   ServiceName: Property
   ASPNETCORE_URLS: "http://*:${PROPERTY_HTTP_PORT}"
-  ConnectionStrings__Redis: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
+  Kestrel__Endpoints__Grpc__Url: http://*:50052
+  Kestrel__Endpoints__Grpc__Protocols: Http2
+  ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
   Minio__Endpoint: http://${MINIO_HOST}:${MINIO_PORT}
   Minio__AccessKey: ${MINIO_USER}
   Minio__SecretKey: ${MINIO_PASSWORD}
@@ -91,7 +95,9 @@ x-payment-service-environment: &payment-service-environment
   <<: *microservices-environment
   ServiceName: Payment
   ASPNETCORE_URLS: "http://*:${PAYMENT_HTTP_PORT}"
-  ConnectionStrings__Redis: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
+  Kestrel__Endpoints__Grpc__Url: http://*:50053
+  Kestrel__Endpoints__Grpc__Protocols: Http2
+  ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
   Paypal__ClientId: ${PAYPAL_CLIENT_ID}
   Paypal__ClientSecret: ${PAYPAL_CLIENT_SECRET}
   Paypal__UseSandbox: ${PAYPAL_USE_SANDBOX}
@@ -359,6 +365,9 @@ services:
     ports:
       - "${HTTP_PORT}:80"
       - "${HTTPS_PORT}:443"
+      - "9051:9051"
+      - "9052:9052"
+      - "9053:9053"
     environment:
       PROJECT_PREFIX: ${PROJECT_PREFIX}
       FUNCTIONAL_HTTP_PORT: ${FUNCTIONAL_HTTP_PORT}
@@ -369,6 +378,7 @@ services:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
       - ./nginx/ssl:/etc/nginx/ssl
       - ./nginx/logs:/var/log/nginx
+      - ./nginx/cache:/var/cache/nginx
       - ./nginx/docker-entrypoint.sh:/docker-entrypoint.sh
     depends_on:
       - functional-service-1

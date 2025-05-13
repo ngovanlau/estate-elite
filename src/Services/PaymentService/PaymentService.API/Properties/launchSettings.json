@@ -8,7 +8,10 @@
 			"applicationUrl": "http://*:5003",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development",
-				"ASPNETCORE_Kestrel__Endpoints__Http__Protocols": "Http1AndHttp2"
+				"ASPNETCORE_Kestrel__Endpoints__Http__Url": "http://*:5003",
+				"ASPNETCORE_Kestrel__Endpoints__Http__Protocols": "Http1",
+				"ASPNETCORE_Kestrel__Endpoints__gRPC__Url": "http://*:50053",
+				"ASPNETCORE_Kestrel__Endpoints__gRPC__Protocols": "Http2"
 			}
 		}
 	}

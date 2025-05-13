@@ -94,10 +94,16 @@ try
         }
         else
         {
-            // Fallback configuration
+            // HTTP API endpoint (REST)
             options.ListenAnyIP(5003, listenOptions =>
             {
-                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                listenOptions.Protocols = HttpProtocols.Http1;
+            });
+
+            // gRPC endpoint
+            options.ListenAnyIP(50053, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http2;
             });
         }
     });
@@ -127,7 +133,6 @@ try
     // Security & Traffic Management
     app.UseCors("AllowAll");
     app.UseRateLimiter();
-    // app.UseHttpsRedirection();
 
     // Authentication & Authorization
     app.UseAuthentication();
@@ -138,6 +143,9 @@ try
     app.MapHealthChecks("/health");
 
     // gRPC Endpoints
+
+    // Create a gRPC health check service endpoint
+    app.MapGet("/grpc-health", () => Results.Ok("gRPC Health Check - Service Available"));
 
     // Apply database migrations
     using var scope = app.Services.CreateScope();
