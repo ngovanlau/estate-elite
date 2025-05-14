@@ -64,9 +64,12 @@ x-functional-service-environment: &functional-service-environment
 x-identity-service-environment: &identity-service-environment
   <<: [*microservices-environment, *minio-environment]
   ServiceName: Identity
-  ASPNETCORE_URLS: "http://*:${IDENTITY_HTTP_PORT}"
-  Kestrel__Endpoints__Grpc__Url: http://*:50051
+  Kestrel__Endpoints__Http__Url: http://*:${IDENTITY_HTTP_PORT}
+  Kestrel__Endpoints__Http__Protocols: Http1
+  Kestrel__Endpoints__Grpc__Url: https://*:${IDENTITY_HTTP2_PORT}
   Kestrel__Endpoints__Grpc__Protocols: Http2
+  Kestrel__Endpoints__Grpc__Certificate__Path: ${IDENTITY_CERTIFICATE_PATH}
+  Kestrel__Endpoints__Grpc__Certificate__Password: ${IDENTITY_CERTIFICATE_PASSWORD}
   ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
   Google__ClientId: ${GOOGLE_CLIENT_ID}
   Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
@@ -81,9 +84,12 @@ x-identity-service-environment: &identity-service-environment
 x-property-service-environment: &property-service-environment
   <<: [*microservices-environment, *minio-environment]
   ServiceName: Property
-  ASPNETCORE_URLS: "http://*:${PROPERTY_HTTP_PORT}"
-  Kestrel__Endpoints__Grpc__Url: http://*:50052
+  Kestrel__Endpoints__Http__Url: http://*:${PROPERTY_HTTP_PORT}
+  Kestrel__Endpoints__Http__Protocols: Http1
+  Kestrel__Endpoints__Grpc__Url: https://*:${PROPERTY_HTTP2_PORT}
   Kestrel__Endpoints__Grpc__Protocols: Http2
+  Kestrel__Endpoints__Grpc__Certificate__Path: ${PROPERTY_CERTIFICATE_PATH}
+  Kestrel__Endpoints__Grpc__Certificate__Password: ${PROPERTY_CERTIFICATE_PASSWORD}
   ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
   Minio__Endpoint: http://${MINIO_HOST}:${MINIO_PORT}
   Minio__AccessKey: ${MINIO_USER}
@@ -94,9 +100,12 @@ x-property-service-environment: &property-service-environment
 x-payment-service-environment: &payment-service-environment
   <<: *microservices-environment
   ServiceName: Payment
-  ASPNETCORE_URLS: "http://*:${PAYMENT_HTTP_PORT}"
-  Kestrel__Endpoints__Grpc__Url: http://*:50053
+  Kestrel__Endpoints__Http__Url: http://*:${PAYMENT_HTTP_PORT}
+  Kestrel__Endpoints__Http__Protocols: Http1
+  Kestrel__Endpoints__Grpc__Url: https://*:${PAYMENT_HTTP2_PORT}
   Kestrel__Endpoints__Grpc__Protocols: Http2
+  Kestrel__Endpoints__Grpc__Certificate__Path: ${PAYMENT_CERTIFICATE_PATH}
+  Kestrel__Endpoints__Grpc__Certificate__Password: ${PAYMENT_CERTIFICATE_PASSWORD}
   ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
   Paypal__ClientId: ${PAYPAL_CLIENT_ID}
   Paypal__ClientSecret: ${PAYPAL_CLIENT_SECRET}
@@ -230,6 +239,7 @@ services:
       <<: *identity-service-environment
     volumes:
       - ./services/identity/logs:/app/logs
+      - ./services/identity/ssl:/app/ssl
       - ./services/identity/dataprotection-keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       minio:
@@ -254,6 +264,7 @@ services:
       <<: *identity-service-environment
     volumes:
       - ./services/identity/logs:/app/logs
+      - ./services/identity/ssl:/app/ssl
       - ./services/identity/dataprotection-keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       minio:
@@ -278,6 +289,7 @@ services:
       <<: *property-service-environment
     volumes:
       - ./services/property/logs:/app/logs
+      - ./services/property/ssl:/app/ssl
       - ./services/property/dataprotection-keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       minio:
@@ -302,6 +314,7 @@ services:
       <<: *property-service-environment
     volumes:
       - ./services/property/logs:/app/logs
+      - ./services/property/ssl:/app/ssl
       - ./services/property/dataprotection-keys:/root/.aspnet/DataProtection-Keys
     depends_on:
       minio:
@@ -326,6 +339,7 @@ services:
       <<: *payment-service-environment
     volumes:
       - ./services/payment/logs:/app/logs
+      - ./services/payment/ssl:/app/ssl
       - ./services/payment/dataprotection-keys:/root/.aspnet/DataProtection-Keys
     healthcheck:
       test:
@@ -347,6 +361,7 @@ services:
       <<: *payment-service-environment
     volumes:
       - ./services/payment/logs:/app/logs
+      - ./services/payment/ssl:/app/ssl
       - ./services/payment/dataprotection-keys:/root/.aspnet/DataProtection-Keys
     healthcheck:
       test:
@@ -372,8 +387,11 @@ services:
       PROJECT_PREFIX: ${PROJECT_PREFIX}
       FUNCTIONAL_HTTP_PORT: ${FUNCTIONAL_HTTP_PORT}
       IDENTITY_HTTP_PORT: ${IDENTITY_HTTP_PORT}
+      IDENTITY_HTTP2_PORT: ${IDENTITY_HTTP2_PORT}
       PROPERTY_HTTP_PORT: ${PROPERTY_HTTP_PORT}
+      PROPERTY_HTTP2_PORT: ${PROPERTY_HTTP2_PORT}
       PAYMENT_HTTP_PORT: ${PAYMENT_HTTP_PORT}
+      PAYMENT_HTTP2_PORT: ${PAYMENT_HTTP2_PORT}
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
       - ./nginx/ssl:/etc/nginx/ssl
