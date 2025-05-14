@@ -1,6 +1,5 @@
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Mediators;
 using PropertyService.Application.Protos;
@@ -11,6 +10,7 @@ using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Text.Json.Serialization;
 
 // Setup initial logger for startup errors
@@ -81,26 +81,10 @@ try
     // Kestrel Configuration
     builder.WebHost.ConfigureKestrel(options =>
     {
-        // Explicitly configure endpoints based on configuration
-        var kestrelSection = configuration.GetSection("Kestrel:Endpoints");
-        if (kestrelSection.Exists())
+        options.ConfigureHttpsDefaults(httpsOptions =>
         {
-            options.Configure(kestrelSection);
-        }
-        else
-        {
-            // HTTP API endpoint (REST)
-            options.ListenAnyIP(5002, listenOptions =>
-            {
-                listenOptions.Protocols = HttpProtocols.Http1;
-            });
-
-            // gRPC endpoint
-            options.ListenAnyIP(50052, listenOptions =>
-            {
-                listenOptions.Protocols = HttpProtocols.Http2;
-            });
-        }
+            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+        });
     });
 
     builder.Services.AddDataProtection();
@@ -141,9 +125,6 @@ try
 
     // gRPC Endpoints
     app.MapGrpcService<PropertyGrpcService>();
-
-    // Create a gRPC health check service endpoint
-    app.MapGet("/grpc-health", () => Results.Ok("gRPC Health Check - Service Available"));
 
     // Apply database migrations and seed data 
     using var scope = app.Services.CreateScope();
