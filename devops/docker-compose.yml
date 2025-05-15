@@ -30,11 +30,6 @@ x-microservices-defaults: &microservices-defaults
     JWT__RefreshTokenExpirationInDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS}"
     JWT__RefreshTokenSlidingExpirationInMinutes: "${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES}"
     JWT__TokenType: "${JWT_TOKEN_TYPE}"
-    Serilog__MinimumLevel__Default: "Information"
-    Serilog__MinimumLevel__Override__Microsoft: "Warning"
-    Serilog__MinimumLevel__Override__System: "Warning"
-    Serilog__MinimumLevel__Override__Microsoft.AspNetCore: "Warning"
-    Serilog__MinimumLevel__Override__Microsoft.EntityFrameworkCore: "Warning"
   depends_on:
     postgres:
       condition: service_healthy
