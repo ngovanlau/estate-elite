@@ -115,18 +115,21 @@ http {
 
     # --- Upstream gRPC Definitions ---
     upstream identity_service_grpc {
+        least_conn;
         server ${PROJECT_PREFIX}-identity-service-1:50051 max_fails=3 fail_timeout=30s;
         server ${PROJECT_PREFIX}-identity-service-2:50051 backup;
         keepalive 32;
     }
 
     upstream property_service_grpc {
+        least_conn;
         server ${PROJECT_PREFIX}-property-service-1:50052 max_fails=3 fail_timeout=30s;
         server ${PROJECT_PREFIX}-property-service-2:50052 backup;
         keepalive 32;
     }
 
     upstream payment_service_grpc {
+        least_conn;
         server ${PROJECT_PREFIX}-payment-service-1:50053 max_fails=3 fail_timeout=30s;
         server ${PROJECT_PREFIX}-payment-service-2:50053 backup;
         keepalive 32;
@@ -324,8 +327,15 @@ http {
 
         # Identity Service gRPC endpoint
         location /grpc/identity/ {
-            # Use grpc_pass instead of proxy_pass
-            grpc_pass grpc://identity_service_grpc;
+            # Remove trailing slash from location and forward exact path
+            rewrite ^/grpc/identity/(.*) /$1 break;
+            
+            # Use grpcs:// since your backend is configured with TLS
+            grpc_pass grpcs://identity_service_grpc;
+            
+            # SSL verification - optional if using self-signed certs
+            grpc_ssl_verify off;
+            grpc_ssl_server_name on;
             
             # Client buffer size for headers
             grpc_buffer_size 16k;
@@ -347,16 +357,15 @@ http {
             # Error handling
             grpc_intercept_errors on;
             error_page 502 504 /grpc-unavailable;
-            
-            # Cache responses when possible (uncomment if needed)
-            # grpc_cache_bypass $http_pragma $http_authorization;
-            # grpc_cache_valid 200 10s;
-            # add_header X-Cache-Status $upstream_cache_status;
         }
         
         # Property Service gRPC endpoint
-        location /grpc/property/ {
-            grpc_pass grpc://property_service_grpc;
+        location /grpc/property/ {            # Remove trailing slash from location and forward exact path
+            rewrite ^/grpc/property/(.*) /$1 break;
+            grpc_pass grpcs://property_service_grpc;
+
+            grpc_ssl_verify off;
+            grpc_ssl_server_name on;
             
             grpc_buffer_size 16k;
             
@@ -377,7 +386,11 @@ http {
         
         # Payment Service gRPC endpoint
         location /grpc/payment/ {
-            grpc_pass grpc://payment_service_grpc;
+            rewrite ^/grpc/payment/(.*) /$1 break;
+            grpc_pass grpcs://payment_service_grpc;
+
+            grpc_ssl_verify off;
+            grpc_ssl_server_name on;
             
             grpc_buffer_size 16k;
             
