@@ -116,22 +116,22 @@ http {
     # --- Upstream gRPC Definitions ---
     upstream identity_service_grpc {
         least_conn;
-        server ${PROJECT_PREFIX}-identity-service-1:50051 max_fails=3 fail_timeout=30s;
-        server ${PROJECT_PREFIX}-identity-service-2:50051 backup;
+        server ${PROJECT_PREFIX}-identity-service-1:${IDENTITY_HTTP2_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-identity-service-2:${IDENTITY_HTTP2_PORT} backup;
         keepalive 32;
     }
 
     upstream property_service_grpc {
         least_conn;
-        server ${PROJECT_PREFIX}-property-service-1:50052 max_fails=3 fail_timeout=30s;
-        server ${PROJECT_PREFIX}-property-service-2:50052 backup;
+        server ${PROJECT_PREFIX}-property-service-1:${PROPERTY_HTTP2_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-property-service-2:${PROPERTY_HTTP2_PORT} backup;
         keepalive 32;
     }
 
     upstream payment_service_grpc {
         least_conn;
-        server ${PROJECT_PREFIX}-payment-service-1:50053 max_fails=3 fail_timeout=30s;
-        server ${PROJECT_PREFIX}-payment-service-2:50053 backup;
+        server ${PROJECT_PREFIX}-payment-service-1:${PAYMENT_HTTP2_PORT} max_fails=3 fail_timeout=30s;
+        server ${PROJECT_PREFIX}-payment-service-2:${PAYMENT_HTTP2_PORT} backup;
         keepalive 32;
     }
     # --- End gRPC Upstream Definitions ---
