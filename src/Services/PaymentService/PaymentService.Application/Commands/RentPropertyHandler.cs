@@ -5,6 +5,7 @@ using Grpc.Net.Client;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
 using PaymentService.Application.Requests;
@@ -14,6 +15,7 @@ using SharedKernel.Extensions;
 using SharedKernel.Interfaces;
 using SharedKernel.Protos;
 using SharedKernel.Responses;
+using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PaymentService.Application.Commands;
@@ -25,8 +27,11 @@ public class RentPropertyHandler(
     IPaypalService paypalService,
     IMapper mapper,
     IDistributedCache cache,
+    IOptions<GrpcEndpointSetting> options,
     ILogger<RentPropertyHandler> logger) : IRequestHandler<RentPropertyRequest, ApiResponse>
 {
+    private readonly GrpcEndpointSetting _grpcEndpointSetting = options.Value;
+
     public async Task<ApiResponse> Handle(RentPropertyRequest request, CancellationToken cancellationToken)
     {
         var res = new ApiResponse();
@@ -128,7 +133,7 @@ public class RentPropertyHandler(
     {
         try
         {
-            using var channel = GrpcChannel.ForAddress("https://localhost:5102");
+            using var channel = GrpcChannel.ForAddress(_grpcEndpointSetting.Property);
             var client = new PropertyService.PropertyServiceClient(channel);
 
             var request = new GetPropertyRequest { Id = propertyId.ToString() };
@@ -149,7 +154,7 @@ public class RentPropertyHandler(
     {
         try
         {
-            using var channel = GrpcChannel.ForAddress("https://localhost:5101");
+            using var channel = GrpcChannel.ForAddress(_grpcEndpointSetting.Identity);
             var client = new UserService.UserServiceClient(channel);
 
             var request = new GetUserRequest { Id = userId.ToString() };

@@ -5,6 +5,7 @@ using Grpc.Net.Client;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
 using PaymentService.Application.Requests;
@@ -13,6 +14,7 @@ using SharedKernel.Enums;
 using SharedKernel.Extensions;
 using SharedKernel.Protos;
 using SharedKernel.Responses;
+using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PaymentService.Application.Commands;
@@ -23,8 +25,11 @@ public class CaptureOrderHandler(
     IPaypalService paypalService,
     IMapper mapper,
     IDistributedCache cache,
+    IOptions<GrpcEndpointSetting> options,
     ILogger<CaptureOrderHandler> logger) : IRequestHandler<CaptureOrderRequest, ApiResponse>
 {
+    private readonly GrpcEndpointSetting _setting = options.Value;
+
     public async Task<ApiResponse> Handle(CaptureOrderRequest request, CancellationToken cancellationToken)
     {
         var res = new ApiResponse();
@@ -113,7 +118,7 @@ public class CaptureOrderHandler(
         try
         {
             logger.LogDebug("Creating gRPC channel for PropertyService");
-            using var channel = GrpcChannel.ForAddress("https://localhost:5102");
+            using var channel = GrpcChannel.ForAddress(_setting.Property);
             var client = new PropertyService.PropertyServiceClient(channel);
 
             var request = new CreatePropertyRentalRequest

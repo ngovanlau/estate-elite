@@ -9,6 +9,7 @@ using Serilog;
 using SharedKernel.Commons;
 using SharedKernel.Extensions;
 using SharedKernel.Middleware;
+using SharedKernel.Settings;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Text.Json.Serialization;
@@ -30,6 +31,9 @@ try
     builder.Host.UseSerilog((context, config) => config
         .ReadFrom.Configuration(context.Configuration)
         .Enrich.FromLogContext());
+
+    // Configuration Bindings
+    builder.Services.Configure<GrpcEndpointSetting>(configuration.GetSection("GrpcEndpoint"));
 
     // Add services to the container.
     // Mediator
@@ -77,17 +81,6 @@ try
         options.Interceptors.Add<GrpcExceptionInterceptor>();
         options.MaxReceiveMessageSize = 16 * 1024 * 1024; // 16 MB
     });
-
-    // Kestrel Configuration
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.ConfigureHttpsDefaults(httpsOptions =>
-        {
-            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-        });
-    });
-
-    builder.Services.AddDataProtection();
 
     builder.Services.AddDataProtection();
 

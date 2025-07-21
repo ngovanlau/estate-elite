@@ -23,10 +23,12 @@ public class GetPropertyDetailsHandler(
     IPropertyRepository repository,
     IDistributedCache cache,
     IMapper mapper,
-    IOptions<MinioSetting> options,
+    IOptions<MinioSetting> minioOptions,
+    IOptions<GrpcEndpointSetting> grpcEndpointOptions,
     ILogger<GetPropertyDetailsHandler> logger) : IRequestHandler<GetPropertyDetailsRequest, ApiResponse>
 {
-    private readonly MinioSetting _setting = options.Value;
+    private readonly MinioSetting _minioSetting = minioOptions.Value;
+    private readonly GrpcEndpointSetting _grpcEndpointSetting = grpcEndpointOptions.Value;
 
     public async Task<ApiResponse> Handle(GetPropertyDetailsRequest request, CancellationToken cancellationToken)
     {
@@ -65,7 +67,7 @@ public class GetPropertyDetailsHandler(
 
                 logger.LogDebug("Processing image URLs for PropertyId: {PropertyId}", request.Id);
                 propertyDetailsDto.Images = propertyDetailsDto.Images
-                    .Select(image => $"{_setting.Endpoint}/{_setting.BucketName}/{image}")
+                    .Select(image => $"{_minioSetting.Endpoint}/{_minioSetting.BucketName}/{image}")
                     .ToList();
 
                 logger.LogDebug("Caching property details for PropertyId: {PropertyId}", request.Id);
@@ -90,7 +92,7 @@ public class GetPropertyDetailsHandler(
     private async Task<OwnerDto> GetOwnerDtoByGrpcAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Initiating gRPC call for UserId: {UserId}", userId);
-        using var channel = GrpcChannel.ForAddress("https://localhost:5101");
+        using var channel = GrpcChannel.ForAddress(_grpcEndpointSetting.Identity);
         var client = new UserService.UserServiceClient(channel);
 
         var request = new GetUserRequest

@@ -11,7 +11,6 @@ using SharedKernel.Extensions;
 using SharedKernel.Middleware;
 using SharedKernel.Settings;
 using System.Reflection;
-using System.Security.Authentication;
 using System.Text.Json.Serialization;
 
 // Setup initial logger for startup errors
@@ -35,6 +34,7 @@ try
     // Configuration Bindings
     builder.Services.Configure<ConfirmationCodeSetting>(configuration.GetSection("ConfirmationCode"));
     builder.Services.Configure<PaypalSetting>(configuration.GetSection("Paypal"));
+    builder.Services.Configure<GrpcEndpointSetting>(configuration.GetSection("GrpcEndpoint"));
     builder.Services.Configure<JsonOptions>(options =>
     {
         options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -81,15 +81,6 @@ try
         options.EnableDetailedErrors = env.IsDevelopment();
         options.Interceptors.Add<GrpcExceptionInterceptor>();
         options.MaxReceiveMessageSize = 16 * 1024 * 1024; // 16 MB
-    });
-
-    // Kestrel Configuration
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.ConfigureHttpsDefaults(httpsOptions =>
-        {
-            httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-        });
     });
 
     builder.Services.AddDataProtection();
