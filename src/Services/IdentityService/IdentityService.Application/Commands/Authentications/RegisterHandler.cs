@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using IdentityService.Domain.Entities;
 using IdentityService.Application.Dtos.Authentications;
-using EventBus.Infrastructures.Interfaces;
 using EventBus.RabbitMQ.Events;
 using FluentValidation;
 using IdentityService.Application.Interfaces;
@@ -14,6 +13,7 @@ using SharedKernel.Extensions;
 using SharedKernel.Responses;
 using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
+using EventBus.Abstraction.Interfaces;
 
 namespace IdentityService.Application.Commands.Authentications;
 

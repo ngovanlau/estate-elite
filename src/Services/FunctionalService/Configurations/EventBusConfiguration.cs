@@ -1,8 +1,8 @@
-namespace FunctionalService.Configurations;
-
-using EventBus.Infrastructures.Interfaces;
+using EventBus.Abstraction.Interfaces;
 using EventBus.RabbitMQ.Events;
 using FunctionalService.EventHandlers;
+
+namespace FunctionalService.Configurations;
 
 public class EventBusConfiguration
 {

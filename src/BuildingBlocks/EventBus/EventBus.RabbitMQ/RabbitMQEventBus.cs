@@ -6,12 +6,11 @@ using RabbitMQ.Client.Exceptions;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using EventBus.Abstraction.Interfaces;
+using EventBus.RabbitMQ.Interfaces;
 
 namespace EventBus.RabbitMQ;
-
-using Infrastructures.Interfaces;
-using Interfaces;
-using Microsoft.Extensions.Logging;
 
 public class RabbitMQEventBus : IEventBus
 {

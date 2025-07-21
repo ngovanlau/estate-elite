@@ -1,7 +1,7 @@
-﻿namespace EventBus.RabbitMQ.Events;
+﻿using EventBus.Abstraction;
+using EventBus.Abstraction.Interfaces;
 
-using Infrastructures;
-using Infrastructures.Interfaces;
+namespace EventBus.RabbitMQ.Events;
 
 public class SendConfirmationCodeEvent(string email, string fullname, string confirmationCode, TimeSpan expiryTime) : Event, IEvent
 {

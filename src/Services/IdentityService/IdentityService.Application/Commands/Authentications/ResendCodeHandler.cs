@@ -3,20 +3,19 @@ using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
-namespace IdentityService.Application.Commands.Authentications;
-
 using DistributedCache.Redis;
-using Domain.Entities;
-using Dtos.Authentications;
-using EventBus.Infrastructures.Interfaces;
+using EventBus.Abstraction.Interfaces;
 using EventBus.RabbitMQ.Events;
-using Interfaces;
-using Requests.Authentications;
 using SharedKernel.Extensions;
 using SharedKernel.Responses;
 using SharedKernel.Settings;
 using static SharedKernel.Constants.ErrorCode;
+using IdentityService.Application.Requests.Authentications;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Dtos.Authentications;
+using IdentityService.Domain.Entities;
+
+namespace IdentityService.Application.Commands.Authentications;
 
 public class ResendCodeHandler(
     IValidator<ResendCodeRequest> validator,

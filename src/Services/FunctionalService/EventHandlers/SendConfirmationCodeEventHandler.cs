@@ -1,10 +1,9 @@
 using Serilog;
+using EventBus.RabbitMQ.Events;
+using EventBus.Abstraction.Interfaces;
+using FunctionalService.Interfaces;
 
 namespace FunctionalService.EventHandlers;
-
-using Interfaces;
-using EventBus.Infrastructures.Interfaces;
-using EventBus.RabbitMQ.Events;
 
 public class SendConfirmationCodeEventHandler(IEmailService emailHandler) : IEventHandler<SendConfirmationCodeEvent>
 {

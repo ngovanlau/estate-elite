@@ -1,4 +1,4 @@
-namespace EventBus.Infrastructures.Interfaces;
+namespace EventBus.Abstraction.Interfaces;
 
 public interface IEventHandler
 {

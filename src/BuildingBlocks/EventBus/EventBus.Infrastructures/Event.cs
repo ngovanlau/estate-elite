@@ -1,6 +1,6 @@
-namespace EventBus.Infrastructures;
+using EventBus.Abstraction.Interfaces;
 
-using Interfaces;
+namespace EventBus.Abstraction;
 
 public class Event : IEvent
 {

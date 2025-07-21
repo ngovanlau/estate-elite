@@ -2,12 +2,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using EventBus.Abstraction.Interfaces;
+using EventBus.RabbitMQ.Interfaces;
+using EventBus.RabbitMQ.Settings;
 
 namespace EventBus.RabbitMQ.Extensions;
-
-using Infrastructures.Interfaces;
-using Interfaces;
-using Settings;
 
 public static class EventBusServicesExtension
 {

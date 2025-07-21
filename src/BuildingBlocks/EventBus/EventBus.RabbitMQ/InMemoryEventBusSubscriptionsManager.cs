@@ -1,8 +1,8 @@
-﻿namespace EventBus.RabbitMQ;
-
+﻿using EventBus.Abstraction;
+using EventBus.Abstraction.Interfaces;
 using System.Collections.Concurrent;
-using EventBus.Infrastructures;
-using Infrastructures.Interfaces;
+
+namespace EventBus.RabbitMQ;
 
 public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManager
 {
