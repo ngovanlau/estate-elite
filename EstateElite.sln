@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{51
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.RabbitMQ", "src\BuildingBlocks\EventBus\EventBus.RabbitMQ\EventBus.RabbitMQ.csproj", "{0DB9F883-DF2E-4FCB-B190-FFF03173F1CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Abstraction", "src\BuildingBlocks\EventBus\EventBus.Infrastructures\EventBus.Abstraction.csproj", "{2E3973E2-4219-4AD4-9D20-A609981D9673}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Abstraction", "src\BuildingBlocks\EventBus\EventBus.Abstraction\EventBus.Abstraction.csproj", "{2E3973E2-4219-4AD4-9D20-A609981D9673}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel", "src\BuildingBlocks\SharedKernel\SharedKernel.csproj", "{20235C38-7E9F-4445-ABEC-CF92A4222C89}"
 EndProject

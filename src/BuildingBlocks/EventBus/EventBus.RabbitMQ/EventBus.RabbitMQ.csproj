@@ -2,7 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../SharedKernel/SharedKernel.csproj" />
-    <ProjectReference Include="..\EventBus.Infrastructures\EventBus.Abstraction.csproj" />
+    <ProjectReference Include="..\EventBus.Abstraction\EventBus.Abstraction.csproj" />
   </ItemGroup>
 
   <ItemGroup>
