@@ -8,7 +8,7 @@ COPY Services/PaymentService/PaymentService.Application/PaymentService.Applicati
 COPY Services/PaymentService/PaymentService.Domain/PaymentService.Domain.csproj Services/PaymentService/PaymentService.Domain/
 COPY Services/PaymentService/PaymentService.Infrastructure/PaymentService.Infrastructure.csproj Services/PaymentService/PaymentService.Infrastructure/
 
-COPY BuildingBlocks/EventBus/EventBus.Infrastructures/EventBus.Infrastructures.csproj BuildingBlocks/EventBus/EventBus.Infrastructures/
+COPY BuildingBlocks/EventBus/EventBus.Abstraction/EventBus.Abstraction.csproj BuildingBlocks/EventBus/EventBus.Abstraction/
 COPY BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj BuildingBlocks/EventBus/EventBus.RabbitMQ/
 COPY BuildingBlocks/SharedKernel/SharedKernel.csproj BuildingBlocks/SharedKernel/
 COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj BuildingBlocks/DistributedCache/DistributedCache.Redis/

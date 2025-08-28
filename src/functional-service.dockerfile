@@ -5,7 +5,7 @@ WORKDIR /src
 # Copy csproj files first for better layer caching
 COPY Services/FunctionalService/FunctionalService.csproj Services/FunctionalService/
 
-COPY BuildingBlocks/EventBus/EventBus.Infrastructures/EventBus.Infrastructures.csproj BuildingBlocks/EventBus/EventBus.Infrastructures/
+COPY BuildingBlocks/EventBus/EventBus.Abstraction/EventBus.Abstraction.csproj BuildingBlocks/EventBus/EventBus.Abstraction/
 COPY BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj BuildingBlocks/EventBus/EventBus.RabbitMQ/
 COPY BuildingBlocks/SharedKernel/SharedKernel.csproj BuildingBlocks/SharedKernel/
 COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj BuildingBlocks/DistributedCache/DistributedCache.Redis/

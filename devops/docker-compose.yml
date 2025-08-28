@@ -30,6 +30,11 @@ x-microservices-defaults: &microservices-defaults
     JWT__RefreshTokenExpirationInDays: "${JWT_REFRESH_TOKEN_EXPIRATION_DAYS}"
     JWT__RefreshTokenSlidingExpirationInMinutes: "${JWT_REFRESH_TOKEN_SLIDING_EXPIRATION_MINUTES}"
     JWT__TokenType: "${JWT_TOKEN_TYPE}"
+    DataProtection__CertificateThumbprint: ${DATA_PROTECTION_CERT_THUMBPRINT:-}
+    DataProtection__UseX509Certificate: ${DATA_PROTECTION_USE_CERT:-false}
+    GrpcEndpoint__Identity: ${GRPC_ENDPOINT_IDENTITY}
+    GrpcEndpoint__Property: ${GRPC_ENDPOINT_PROPERTY}
+    GrpcEndpoint__Payment: ${GRPC_ENDPOINT_PAYMENT}
   depends_on:
     postgres:
       condition: service_healthy
@@ -61,10 +66,8 @@ x-identity-service-environment: &identity-service-environment
   ServiceName: Identity
   Kestrel__Endpoints__Http__Url: http://*:${IDENTITY_HTTP_PORT}
   Kestrel__Endpoints__Http__Protocols: Http1
-  Kestrel__Endpoints__Grpc__Url: https://*:${IDENTITY_HTTP2_PORT}
+  Kestrel__Endpoints__Grpc__Url: http://*:${IDENTITY_HTTP2_PORT}
   Kestrel__Endpoints__Grpc__Protocols: Http2
-  Kestrel__Endpoints__Grpc__Certificate__Path: ${IDENTITY_CERTIFICATE_PATH}
-  Kestrel__Endpoints__Grpc__Certificate__Password: ${IDENTITY_CERTIFICATE_PASSWORD}
   ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=0
   Google__ClientId: ${GOOGLE_CLIENT_ID}
   Google__ClientSecret: ${GOOGLE_CLIENT_SECRET}
@@ -72,19 +75,14 @@ x-identity-service-environment: &identity-service-environment
   ConfirmationCode__CodeLength: ${CONFIRMATION_CODE_LENGTH}
   ConfirmationCode__ExpirationTimeInMinutes: ${CONFIRMATION_CODE_EXPIRATION_MINUTES}
   ConfirmationCode__MaximumAttempts: ${CONFIRMATION_CODE_MAX_ATTEMPTS}
-  # Cấu hình DataProtection
-  DataProtection__CertificateThumbprint: ${DATA_PROTECTION_CERT_THUMBPRINT:-}
-  DataProtection__UseX509Certificate: ${DATA_PROTECTION_USE_CERT:-false}
 
 x-property-service-environment: &property-service-environment
   <<: [*microservices-environment, *minio-environment]
   ServiceName: Property
   Kestrel__Endpoints__Http__Url: http://*:${PROPERTY_HTTP_PORT}
   Kestrel__Endpoints__Http__Protocols: Http1
-  Kestrel__Endpoints__Grpc__Url: https://*:${PROPERTY_HTTP2_PORT}
+  Kestrel__Endpoints__Grpc__Url: http://*:${PROPERTY_HTTP2_PORT}
   Kestrel__Endpoints__Grpc__Protocols: Http2
-  Kestrel__Endpoints__Grpc__Certificate__Path: ${PROPERTY_CERTIFICATE_PATH}
-  Kestrel__Endpoints__Grpc__Certificate__Password: ${PROPERTY_CERTIFICATE_PASSWORD}
   ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=1
   Minio__Endpoint: http://${MINIO_HOST}:${MINIO_PORT}
   Minio__AccessKey: ${MINIO_USER}
@@ -97,10 +95,8 @@ x-payment-service-environment: &payment-service-environment
   ServiceName: Payment
   Kestrel__Endpoints__Http__Url: http://*:${PAYMENT_HTTP_PORT}
   Kestrel__Endpoints__Http__Protocols: Http1
-  Kestrel__Endpoints__Grpc__Url: https://*:${PAYMENT_HTTP2_PORT}
+  Kestrel__Endpoints__Grpc__Url: http://*:${PAYMENT_HTTP2_PORT}
   Kestrel__Endpoints__Grpc__Protocols: Http2
-  Kestrel__Endpoints__Grpc__Certificate__Path: ${PAYMENT_CERTIFICATE_PATH}
-  Kestrel__Endpoints__Grpc__Certificate__Password: ${PAYMENT_CERTIFICATE_PASSWORD}
   ConnectionStrings__RedisConnection: ${REDIS_HOST}:${REDIS_PORT},password=${REDIS_PASSWORD},defaultDatabase=2
   Paypal__ClientId: ${PAYPAL_CLIENT_ID}
   Paypal__ClientSecret: ${PAYPAL_CLIENT_SECRET}

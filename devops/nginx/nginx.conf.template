@@ -83,6 +83,9 @@ http {
     proxy_buffers 16 32k;   # Increased from 8 16k
     proxy_busy_buffers_size 64k;  # Increased from 32k
 
+    # Define cache settings for API responses - MOVED TO CORRECT POSITION
+    proxy_cache_path /var/cache/nginx/api_cache levels=1:2 keys_zone=api_cache:10m max_size=1g inactive=60m;
+
     # --- Upstream REST API Definitions ---
     upstream identity_service {
         least_conn;
@@ -196,6 +199,18 @@ http {
 
         # --- Location Blocks for REST API Microservices ---
         location /identity/ {
+            # Handle preflight OPTIONS requests
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+                add_header 'Access-Control-Allow-Credentials' 'true' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
+                add_header 'Access-Control-Max-Age' 86400 always;
+                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
+                add_header 'Content-Length' 0 always;
+                return 204;
+            }
+
             proxy_pass http://identity_service/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -215,6 +230,12 @@ http {
             
             # Rate limiting with burst capability
             limit_req zone=http_limit burst=20 nodelay;
+
+            # CORS headers for actual responses
+            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
             
             # Enable caching for GET requests
             proxy_cache api_cache;
@@ -227,6 +248,18 @@ http {
         }
 
         location /functional/ {
+            # Handle preflight OPTIONS requests
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+                add_header 'Access-Control-Allow-Credentials' 'true' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
+                add_header 'Access-Control-Max-Age' 86400 always;
+                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
+                add_header 'Content-Length' 0 always;
+                return 204;
+            }
+
             proxy_pass http://functional_service/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -247,6 +280,12 @@ http {
             # Rate limiting with burst capability
             limit_req zone=http_limit burst=20 nodelay;
             
+            # CORS headers for actual responses
+            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
+            
             # Enable caching for GET requests
             proxy_cache api_cache;
             proxy_cache_methods GET;
@@ -258,6 +297,18 @@ http {
         }
 
         location /property/ {
+            # Handle preflight OPTIONS requests
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+                add_header 'Access-Control-Allow-Credentials' 'true' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
+                add_header 'Access-Control-Max-Age' 86400 always;
+                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
+                add_header 'Content-Length' 0 always;
+                return 204;
+            }
+
             proxy_pass http://property_service/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -277,6 +328,12 @@ http {
             
             # Rate limiting with burst capability
             limit_req zone=http_limit burst=20 nodelay;
+
+            # CORS headers for actual responses
+            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
             
             # Enable caching for GET requests
             proxy_cache api_cache;
@@ -289,6 +346,18 @@ http {
         }
 
         location /payment/ {
+            # Handle preflight OPTIONS requests
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+                add_header 'Access-Control-Allow-Credentials' 'true' always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
+                add_header 'Access-Control-Max-Age' 86400 always;
+                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
+                add_header 'Content-Length' 0 always;
+                return 204;
+            }
+
             proxy_pass http://payment_service/;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -308,6 +377,12 @@ http {
             
             # Rate limiting with burst capability
             limit_req zone=http_limit burst=20 nodelay;
+
+            # CORS headers for actual responses
+            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Credentials' 'true' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
             
             # Enable caching for GET requests
             proxy_cache api_cache;
@@ -329,13 +404,8 @@ http {
         location /grpc/identity/ {
             # Remove trailing slash from location and forward exact path
             rewrite ^/grpc/identity/(.*) /$1 break;
-            
-            # Use grpcs:// since your backend is configured with TLS
-            grpc_pass grpcs://identity_service_grpc;
-            
-            # SSL verification - optional if using self-signed certs
-            grpc_ssl_verify off;
-            grpc_ssl_server_name on;
+    
+            grpc_pass grpc://identity_service_grpc;
             
             # Client buffer size for headers
             grpc_buffer_size 16k;
@@ -360,12 +430,11 @@ http {
         }
         
         # Property Service gRPC endpoint
-        location /grpc/property/ {            # Remove trailing slash from location and forward exact path
+        location /grpc/property/ {
+            # Remove trailing slash from location and forward exact path
             rewrite ^/grpc/property/(.*) /$1 break;
-            grpc_pass grpcs://property_service_grpc;
 
-            grpc_ssl_verify off;
-            grpc_ssl_server_name on;
+            grpc_pass grpc://property_service_grpc;
             
             grpc_buffer_size 16k;
             
@@ -387,10 +456,8 @@ http {
         # Payment Service gRPC endpoint
         location /grpc/payment/ {
             rewrite ^/grpc/payment/(.*) /$1 break;
-            grpc_pass grpcs://payment_service_grpc;
 
-            grpc_ssl_verify off;
-            grpc_ssl_server_name on;
+            grpc_pass grpc://payment_service_grpc;
             
             grpc_buffer_size 16k;
             
@@ -430,10 +497,4 @@ http {
         access_log /var/log/nginx/https_access.log main;
         error_log /var/log/nginx/https_error.log warn;
     }
-
-    # Define cache settings for API responses
-    proxy_cache_path /var/cache/nginx/api_cache levels=1:2 keys_zone=api_cache:10m max_size=1g inactive=60m;
-    
-    # Define cache settings for gRPC responses (if needed)
-    # proxy_cache_path /var/cache/nginx/grpc_cache levels=1:2 keys_zone=grpc_cache:10m max_size=500m inactive=30m;
 }

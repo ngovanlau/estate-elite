@@ -8,7 +8,7 @@ COPY Services/PropertyService/PropertyService.Application/PropertyService.Applic
 COPY Services/PropertyService/PropertyService.Domain/PropertyService.Domain.csproj Services/PropertyService/PropertyService.Domain/
 COPY Services/PropertyService/PropertyService.Infrastructure/PropertyService.Infrastructure.csproj Services/PropertyService/PropertyService.Infrastructure/
 
-COPY BuildingBlocks/EventBus/EventBus.Infrastructures/EventBus.Infrastructures.csproj BuildingBlocks/EventBus/EventBus.Infrastructures/
+COPY BuildingBlocks/EventBus/EventBus.Abstraction/EventBus.Abstraction.csproj BuildingBlocks/EventBus/EventBus.Abstraction/
 COPY BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj BuildingBlocks/EventBus/EventBus.RabbitMQ/
 COPY BuildingBlocks/SharedKernel/SharedKernel.csproj BuildingBlocks/SharedKernel/
 COPY BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj BuildingBlocks/DistributedCache/DistributedCache.Redis/
