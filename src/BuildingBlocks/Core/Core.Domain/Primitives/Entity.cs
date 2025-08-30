@@ -1,6 +1,40 @@
+/*
+ * Why define Entity this way:
+ * ---------------------------
+ * 1. Identity:
+ *    - Every entity has a unique Id (Guid) that distinguishes it from others.
+ *    - Id is immutable after creation (`private init`).
+ *
+ * 2. Constructors:
+ *    - Protected default constructor: required by EF Core for materialization.
+ *    - Protected constructor with explicit Guid: allows controlled initialization.
+ *
+ * 3. Static Factory Methods:
+ *    - Create<T>() → generates a new entity with a new Guid Id.
+ *    - Create<T>(Guid id) → generates entity with a specific Guid Id.
+ *    - Ensures consistent creation logic across all entities.
+ *
+ * 4. ToString():
+ *    - Overrides default output for easier debugging/logging (prints type + Id).
+ *
+ * 5. Equality Handling:
+ *    - Entities are compared by identity (Id), not by reference or property values.
+ *    - Operators == and != are overridden for intuitive equality checks.
+ *    - Equals/GetHashCode ensure correct behavior in collections (e.g., HashSet, Dictionary).
+ *    - Equality also requires the same runtime type (avoids comparing different entity types with the same Id).
+ *
+ * 6. DDD Principle:
+ *    - Entities are defined by their identity, not their attributes.
+ *    - Two entities with the same Id are considered equal, even if other properties differ.
+ *
+ * Overall:
+ * Entity provides a consistent, reusable base class for all domain entities,
+ * enforcing identity-based equality and simplifying creation and debugging.
+ */
+
 namespace Core.Domain.Primitives;
 
-public abstract class Entity
+public abstract class Entity : IEquatable<Entity>
 {
     /// <summary>
     /// Unique identifier for the entity
@@ -48,4 +82,31 @@ public abstract class Entity
     {
         return $"{GetType().Name} [Id={Id}]";
     }
+
+    #region Equality
+
+    public static bool operator ==(Entity? left, Entity? right)
+        => left?.Equals(right) ?? right is null;
+
+    public static bool operator !=(Entity? left, Entity? right)
+        => !(left == right);
+
+    public bool Equals(Entity? other)
+    {
+        if (other is null || GetType() != other.GetType())
+            return false;
+
+        if (ReferenceEquals(this, other))
+            return true;
+
+        return Id == other.Id;
+    }
+
+    public override bool Equals(object? obj)
+        => obj is Entity other && Equals(other);
+
+    public override int GetHashCode()
+        => HashCode.Combine(GetType(), Id);
+
+    #endregion
 }

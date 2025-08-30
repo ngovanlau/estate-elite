@@ -1,3 +1,39 @@
+/*
+ * Why define AggregateRoot this way:
+ * ----------------------------------
+ * 1. Aggregate Root in DDD:
+ *    - Represents the entry point to an aggregate (a cluster of entities/values).
+ *    - Enforces business invariants and ensures consistency inside the aggregate.
+ *    - Only the aggregate root can be referenced from outside, not inner entities.
+ *
+ * 2. Inherits from Entity:
+ *    - AggregateRoot is still an entity (has identity).
+ *    - Adds extra behaviors specific to aggregates, such as domain event handling.
+ *
+ * 3. Domain Events Handling:
+ *    - Maintains a private list of IDomainEvent.
+ *    - Provides controlled methods:
+ *        - RaiseDomainEvent(...) → records new events.
+ *        - ClearDomainEvents()  → resets after publishing.
+ *        - HasDomainEvents      → quick check.
+ *        - PopDomainEvents()    → retrieves and clears at once.
+ *    - Marked with [NotMapped] to ensure EF Core does not persist domain events.
+ *
+ * 4. Encapsulation:
+ *    - The _domainEvents list is private and exposed only as IReadOnlyCollection.
+ *    - Prevents external code from mutating domain events directly.
+ *
+ * 5. Constructors:
+ *    - Protected default constructor for EF Core materialization.
+ *    - Protected constructor with explicit Guid id for explicit initialization.
+ *
+ * Overall:
+ * This design makes AggregateRoot the central authority for:
+ * - Maintaining invariants within aggregates.
+ * - Raising and tracking domain events in a consistent way.
+ * - Integrating cleanly with EF Core and MediatR for event dispatching.
+ */
+
 using System.ComponentModel.DataAnnotations.Schema;
 using Core.Domain.Abstractions;
 
