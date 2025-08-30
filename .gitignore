@@ -489,3 +489,6 @@ $RECYCLE.BIN/
 
 # Ignore cache files
 **/cache
+
+# Ignore DevOps services
+**/devops/services

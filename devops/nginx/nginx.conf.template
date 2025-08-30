@@ -200,14 +200,11 @@ http {
         # --- Location Blocks for REST API Microservices ---
         location /identity/ {
             # Handle preflight OPTIONS requests
-            if ($request_method = 'OPTIONS') {
-                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
-                add_header 'Access-Control-Allow-Credentials' 'true' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-                add_header 'Access-Control-Max-Age' 86400 always;
-                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
-                add_header 'Content-Length' 0 always;
+            if ($request_method = OPTIONS) {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization';
+                add_header 'Access-Control-Allow-Credentials' 'true';
                 return 204;
             }
 
@@ -232,10 +229,10 @@ http {
             limit_req zone=http_limit burst=20 nodelay;
 
             # CORS headers for actual responses
-            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization' always;
             add_header 'Access-Control-Allow-Credentials' 'true' always;
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
             
             # Enable caching for GET requests
             proxy_cache api_cache;
@@ -249,14 +246,11 @@ http {
 
         location /functional/ {
             # Handle preflight OPTIONS requests
-            if ($request_method = 'OPTIONS') {
-                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
-                add_header 'Access-Control-Allow-Credentials' 'true' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-                add_header 'Access-Control-Max-Age' 86400 always;
-                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
-                add_header 'Content-Length' 0 always;
+            if ($request_method = OPTIONS) {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization';
+                add_header 'Access-Control-Allow-Credentials' 'true';
                 return 204;
             }
 
@@ -281,11 +275,11 @@ http {
             limit_req zone=http_limit burst=20 nodelay;
             
             # CORS headers for actual responses
-            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization' always;
             add_header 'Access-Control-Allow-Credentials' 'true' always;
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-            
+
             # Enable caching for GET requests
             proxy_cache api_cache;
             proxy_cache_methods GET;
@@ -298,14 +292,11 @@ http {
 
         location /property/ {
             # Handle preflight OPTIONS requests
-            if ($request_method = 'OPTIONS') {
-                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
-                add_header 'Access-Control-Allow-Credentials' 'true' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-                add_header 'Access-Control-Max-Age' 86400 always;
-                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
-                add_header 'Content-Length' 0 always;
+            if ($request_method = OPTIONS) {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization';
+                add_header 'Access-Control-Allow-Credentials' 'true';
                 return 204;
             }
 
@@ -330,11 +321,11 @@ http {
             limit_req zone=http_limit burst=20 nodelay;
 
             # CORS headers for actual responses
-            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization' always;
             add_header 'Access-Control-Allow-Credentials' 'true' always;
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-            
+
             # Enable caching for GET requests
             proxy_cache api_cache;
             proxy_cache_methods GET;
@@ -347,14 +338,11 @@ http {
 
         location /payment/ {
             # Handle preflight OPTIONS requests
-            if ($request_method = 'OPTIONS') {
-                add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
-                add_header 'Access-Control-Allow-Credentials' 'true' always;
-                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-                add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-                add_header 'Access-Control-Max-Age' 86400 always;
-                add_header 'Content-Type' 'text/plain charset=UTF-8' always;
-                add_header 'Content-Length' 0 always;
+            if ($request_method = OPTIONS) {
+                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization';
+                add_header 'Access-Control-Allow-Credentials' 'true';
                 return 204;
             }
 
@@ -379,11 +367,11 @@ http {
             limit_req zone=http_limit burst=20 nodelay;
 
             # CORS headers for actual responses
-            add_header 'Access-Control-Allow-Origin' 'http://localhost:3000' always;
+            add_header 'Access-Control-Allow-Origin' '*' always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS' always;
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization' always;
             add_header 'Access-Control-Allow-Credentials' 'true' always;
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;
-            add_header 'Access-Control-Allow-Headers' 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With,X-Real-IP,X-Forwarded-For,X-Forwarded-Proto' always;
-            
+
             # Enable caching for GET requests
             proxy_cache api_cache;
             proxy_cache_methods GET;
