@@ -1,44 +1,38 @@
 /*
- * Why define ValidationResult:
- * ----------------------------
+ * Why define ValidationResult and ValidationResult<T>:
+ * ---------------------------------------------------
  * 1. Purpose:
- *    - In DDD / Clean Architecture, validation often produces
- *      multiple errors at once (e.g., input validation).
- *    - Normal Result only carries ONE Error.
- *    - ValidationResult extends Result to support an array of Errors.
+ *    - Encapsulates multiple validation errors instead of a single error.
+ *    - Used when input validation or business rules produce multiple failures.
+ *    - Extends the Result pattern for validation scenarios.
  *
- * 2. Implementation:
- *    - Inherits from Result:
- *        - Always Failure (base(false, ValidationError)).
- *    - Errors property holds multiple Error objects.
- *    - Constructor is private → ensures creation only via WithErrors().
+ * 2. Two Variants:
+ *    - ValidationResult:
+ *        • Used when operation returns no payload (just success/failure).
+ *    - ValidationResult<T>:
+ *        • Used when operation returns a payload (Result<T>).
+ *        • Example: Query or Command returning a DTO but validation failed.
  *
- * 3. IValidationResult interface:
- *    - Defines contract: ValidationError (static Error) + Errors[].
- *    - ValidationError = standardized error code ("ValidationError").
- *    - Prevents mixing business failure with validation failure.
+ * 3. Implementation:
+ *    - Both inherit from Result / Result<T>.
+ *    - Always represent a failure (base(false, ValidationError)).
+ *    - Store a collection of validation errors (Error[] Errors).
+ *    - Factory method (WithErrors) ensures consistent creation.
  *
- * 4. Factory:
- *    - ValidationResult.WithErrors(errors) → clean API for building failure results.
- *    - Example:
- *        var result = ValidationResult.WithErrors(new[] {
- *            Error.Validation("FirstName", "First name is required."),
- *            Error.Validation("Age", "Age must be greater than 18.")
- *        });
+ * 4. IValidationResult Contract:
+ *    - Provides standard ValidationError (Error.Validation).
+ *    - Enforces Errors[] property.
  *
- * 5. Usage in Application Layer:
- *    - Instead of throwing ValidationException,
- *      return ValidationResult to the caller.
- *    - Allows API/UI layer to present detailed validation feedback.
+ * 5. Benefits:
+ *    - Clean way to separate validation errors from business errors.
+ *    - Supports consistent error handling across application.
+ *    - Makes commands/queries validation-friendly:
+ *        • Example: pipeline behavior in MediatR can return ValidationResult directly.
  *
- * 6. Benefit:
- *    - Keeps validation handling consistent with Result pattern.
- *    - Prevents scattering of validation error handling.
- *    - Supports multiple errors → unlike simple Result<>, which carries only one.
- *
- * Summary:
- * ValidationResult = specialization of Result for validation failures,
- * with ability to carry multiple errors while still fitting into the Result pipeline.
+ * Overall:
+ * ValidationResult and ValidationResult<T> provide a structured,
+ * reusable approach to handling multiple validation failures within
+ * the Result pattern, improving consistency and clarity.
  */
 
 namespace Core.Domain.Shared;
@@ -54,6 +48,27 @@ public sealed class ValidationResult : Result, IValidationResult
     public static ValidationResult WithErrors(Error[] errors) => new(errors);
 }
 
+/// <summary>
+/// Represents a validation result with a payload (used when TResponse = Result<T>).
+/// </summary>
+public sealed class ValidationResult<T> : Result<T>, IValidationResult
+{
+    /// <inheritdoc />
+    public Error[] Errors { get; }
+
+    private ValidationResult(Error[] errors)
+        : base(default!, false, IValidationResult.ValidationError)
+        => Errors = errors;
+
+    /// <summary>
+    /// Factory method to create a ValidationResult with errors.
+    /// </summary>
+    public static ValidationResult<T> WithErrors(Error[] errors) => new(errors);
+}
+
+/// <summary>
+/// Contract for validation result.
+/// </summary>
 public interface IValidationResult
 {
     /// <summary>
