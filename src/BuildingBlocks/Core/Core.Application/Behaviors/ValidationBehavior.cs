@@ -1,43 +1,47 @@
-/*
- * ValidationBehavior in MediatR Pipeline
- * --------------------------------------
- * 1. Purpose:
- *    - Runs before the actual handler executes.
- *    - Uses FluentValidation validators (IValidator<TRequest>) to check the request.
- *    - Converts FluentValidation failures into our custom Result/ValidationResult pattern.
+/* 
+ * Why this ValidationBehavior is designed this way:
+ * ------------------------------------------------
+ * 1. Purpose (Pipeline Behavior):
+ *    - Implements MediatR IPipelineBehavior<TRequest, TResponse>.
+ *    - Intercepts every request before reaching the handler.
+ *    - Ensures validation runs automatically, enforcing consistency across all requests.
  *
- * 2. Workflow:
- *    - If no validators exist for the request → continue pipeline.
- *    - If validators exist:
- *        • Collect validation errors (Error[]).
- *        • If errors found → return ValidationResult or ValidationResult<T>.
- *        • If no errors → call next() (execute handler).
+ * 2. FluentValidation Integration:
+ *    - Injects IEnumerable<IValidator<TRequest>> to support multiple validators per request.
+ *    - Each validator can define its own rules → composable and extensible.
+ *    - Validation runs asynchronously to allow async rules (e.g., DB checks).
  *
- * 3. Key Points:
- *    - The behavior enforces validation across all requests without duplicating code.
- *    - Uses CreateValidationResult<TResponse> helper:
- *        • If TResponse = Result      → return ValidationResult.
- *        • If TResponse = Result<T>   → return ValidationResult<T>.
+ * 3. Validation Result Handling:
+ *    - Collects all validation errors instead of stopping at the first failure.
+ *    - Groups errors by PropertyName, aggregating messages into a dictionary.
+ *    - Provides structured details { PropertyName → [ErrorMessages[]] } for clients.
  *
- * 4. Integration:
- *    - Registered automatically in DI with:
- *          services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
- *    - Ensures every Command/Query passes through validation before execution.
+ * 4. Error Handling via Result Pattern:
+ *    - Does not throw exceptions for validation errors → avoids control-flow exceptions.
+ *    - Wraps failures in an Error object (Error.Validation).
+ *    - Returns Result or Result<T> consistently, keeping the functional style.
  *
- * 5. Benefits:
- *    - Centralized validation logic.
- *    - Clean error mapping (FluentValidation → Domain Error).
- *    - Works seamlessly with Result pattern, so handlers don't need to worry about validation.
+ * 5. Generic Result Support:
+ *    - Supports both Result and Result<T>.
+ *    - Uses reflection only when needed to call Result<T>.Failure(error).
+ *    - This ensures pipeline can handle any handler response type uniformly.
  *
- * Example:
- * --------
- * var result = await mediator.Send(new CreateUserCommand(...));
- * if (result.IsFailure && result is IValidationResult v)
- * {
- *     // Handle validation errors
- *     foreach (var error in v.Errors)
- *         Console.WriteLine($"{error.Code}: {error.Message}");
- * }
+ * 6. Sealed Class:
+ *    - Prevents inheritance → no accidental override of validation logic.
+ *    - Ensures single, consistent validation flow in the application.
+ *
+ * 7. Benefits:
+ *    - Centralizes validation logic (no duplication across handlers).
+ *    - Provides rich error feedback for API consumers.
+ *    - Follows Clean Architecture & DDD principles:
+ *      * Separation of concerns (validation outside handlers).
+ *      * Uniform error contract (Result/Error types).
+ *      * Extensible without modifying core pipeline.
+ *
+ * Overall:
+ * ValidationBehavior guarantees that all requests are validated consistently,
+ * errors are structured and returned via the Result pattern, and business logic
+ * in handlers remains focused on actual use cases without worrying about validation.
  */
 
 using Core.Domain.Shared;
@@ -75,17 +79,21 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
         if (!_validators.Any())
             return await next();
 
-        Error[] errors = _validators
-            .Select(validator => validator.ValidateAsync(request))
-            .SelectMany(validationResult => validationResult.Result.Errors)
-            .Where(validationFailure => validationFailure is not null)
-            .Select(failure => Error.Validation(
-                failure.PropertyName,
-                failure.ErrorMessage))
-            .ToArray();
+        var validationResults = await Task.WhenAll(
+            _validators.Select(validator => validator.ValidateAsync(request, cancellationToken)));
 
-        if (errors.Length > 0)
-            return CreateValidationResult<TResponse>(errors);
+        var details = validationResults
+            .SelectMany(result => result.Errors)
+            .Where(failure => failure is not null)
+            .GroupBy(failure => failure.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(failure => failure.ErrorMessage).ToArray() as object);
+
+        var error = Error.Validation("ValidationError", "Validation failed", details);
+
+        if (details.Count > 0)
+            return CreateValidationResult<TResponse>(error);
 
         return await next();
     }
@@ -94,19 +102,19 @@ public sealed class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<
     /// Creates validation result based on response type
     /// </summary>
     /// <typeparam name="TResult">Result type</typeparam>
-    /// <param name="errors">Validation errors</param>
+    /// <param name="error">Validation error</param>
     /// <returns>Validation result</returns>
-    private static TResult CreateValidationResult<TResult>(Error[] errors)
+    private static TResult CreateValidationResult<TResult>(Error error)
         where TResult : Result
     {
         if (typeof(TResult) == typeof(Result))
-            return (ValidationResult.WithErrors(errors) as TResult)!;
+            return (Result.Failure(error) as TResult)!;
 
-        object validationResult = typeof(ValidationResult<>)
+        object validationResult = typeof(Result<>)
             .GetGenericTypeDefinition()
             .MakeGenericType(typeof(TResult).GenericTypeArguments[0])
-            .GetMethod(nameof(ValidationResult.WithErrors))!
-            .Invoke(null, [errors])!;
+            .GetMethod(nameof(Result.Failure))!
+            .Invoke(null, [error])!;
 
         return (TResult)validationResult;
     }

@@ -7,7 +7,7 @@
  *
  * 2. MediatR Integration:
  *    - Registers all request handlers from the specified assembly automatically.
- *    - Adds pipeline behaviors in a consistent order: Logging → Validation → Performance → Transaction.
+ *    - Adds pipeline behaviors in a consistent order: Exception Handling → Logging → Validation → Performance → Transaction.
  *    - Ensures cross-cutting concerns are handled consistently for all requests.
  *
  * 3. FluentValidation Integration:
@@ -59,6 +59,7 @@ public static class ServiceCollectionExtensions
             config.RegisterServicesFromAssembly(assembly);
 
             // Add behaviors in order
+            config.AddOpenBehavior(typeof(ExceptionHandlingBehavior<,>));
             config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             config.AddOpenBehavior(typeof(ValidationBehavior<,>));
             config.AddOpenBehavior(typeof(PerformanceBehavior<,>));

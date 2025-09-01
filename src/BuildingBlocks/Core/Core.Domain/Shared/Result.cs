@@ -10,6 +10,7 @@
  * 2. Result (without value):
  *    - Contains:
  *        - IsSuccess (true/false).
+ *        - IsFailure (true/false).
  *        - Error (Error.None if success).
  *    - Static factories: Success(), Failure(Error), Create(condition, error).
  *    - Prevents invalid states:
@@ -52,6 +53,11 @@ public class Result
     /// Whether the operation was successful
     /// </summary>
     public bool IsSuccess { get; }
+
+    /// <summary>
+    /// Whether the operation failed
+    /// </summary>
+    public bool IsFailure => !IsSuccess;
 
     /// <summary>
     /// Error information (None if successful)

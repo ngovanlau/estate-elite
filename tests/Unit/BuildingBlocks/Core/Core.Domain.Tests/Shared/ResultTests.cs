@@ -36,7 +36,11 @@ public class ResultTests
     public void Failure_Should_Create_Failed_Result()
     {
         // Arrange
-        var error = Error.Validation("Test.Error", "Test error message");
+        var error = Error.Validation("Test.Error", "Test error message", new Dictionary<string, object>
+        {
+            { "Field1", new[] { "Error1", "Error2" } },
+            { "Field2", new[] { "Error3" } }
+        });
 
         // Act
         var result = Result.Failure(error);

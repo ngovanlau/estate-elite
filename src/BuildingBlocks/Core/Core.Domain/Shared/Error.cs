@@ -2,37 +2,40 @@
  * Why this Error record is designed this way:
  * -------------------------------------------
  * 1. Record Type:
- *    - `record` is used instead of `class` because Error is a value object
- *      (compared by values, immutable by default).
- *    - This ensures that two errors with the same Code/Message/Type are equal.
+ *    - `record` is used instead of `class` because Error is a value object:
+ *        - Immutable by default.
+ *        - Compared by values, not references.
+ *    - Two errors with the same Code/Message/Type are automatically equal.
  *
  * 2. Sealed:
- *    - Prevents inheritance, keeping all error definitions consistent and centralized.
+ *    - Prevents inheritance, ensuring all error definitions remain consistent and centralized.
  *
- * 3. Predefined Instances (e.g., None, NullValue):
- *    - Provide common reusable errors without needing to recreate them.
- *    - `Error.None` avoids using null to represent "no error".
+ * 3. Predefined Instances:
+ *    - `None` represents the absence of an error.
+ *    - `NullValue` is a common generic error to avoid using nulls.
  *
- * 4. Static Factory Methods (e.g., NotFound, Validation, Conflict...):
- *    - Self-explanatory names make code more readable than `new Error(..., ErrorType.X)`.
- *    - Enforces correct ErrorType automatically (avoids mistakes).
- *    - Centralizes creation logic: if error initialization changes later (e.g., add logging),
- *      only the factory method needs updating.
+ * 4. Static Factory Methods:
+ *    - Methods like `NotFound`, `Validation`, `Conflict`, `Forbidden`, `Unauthorized`:
+ *        - Provide readable, self-explanatory error creation.
+ *        - Automatically assign the correct ErrorType.
+ *        - Centralize creation logic for consistency and future maintainability.
  *
- * 5. Implicit Conversion to string + ToString override:
- *    - Allows using Error directly as string (returns Code).
- *    - Useful in logging, dictionaries, or simple checks.
+ * 5. Details Dictionary:
+ *    - Optional key-value store for additional context about the error.
+ *    - Useful for logging, diagnostics, or API responses.
  *
- * 6. ErrorType Enum:
- *    - Strongly typed categories of errors (None, Failure, Validation, NotFound, etc.).
- *    - Easy mapping to HTTP status codes or other layers.
+ * 6. Implicit Conversion & ToString:
+ *    - Allows using `Error` directly as a string (returns Code).
+ *    - Simplifies logging, dictionary keys, and other operations.
  *
- * Overall:
- * This design follows Domain-Driven Design (DDD) best practices:
- * - Errors are value objects (records).
- * - Common errors are predefined.
- * - Static factories ensure consistency and readability.
- * - Provides type safety, avoids nulls, and makes error handling uniform across the system.
+ * 7. ErrorType Enum:
+ *    - Strongly typed categories of errors (Validation, NotFound, Conflict, etc.).
+ *    - Facilitates mapping to HTTP status codes or other layers.
+ *
+ * Overall Design:
+ *    - Follows DDD principles: errors are value objects, predefined where common, 
+ *      and created via factories for consistency.
+ *    - Ensures type safety, avoids nulls, and makes error handling uniform across the system.
  */
 
 namespace Core.Domain.Shared;
@@ -43,7 +46,11 @@ namespace Core.Domain.Shared;
 /// <param name="Code">Error code</param>
 /// <param name="Message">Error message</param>
 /// <param name="Type">Error type</param>
-public sealed record Error(string Code, string Message, ErrorType Type = ErrorType.Failure)
+public sealed record Error(
+    string Code,
+    string Message,
+    ErrorType Type = ErrorType.Failure,
+    Dictionary<string, object>? Details = null)
 {
     /// <summary>
     /// Static Field
@@ -65,8 +72,8 @@ public sealed record Error(string Code, string Message, ErrorType Type = ErrorTy
     /// <param name="code">Error code</param>
     /// <param name="message">Error message</param>
     /// <returns>Not found error</returns>
-    public static Error NotFound(string code, string message)
-        => new(code, message, ErrorType.NotFound);
+    public static Error NotFound(string code, string message, Dictionary<string, object>? details = null)
+        => new(code, message, ErrorType.NotFound, details);
 
     /// <summary>
     /// Creates a validation error
@@ -74,8 +81,8 @@ public sealed record Error(string Code, string Message, ErrorType Type = ErrorTy
     /// <param name="code">Error code</param>
     /// <param name="message">Error message</param>
     /// <returns>Validation error</returns>
-    public static Error Validation(string code, string message)
-        => new(code, message, ErrorType.Validation);
+    public static Error Validation(string code, string message, Dictionary<string, object> details)
+        => new(code, message, ErrorType.Validation, details);
 
     /// <summary>
     /// Creates a conflict error
@@ -83,8 +90,8 @@ public sealed record Error(string Code, string Message, ErrorType Type = ErrorTy
     /// <param name="code">Error code</param>
     /// <param name="message">Error message</param>
     /// <returns>Conflict error</returns>
-    public static Error Conflict(string code, string message)
-        => new(code, message, ErrorType.Conflict);
+    public static Error Conflict(string code, string message, Dictionary<string, object>? details = null)
+        => new(code, message, ErrorType.Conflict, details);
 
     /// <summary>
     /// Creates an unauthorized error
@@ -92,8 +99,8 @@ public sealed record Error(string Code, string Message, ErrorType Type = ErrorTy
     /// <param name="code">Error code</param>
     /// <param name="message">Error message</param>
     /// <returns>Unauthorized error</returns>
-    public static Error Unauthorized(string code, string message)
-        => new(code, message, ErrorType.Unauthorized);
+    public static Error Unauthorized(string code, string message, Dictionary<string, object>? details = null)
+        => new(code, message, ErrorType.Unauthorized, details);
 
     /// <summary>
     /// Creates a forbidden error
@@ -101,8 +108,8 @@ public sealed record Error(string Code, string Message, ErrorType Type = ErrorTy
     /// <param name="code">Error code</param>
     /// <param name="message">Error message</param>
     /// <returns>Forbidden error</returns>
-    public static Error Forbidden(string code, string message)
-        => new(code, message, ErrorType.Forbidden);
+    public static Error Forbidden(string code, string message, Dictionary<string, object>? details = null)
+        => new(code, message, ErrorType.Forbidden, details);
 
     /// <summary>
     /// Implicit conversion to string (returns error code)
