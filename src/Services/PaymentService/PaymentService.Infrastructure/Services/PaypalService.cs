@@ -4,7 +4,7 @@ using PaymentService.Application.Interfaces;
 using PaymentService.Infrastructure.PaymentProviders.Paypal;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 
 namespace PaymentService.Infrastructure.Services;
 

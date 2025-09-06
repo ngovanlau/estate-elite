@@ -1,5 +1,3 @@
-using System;
-
 namespace FunctionalService.Interfaces;
 
 public interface IEmailService

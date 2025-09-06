@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PropertyService.Application.Commands.Properties;
 using PropertyService.Application.Queries.Properties;
 using PropertyService.Application.Requests.Properties;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 namespace PropertyService.Application.Mediators;
 

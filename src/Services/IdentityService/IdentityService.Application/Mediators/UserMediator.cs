@@ -6,7 +6,7 @@ namespace IdentityService.Application.Mediators;
 using Commands.Users;
 using Queries.Users;
 using Requests.Users;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 public static class UserMediator
 {

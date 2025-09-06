@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 namespace PropertyService.Infrastructure.Data;
 
 using Domain.Entities;
-using SharedKernel.Enums;
-using SharedKernel.Extensions;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
 
 public class PropertyContext(DbContextOptions<PropertyContext> options) : DbContext(options)
 {

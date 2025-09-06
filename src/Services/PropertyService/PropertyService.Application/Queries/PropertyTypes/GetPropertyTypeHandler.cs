@@ -9,7 +9,7 @@ using Dtos.PropertyTypes;
 using Interfaces;
 using PropertyService.Domain.Entities;
 using Requests.PropertyTypes;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class GetPropertyTypeHandler(

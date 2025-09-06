@@ -7,9 +7,9 @@ using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
 using SharedKernel.Commons;
-using SharedKernel.Enums;
-using SharedKernel.Extensions;
-using SharedKernel.Implements;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
+using Common.Infrastructure.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 

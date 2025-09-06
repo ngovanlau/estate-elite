@@ -3,7 +3,7 @@ namespace IdentityService.Application.Interfaces;
 using Domain.Entities;
 using Dtos.Authentications;
 using Dtos.Users;
-using SharedKernel.Interfaces;
+using Common.Application.Interfaces;
 
 public interface IUserRepository : IRepository<User>
 {

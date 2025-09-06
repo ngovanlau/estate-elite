@@ -1,4 +1,4 @@
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 using System.Text.Json.Serialization;
 
 namespace PropertyService.Application.Dtos.Properties;

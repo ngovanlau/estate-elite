@@ -1,7 +1,7 @@
 namespace IdentityService.Domain.Entities;
 
 using SharedKernel.Entities;
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 
 public partial class User : AuditableEntity
 {

@@ -7,9 +7,9 @@ using PropertyService.Application.Extensions;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using SharedKernel.Extensions;
-using SharedKernel.Interfaces;
-using SharedKernel.Responses;
+using Common.Infrastructure.Extensions;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
 using StackExchange.Redis;
 using static SharedKernel.Constants.ErrorCode;
 
@@ -123,7 +123,7 @@ public class CreatePropertyHandler(
         {
             await transaction.RollbackAsync(cancellationToken);
             logger.LogError(ex, "Unexpected error while creating property: {ErrorMessage}", ex.Message);
-                        return response.SetError(nameof(E000), E000);
+            return response.SetError(nameof(E000), E000);
         }
     }
 }

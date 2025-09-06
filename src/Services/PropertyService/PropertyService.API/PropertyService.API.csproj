@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
     <ProjectReference Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
-    <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
+    <ProjectReference Include="../../../BuildingBlocks/Common/Common.Presentation.csproj" />
     <ProjectReference Include="../PropertyService.Application/PropertyService.Application.csproj" />
     <ProjectReference Include="../PropertyService.Infrastructure/PropertyService.Infrastructure.csproj" />
   </ItemGroup>

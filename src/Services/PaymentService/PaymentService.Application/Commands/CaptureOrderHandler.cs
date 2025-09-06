@@ -10,11 +10,11 @@ using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
 using PaymentService.Application.Requests;
 using PaymentService.Domain.Entities;
-using SharedKernel.Enums;
-using SharedKernel.Extensions;
-using SharedKernel.Protos;
-using SharedKernel.Responses;
-using SharedKernel.Settings;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
+using Contracts.Grpc.Protos;
+using Common.Application.Responses;
+using Common.Infrastructure.Settings;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PaymentService.Application.Commands;

@@ -2,7 +2,7 @@
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
-using SharedKernel.Implements;
+using Common.Infrastructure.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 

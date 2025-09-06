@@ -10,8 +10,8 @@ using Domain.Entities;
 using Dtos.Users;
 using Interfaces;
 using Requests.Users;
-using SharedKernel.Interfaces;
-using SharedKernel.Responses;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class CurrentUserHandler(
@@ -49,7 +49,7 @@ public class CurrentUserHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to retrieve current user information");
-                        return response.SetError(nameof(E000), E000);
+            return response.SetError(nameof(E000), E000);
         }
     }
 

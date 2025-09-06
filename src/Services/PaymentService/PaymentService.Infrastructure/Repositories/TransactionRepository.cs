@@ -2,7 +2,7 @@ using AutoMapper;
 using PaymentService.Application.Interfaces;
 using PaymentService.Domain.Entities;
 using PaymentService.Infrastructure.Data;
-using SharedKernel.Implements;
+using Common.Infrastructure.Implements;
 
 namespace PaymentService.Infrastructure.Repositories;
 

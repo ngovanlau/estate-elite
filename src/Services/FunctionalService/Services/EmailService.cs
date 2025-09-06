@@ -1,11 +1,10 @@
 using Microsoft.Extensions.Options;
-
-namespace FunctionalService.Services;
-
-using Interfaces;
+using FunctionalService.Interfaces;
 using MailKit.Net.Smtp;
 using MimeKit;
-using Settings;
+using FunctionalService.Settings;
+
+namespace FunctionalService.Services;
 
 public class EmailService(IOptions<SmtpSetting> options, ILogger<EmailService> logger) : IEmailService
 {

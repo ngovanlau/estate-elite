@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SharedKernel.Commons;
-using SharedKernel.Extensions;
+using Common.Infrastructure.Extensions;
 using SharedKernel.Middleware;
-using SharedKernel.Settings;
+using Common.Infrastructure.Settings;
 using System.Reflection;
 using System.Text.Json.Serialization;
 

@@ -1,4 +1,4 @@
-using SharedKernel.Interfaces;
+using Common.Application.Interfaces;
 using PaymentService.Domain.Entities;
 
 namespace PaymentService.Application.Interfaces;

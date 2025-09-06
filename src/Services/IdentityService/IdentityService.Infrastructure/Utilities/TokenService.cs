@@ -13,7 +13,7 @@ using Application.Dtos.Authentications;
 using Application.Interfaces;
 using DistributedCache.Redis;
 using Domain.Models;
-using SharedKernel.Settings;
+using Common.Infrastructure.Settings;
 
 public class TokenService : ITokenService
 {

@@ -3,8 +3,8 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
-using SharedKernel.Enums;
-using SharedKernel.Protos;
+using Common.Domain.Enums;
+using Contracts.Grpc.Protos;
 using StackExchange.Redis;
 
 namespace PropertyService.Application.Protos;
@@ -13,7 +13,7 @@ public class PropertyGrpcService(
     IPropertyRepository propertyRepository,
     IPropertyRentalRepository propertyRentalRepository,
     IConnectionMultiplexer connectionMultiplexer,
-    ILogger<PropertyGrpcService> logger) : SharedKernel.Protos.PropertyService.PropertyServiceBase
+    ILogger<PropertyGrpcService> logger) : Contracts.Grpc.Protos.PropertyService.PropertyServiceBase
 {
     public override async Task<GetPropertyResponse?> GetProperty(GetPropertyRequest request, ServerCallContext context)
     {

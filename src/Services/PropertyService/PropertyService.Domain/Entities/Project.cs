@@ -1,5 +1,5 @@
 ﻿using SharedKernel.Entities;
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 
 namespace PropertyService.Domain.Entities;
 

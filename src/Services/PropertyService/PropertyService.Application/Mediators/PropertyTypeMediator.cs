@@ -5,7 +5,7 @@ namespace PropertyService.Application.Mediators;
 
 using Queries.PropertyTypes;
 using Requests.PropertyTypes;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 public static class PropertyTypeMediator
 {

@@ -8,9 +8,9 @@ using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Extensions;
-using SharedKernel.Interfaces;
-using SharedKernel.Responses;
+using Common.Infrastructure.Extensions;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace IdentityService.Application.Commands.Users;

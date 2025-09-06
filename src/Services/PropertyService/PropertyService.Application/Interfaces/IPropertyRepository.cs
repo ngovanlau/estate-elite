@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Commons;
-using SharedKernel.Interfaces;
+using Common.Application.Interfaces;
 
 namespace PropertyService.Application.Interfaces;
 

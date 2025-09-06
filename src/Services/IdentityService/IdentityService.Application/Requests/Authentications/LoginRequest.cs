@@ -2,7 +2,7 @@ using MediatR;
 
 namespace IdentityService.Application.Requests.Authentications;
 
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 public class LoginRequest : IRequest<ApiResponse>
 {

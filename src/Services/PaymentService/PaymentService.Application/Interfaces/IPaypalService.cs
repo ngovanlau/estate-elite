@@ -1,5 +1,5 @@
 using PaymentService.Application.Dtos;
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 
 namespace PaymentService.Application.Interfaces;
 

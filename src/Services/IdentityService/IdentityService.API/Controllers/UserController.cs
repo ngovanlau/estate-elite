@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IdentityService.Application.Requests.Users;
 using SharedKernel.Controllers;
-using SharedKernel.Constants;
+using Common.Domain.Constants;
 
 namespace IdentityService.API.Controllers;
 

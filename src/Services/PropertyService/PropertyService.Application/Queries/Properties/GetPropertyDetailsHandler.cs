@@ -10,10 +10,10 @@ using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using SharedKernel.Extensions;
-using SharedKernel.Protos;
-using SharedKernel.Responses;
-using SharedKernel.Settings;
+using Common.Infrastructure.Extensions;
+using Contracts.Grpc.Protos;
+using Common.Application.Responses;
+using Common.Infrastructure.Settings;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;

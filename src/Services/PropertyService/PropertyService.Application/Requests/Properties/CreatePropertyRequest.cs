@@ -5,8 +5,8 @@ namespace PropertyService.Application.Requests.Properties;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Commons;
-using SharedKernel.Enums;
-using SharedKernel.Responses;
+using Common.Domain.Enums;
+using Common.Application.Responses;
 
 public sealed record CreatePropertyRequest : IRequest<ApiResponse>
 {

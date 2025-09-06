@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Requests;
-using SharedKernel.Constants;
+using Common.Domain.Constants;
 using SharedKernel.Controllers;
 
 namespace PaymentService.API.Controllers;

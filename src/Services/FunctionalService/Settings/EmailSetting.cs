@@ -2,7 +2,6 @@ using MailKit.Security;
 
 namespace FunctionalService.Settings;
 
-
 public class SmtpSetting
 {
     public required string Server { get; set; }

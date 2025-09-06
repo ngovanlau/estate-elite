@@ -9,9 +9,9 @@ using EventBus.RabbitMQ.Events;
 using FluentValidation;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Requests.Authentications;
-using SharedKernel.Extensions;
-using SharedKernel.Responses;
-using SharedKernel.Settings;
+using Common.Infrastructure.Extensions;
+using Common.Application.Responses;
+using Common.Infrastructure.Settings;
 using static SharedKernel.Constants.ErrorCode;
 using EventBus.Abstraction.Interfaces;
 

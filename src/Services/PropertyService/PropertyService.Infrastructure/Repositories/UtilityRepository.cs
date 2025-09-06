@@ -5,8 +5,8 @@ using PropertyService.Application.Dtos.Utilities;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
-using SharedKernel.Extensions;
-using SharedKernel.Implements;
+using Common.Infrastructure.Extensions;
+using Common.Infrastructure.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 

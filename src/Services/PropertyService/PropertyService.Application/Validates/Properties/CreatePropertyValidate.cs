@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PropertyService.Application.Requests.Properties;
-using SharedKernel.Enums;
-using SharedKernel.Validators;
+using Common.Domain.Enums;
+using Common.Application.Validators;
 
 namespace PropertyService.Application.Validates.Properties;
 

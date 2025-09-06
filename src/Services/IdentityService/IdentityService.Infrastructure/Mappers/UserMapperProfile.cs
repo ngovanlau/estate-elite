@@ -5,7 +5,7 @@ namespace IdentityService.Infrastructure.Mappers;
 using Application.Dtos.Authentications;
 using Application.Dtos.Users;
 using Domain.Entities;
-using SharedKernel.Protos;
+using Contracts.Grpc.Protos;
 
 public class UserMapperProfile : Profile
 {

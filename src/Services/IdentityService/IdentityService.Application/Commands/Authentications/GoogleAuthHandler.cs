@@ -6,9 +6,9 @@ using IdentityService.Application.Requests.Authentications;
 using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SharedKernel.Enums;
-using SharedKernel.Extensions;
-using SharedKernel.Responses;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace IdentityService.Application.Commands.Authentications;

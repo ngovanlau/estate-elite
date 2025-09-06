@@ -1,6 +1,6 @@
 ﻿namespace IdentityService.Application.Dtos.Users;
 
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 
 public class CurrentUserDto
 {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace PropertyService.Infrastructure.Data;
 
 using Domain.Entities;
-using SharedKernel.Extensions;
+using Common.Infrastructure.Extensions;
 
 public static class DbInitializer
 {

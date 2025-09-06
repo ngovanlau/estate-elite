@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using IdentityService.Application.Commands.Authentications;
 using IdentityService.Application.Requests.Authentications;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 namespace IdentityService.Application.Mediators;
 

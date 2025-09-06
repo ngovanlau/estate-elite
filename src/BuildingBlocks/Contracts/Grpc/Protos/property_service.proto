@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "Contracts.Grpc.Protos";
+
+package property.service;
+
+service PropertyService {
+  rpc GetProperty (GetPropertyRequest) returns (GetPropertyResponse);
+  rpc CreatePropertyRental (CreatePropertyRentalRequest) returns (CreatePropertyRentalResponse);
+}
+
+message GetPropertyRequest {
+  string id = 1;
+}
+
+message GetPropertyResponse {
+  string id = 1;
+  string title = 2;
+  string listing_type = 3;
+  optional string rent_period = 4;
+  double price = 5;
+  string currency_unit = 6;
+  string owner_id = 7;
+}
+
+message CreatePropertyRentalRequest {
+  string property_id = 1;
+  int32 rental_period = 2;
+  string user_id = 3;
+}
+
+message CreatePropertyRentalResponse {
+  bool success = 1;
+}

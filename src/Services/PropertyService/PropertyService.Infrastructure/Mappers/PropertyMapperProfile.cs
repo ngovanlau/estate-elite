@@ -2,8 +2,8 @@ using AutoMapper;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using SharedKernel.Enums;
-using SharedKernel.Protos;
+using Common.Domain.Enums;
+using Contracts.Grpc.Protos;
 
 namespace PropertyService.Infrastructure.Mappers;
 

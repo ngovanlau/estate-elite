@@ -11,8 +11,8 @@ using Dtos.Authentications;
 using FluentValidation;
 using Interfaces;
 using Requests.Authentications;
-using SharedKernel.Extensions;
-using SharedKernel.Responses;
+using Common.Infrastructure.Extensions;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class ConfirmHandler(

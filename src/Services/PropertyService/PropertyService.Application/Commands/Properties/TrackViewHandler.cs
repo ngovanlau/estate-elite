@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using SharedKernel.Interfaces;
+using Common.Application.Interfaces;
 using StackExchange.Redis;
 
 namespace PropertyService.Application.Commands.Properties;

@@ -9,8 +9,8 @@ using Application.Dtos.Users;
 using Data;
 using Domain.Entities;
 using IdentityService.Application.Interfaces;
-using SharedKernel.Extensions;
-using SharedKernel.Implements;
+using Common.Infrastructure.Extensions;
+using Common.Infrastructure.Implements;
 
 public class UserRepository(IdentityContext context, IMapper mapper) : Repository<User>(context, mapper), IUserRepository
 {

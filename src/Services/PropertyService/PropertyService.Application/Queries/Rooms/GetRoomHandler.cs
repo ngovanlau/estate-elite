@@ -9,7 +9,7 @@ using Interfaces;
 using PropertyService.Application.Dtos.Rooms;
 using PropertyService.Application.Requests.Rooms;
 using PropertyService.Domain.Entities;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class GetRoomHandler(

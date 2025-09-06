@@ -5,7 +5,7 @@ using FunctionalService.Interfaces;
 using FunctionalService.Services;
 using FunctionalService.Settings;
 using Serilog;
-using SharedKernel.Extensions;
+using Common.Infrastructure.Extensions;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()

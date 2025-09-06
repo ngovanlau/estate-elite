@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 namespace PropertyService.Application.Requests.Properties;
 

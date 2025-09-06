@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace PropertyService.API.Controllers;
 
 using PropertyService.Application.Requests.Utilities;
-using SharedKernel.Constants;
+using Common.Domain.Constants;
 using SharedKernel.Controllers;
 
 public class UtilityController(IMediator mediator) : BaseController(mediator)

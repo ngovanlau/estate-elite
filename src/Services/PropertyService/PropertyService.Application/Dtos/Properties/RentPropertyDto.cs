@@ -1,4 +1,4 @@
-using SharedKernel.Enums;
+using Common.Domain.Enums;
 
 namespace PropertyService.Application.Dtos.Properties;
 

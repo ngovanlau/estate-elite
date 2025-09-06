@@ -7,8 +7,8 @@ using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Commons;
-using SharedKernel.Interfaces;
-using SharedKernel.Responses;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;

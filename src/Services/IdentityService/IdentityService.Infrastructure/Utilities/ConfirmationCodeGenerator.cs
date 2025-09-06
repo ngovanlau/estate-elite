@@ -2,7 +2,7 @@ namespace IdentityService.Infrastructure.Utilities;
 
 using Application.Interfaces;
 using Microsoft.Extensions.Options;
-using SharedKernel.Settings;
+using Common.Infrastructure.Settings;
 
 public class ConfirmationCodeGenerator(IOptions<ConfirmationCodeSetting> options) : IConfirmationCodeGenerator
 {

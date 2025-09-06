@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/SharedKernel/SharedKernel.csproj" />
+    <ProjectReference Include="../../../BuildingBlocks/Common/Common.Infrastructure.csproj" />
     <ProjectReference Include="../PropertyService.Application/PropertyService.Application.csproj" />
     <ProjectReference Include="..\PropertyService.Domain\PropertyService.Domain.csproj" />
   </ItemGroup>

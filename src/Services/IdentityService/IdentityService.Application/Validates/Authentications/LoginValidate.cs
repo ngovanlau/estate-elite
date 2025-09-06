@@ -4,7 +4,7 @@ namespace IdentityService.Application.Validates.Authentications;
 
 using IdentityService.Application.Interfaces;
 using Requests.Authentications;
-using SharedKernel.Validators;
+using Common.Application.Validators;
 using static SharedKernel.Constants.ErrorCode;
 
 

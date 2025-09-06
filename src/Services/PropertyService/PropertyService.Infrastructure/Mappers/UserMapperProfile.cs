@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using PropertyService.Application.Dtos.Properties;
-using SharedKernel.Protos;
+using Contracts.Grpc.Protos;
 
 namespace PropertyService.Infrastructure.Mappers;
 

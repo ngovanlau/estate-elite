@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace IdentityService.Application.Requests.Users;
 
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 public class UploadRequest : IRequest<ApiResponse>
 {

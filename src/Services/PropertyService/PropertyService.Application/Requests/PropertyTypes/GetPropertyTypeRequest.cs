@@ -2,7 +2,7 @@ using MediatR;
 
 namespace PropertyService.Application.Requests.PropertyTypes;
 
-using SharedKernel.Responses;
+using Common.Application.Responses;
 
 public class GetPropertyTypeRequest : IRequest<ApiResponse>
 {

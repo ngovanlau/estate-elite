@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using IdentityService.Domain.Entities;
-using SharedKernel.Enums;
-using SharedKernel.Extensions;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
 
 namespace IdentityService.Infrastructure.Data;
 

@@ -2,7 +2,7 @@ using IdentityService.Application.Dtos.Authentications;
 using IdentityService.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SharedKernel.Settings;
+using Common.Infrastructure.Settings;
 using Google.Apis.Auth;
 
 namespace IdentityService.Infrastructure.Utilities;

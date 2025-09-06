@@ -3,8 +3,8 @@
 namespace IdentityService.Application.Validates.Users;
 
 using Requests.Users;
-using SharedKernel.Constants;
-using SharedKernel.Validators;
+using Common.Domain.Constants;
+using Common.Application.Validators;
 using static SharedKernel.Constants.ErrorCode;
 
 public class UpdateUserValidate : AbstractValidator<UpdateUserRequest>

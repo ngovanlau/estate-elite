@@ -2,8 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Commons;
-using SharedKernel.Enums;
-using SharedKernel.Responses;
+using Common.Domain.Enums;
+using Common.Application.Responses;
 
 namespace PropertyService.Application.Dtos.Properties;
 

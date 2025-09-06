@@ -3,8 +3,8 @@
 namespace IdentityService.Application.Validates.Authentications;
 
 using Requests.Authentications;
-using SharedKernel.Enums;
-using SharedKernel.Validators;
+using Common.Domain.Enums;
+using Common.Application.Validators;
 
 public class RegisterValidate : AbstractValidator<RegisterRequest>
 {

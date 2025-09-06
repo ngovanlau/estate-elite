@@ -9,7 +9,7 @@ using Interfaces;
 using PropertyService.Application.Dtos.Utilities;
 using PropertyService.Application.Requests.Utilities;
 using PropertyService.Domain.Entities;
-using SharedKernel.Responses;
+using Common.Application.Responses;
 using static SharedKernel.Constants.ErrorCode;
 
 public class GetUtilityHandler(
