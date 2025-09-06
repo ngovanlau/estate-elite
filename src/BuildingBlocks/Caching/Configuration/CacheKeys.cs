@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace DistributedCache.Redis;
+namespace Caching.Configuration;
 
 public static class CacheKeys
 {

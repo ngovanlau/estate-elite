@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace DistributedCache.Redis;
+namespace Caching.Services;
 
 public static class RedisCacheService
 {

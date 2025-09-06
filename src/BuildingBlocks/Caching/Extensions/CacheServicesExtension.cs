@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 
-namespace DistributedCache.Redis.Extensions;
+namespace Caching.Extensions;
 
-public static class DistributedCacheServicesExtension
+public static class CacheServicesExtension
 {
-    public static IServiceCollection AddDistributedService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCacheService(this IServiceCollection services, IConfiguration configuration)
     {
         var redisConnectionString = configuration.GetConnectionString("RedisConnection");
         if (string.IsNullOrWhiteSpace(redisConnectionString))

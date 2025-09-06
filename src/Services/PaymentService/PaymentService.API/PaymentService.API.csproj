@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,10 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../../BuildingBlocks/DistributedCache/DistributedCache.Redis/DistributedCache.Redis.csproj" />
-    <ProjectReference Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
+    <ProjectReference Include="../../../BuildingBlocks/Caching/Caching.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
     <ProjectReference Include="../../../BuildingBlocks/Common/Common.Presentation.csproj" />
-    <ProjectReference Include="../PaymentService.Infrastructure/PaymentService.Infrastructure.csproj" />
+    <ProjectReference
+      Include="../PaymentService.Infrastructure/PaymentService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
