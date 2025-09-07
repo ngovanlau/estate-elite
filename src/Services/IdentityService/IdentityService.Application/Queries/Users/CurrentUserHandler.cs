@@ -2,17 +2,17 @@
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-
-namespace IdentityService.Application.Queries.Users;
-
-using DistributedCache.Redis;
-using Domain.Entities;
-using Dtos.Users;
-using Interfaces;
-using Requests.Users;
+using IdentityService.Domain.Entities;
+using IdentityService.Application.Dtos.Users;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Users;
 using Common.Application.Interfaces;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
+using Caching.Configuration;
+using Caching.Services;
+
+namespace IdentityService.Application.Queries.Users;
 
 public class CurrentUserHandler(
     ICurrentUserService currentUserService,

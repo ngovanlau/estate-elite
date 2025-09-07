@@ -1,5 +1,5 @@
 ﻿using Common.Application.Interfaces;
-using Common.Infrastructure.Settings;
+using Common.Application.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Minio;

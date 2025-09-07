@@ -10,7 +10,7 @@ using Interfaces;
 using PropertyService.Domain.Entities;
 using Requests.PropertyTypes;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 public class GetPropertyTypeHandler(
     IPropertyTypeRepository repository,

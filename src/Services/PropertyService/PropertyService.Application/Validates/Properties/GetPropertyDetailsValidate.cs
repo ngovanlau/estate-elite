@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using PropertyService.Application.Requests.Properties;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PropertyService.Application.Validates.Properties;
 

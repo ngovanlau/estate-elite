@@ -15,11 +15,11 @@ public static class CacheServicesExtension
             throw new ArgumentException("Redis connection string is not configured");
         }
 
-        // Tạo ConfigurationOptions từ connection string
+        // Create ConfigurationOptions from connection string
         var configOptions = ConfigurationOptions.Parse(redisConnectionString);
         configOptions.AbortOnConnectFail = false;
 
-        // Đăng ký IConnectionMultiplexer như một Singleton
+        // Register ConnectionMultiplexer as a singleton
         services.AddSingleton<IConnectionMultiplexer>(sp =>
         {
             var logger = sp.GetRequiredService<ILogger<object>>();

@@ -1,6 +1,6 @@
 using FluentValidation;
 using IdentityService.Application.Requests.Authentications;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace IdentityService.Application.Validates.Authentications;
 

@@ -9,9 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../../BuildingBlocks/Caching/Caching.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/Common/Common.Application/Common.Application.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/Common/Common.Infrastructure/Common.Infrastructure.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/Common/Common.Presentation/Common.Presentation.csproj" />
     <ProjectReference
       Include="../../../BuildingBlocks/EventBus/EventBus.RabbitMQ/EventBus.RabbitMQ.csproj" />
-    <ProjectReference Include="../../../BuildingBlocks/Common/Common.Presentation.csproj" />
     <ProjectReference Include="../IdentityService.Application/IdentityService.Application.csproj" />
     <ProjectReference
       Include="../IdentityService.Infrastructure/IdentityService.Infrastructure.csproj" />

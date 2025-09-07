@@ -11,7 +11,7 @@ using Common.Infrastructure.Extensions;
 using Common.Application.Interfaces;
 using Common.Application.Responses;
 using StackExchange.Redis;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PropertyService.Application.Commands.Properties;
 
@@ -42,7 +42,7 @@ public class CreatePropertyHandler(
             if (!validationResult.IsValid)
             {
                 logger.LogWarning("Property creation validation failed");
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 return response.SetError(nameof(E000), E000, errors);
             }
 

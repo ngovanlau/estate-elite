@@ -1,13 +1,9 @@
 using FluentValidation;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
 
 namespace IdentityService.Application.Validates.Authentications;
 
-using DistributedCache.Redis;
-using IdentityService.Domain.Entities;
 using IdentityService.Application.Requests.Authentications;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 public sealed class ResendCodeValidate : AbstractValidator<ResendCodeRequest>
 {

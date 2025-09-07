@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using PaypalServerSdk.Standard;
 using PaypalServerSdk.Standard.Authentication;
-using Common.Infrastructure.Settings;
+using Common.Application.Settings;
 
 namespace PaymentService.Infrastructure.PaymentProviders.Paypal;
 

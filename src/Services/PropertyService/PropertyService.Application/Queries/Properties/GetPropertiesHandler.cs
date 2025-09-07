@@ -9,8 +9,8 @@ using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Commons;
 using Common.Application.Responses;
-using Common.Infrastructure.Settings;
-using static SharedKernel.Constants.ErrorCode;
+using Common.Application.Settings;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;
 

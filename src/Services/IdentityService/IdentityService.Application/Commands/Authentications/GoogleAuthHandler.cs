@@ -7,9 +7,9 @@ using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Common.Domain.Enums;
-using Common.Infrastructure.Extensions;
+using Common.Application.Extensions;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace IdentityService.Application.Commands.Authentications;
 
@@ -34,7 +34,7 @@ public class GoogleAuthHandler(
             {
                 logger.LogWarning("Validation failed for Google auth request - Errors: {Errors}",
                     validationResult.Errors);
-                return res.SetError(nameof(E000), E000, validationResult.Errors.ToDic());
+                return res.SetError(nameof(E000), E000, validationResult.Errors);
             }
 
             logger.LogDebug("Verifying Google token");

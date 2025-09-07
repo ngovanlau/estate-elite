@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PropertyService.Application.Requests.Properties;
 using Common.Domain.Constants;
-using SharedKernel.Controllers;
+using Common.Presentation.Controllers;
 
 namespace PropertyService.API.Controllers;
 

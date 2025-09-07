@@ -36,23 +36,23 @@ namespace Core.Domain.Primitives;
 public abstract class AuditableEntity : Entity, IAuditableEntity
 {
     /// <inheritdoc />
-    public DateTime CreateOn { get; set; }
+    public DateTime CreatedOn { get; set; }
 
     /// <inheritdoc />
     public DateTime? ModifiedOn { get; set; }
 
     /// <inheritdoc />
-    public string? CreatedBy { get; set; }
+    public Guid? CreatedBy { get; set; }
 
     /// <inheritdoc />
-    public string? ModifiedBy { get; set; }
+    public Guid? ModifiedBy { get; set; }
 
     /// <summary>
     /// Protected constructor for EF Core
     /// </summary>
     protected AuditableEntity()
     {
-        CreateOn = DateTime.UtcNow;
+        CreatedOn = DateTime.UtcNow;
     }
 
     /// <summary>
@@ -60,6 +60,6 @@ public abstract class AuditableEntity : Entity, IAuditableEntity
     /// </summary>
     protected AuditableEntity(Guid id) : base(id)
     {
-        CreateOn = DateTime.UtcNow;
+        CreatedOn = DateTime.UtcNow;
     }
 }

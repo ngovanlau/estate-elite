@@ -6,7 +6,7 @@ namespace PropertyService.API.Controllers;
 
 using PropertyService.Application.Requests.Rooms;
 using Common.Domain.Constants;
-using SharedKernel.Controllers;
+using Common.Presentation.Controllers;
 
 public class RoomController(IMediator mediator) : BaseController(mediator)
 {

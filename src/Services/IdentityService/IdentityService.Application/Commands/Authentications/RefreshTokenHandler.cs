@@ -2,15 +2,13 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using IdentityService.Application.Dtos.Authentications;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Authentications;
+using Common.Application.Responses;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace IdentityService.Application.Commands.Authentications;
-
-using Dtos.Authentications;
-using Interfaces;
-using Requests.Authentications;
-using Common.Infrastructure.Extensions;
-using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
 
 public class RefreshTokenHandler(
     IValidator<RefreshTokenRequest> validator,
@@ -28,7 +26,7 @@ public class RefreshTokenHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 logger.LogWarning("Refresh token request validation failed: {ValidationErrors}", errors);
                 return res.SetError(nameof(E000), E000, errors);
             }

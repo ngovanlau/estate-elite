@@ -1,9 +1,9 @@
-namespace IdentityService.Application.Interfaces;
-
-using Domain.Entities;
-using Dtos.Authentications;
-using Dtos.Users;
+using IdentityService.Domain.Entities;
+using IdentityService.Application.Dtos.Authentications;
+using IdentityService.Application.Dtos.Users;
 using Common.Application.Interfaces;
+
+namespace IdentityService.Application.Interfaces;
 
 public interface IUserRepository : IRepository<User>
 {

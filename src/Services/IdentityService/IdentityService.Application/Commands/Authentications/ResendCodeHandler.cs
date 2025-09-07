@@ -3,17 +3,17 @@ using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using DistributedCache.Redis;
 using EventBus.Abstraction.Interfaces;
 using EventBus.RabbitMQ.Events;
-using Common.Infrastructure.Extensions;
 using Common.Application.Responses;
-using Common.Infrastructure.Settings;
-using static SharedKernel.Constants.ErrorCode;
+using Common.Application.Settings;
+using static Common.Domain.Constants.ErrorCode;
 using IdentityService.Application.Requests.Authentications;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Dtos.Authentications;
 using IdentityService.Domain.Entities;
+using Caching.Configuration;
+using Caching.Services;
 
 namespace IdentityService.Application.Commands.Authentications;
 
@@ -38,7 +38,7 @@ public class ResendCodeHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 logger.LogWarning("Validation failed for user ID {UserId}. Errors: {Errors}", request.UserId, errors);
                 return res.SetError(nameof(E000), E000, errors);
             }

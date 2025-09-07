@@ -2,8 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IdentityService.Application.Requests.Users;
-using SharedKernel.Controllers;
 using Common.Domain.Constants;
+using Common.Presentation.Controllers;
 
 namespace IdentityService.API.Controllers;
 

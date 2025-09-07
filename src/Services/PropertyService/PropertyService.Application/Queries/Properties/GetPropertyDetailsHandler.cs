@@ -13,8 +13,8 @@ using PropertyService.Domain.Entities;
 using Common.Infrastructure.Extensions;
 using Contracts.Grpc.Protos;
 using Common.Application.Responses;
-using Common.Infrastructure.Settings;
-using static SharedKernel.Constants.ErrorCode;
+using Common.Application.Settings;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;
 
@@ -43,7 +43,7 @@ public class GetPropertyDetailsHandler(
             {
                 logger.LogWarning("Validation failed for PropertyId: {PropertyId}. Errors: {ValidationErrors}",
                     request.Id, validationResult.Errors);
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 return res.SetError(nameof(E000), E000, errors);
             }
 

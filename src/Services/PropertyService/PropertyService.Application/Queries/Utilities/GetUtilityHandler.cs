@@ -10,7 +10,7 @@ using PropertyService.Application.Dtos.Utilities;
 using PropertyService.Application.Requests.Utilities;
 using PropertyService.Domain.Entities;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 public class GetUtilityHandler(
     IUtilityRepository repository,

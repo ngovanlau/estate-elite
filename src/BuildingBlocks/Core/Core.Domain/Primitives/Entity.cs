@@ -32,13 +32,13 @@
  * enforcing identity-based equality and simplifying creation and debugging.
  */
 
+using Core.Domain.Abstractions;
+
 namespace Core.Domain.Primitives;
 
-public abstract class Entity : IEquatable<Entity>
+public abstract class Entity : IEntity, IEquatable<Entity>
 {
-    /// <summary>
-    /// Unique identifier for the entity
-    /// </summary>
+    /// <inheritdoc />
     public Guid Id { get; private init; }
 
     /// <summary>
@@ -78,6 +78,7 @@ public abstract class Entity : IEquatable<Entity>
         return new T { Id = id };
     }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"{GetType().Name} [Id={Id}]";

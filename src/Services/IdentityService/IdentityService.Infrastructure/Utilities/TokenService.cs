@@ -11,9 +11,10 @@ namespace IdentityService.Infrastructure.Utilities;
 
 using Application.Dtos.Authentications;
 using Application.Interfaces;
-using DistributedCache.Redis;
 using Domain.Models;
-using Common.Infrastructure.Settings;
+using Common.Application.Settings;
+using Caching.Configuration;
+using Caching.Services;
 
 public class TokenService : ITokenService
 {

@@ -14,8 +14,8 @@ using Common.Domain.Enums;
 using Common.Infrastructure.Extensions;
 using Contracts.Grpc.Protos;
 using Common.Application.Responses;
-using Common.Infrastructure.Settings;
-using static SharedKernel.Constants.ErrorCode;
+using Common.Application.Settings;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PaymentService.Application.Commands;
 
@@ -42,7 +42,7 @@ public class CaptureOrderHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 logger.LogWarning("Validation failed for transaction {TransactionId}. Errors: {Errors}",
                     request.TransactionId, errors);
                 return res.SetError(nameof(E001), E001, errors);

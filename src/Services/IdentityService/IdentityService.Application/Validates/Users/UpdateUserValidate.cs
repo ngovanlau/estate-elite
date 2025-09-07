@@ -5,7 +5,7 @@ namespace IdentityService.Application.Validates.Users;
 using Requests.Users;
 using Common.Domain.Constants;
 using Common.Application.Validators;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 public class UpdateUserValidate : AbstractValidator<UpdateUserRequest>
 {

@@ -2,18 +2,17 @@ using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Transactions;
+using IdentityService.Domain.Entities;
+using IdentityService.Application.Dtos.Authentications;
+using FluentValidation;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Authentications;
+using Common.Application.Responses;
+using static Common.Domain.Constants.ErrorCode;
+using Caching.Configuration;
+using Caching.Services;
 
 namespace IdentityService.Application.Commands.Authentications;
-
-using DistributedCache.Redis;
-using Domain.Entities;
-using Dtos.Authentications;
-using FluentValidation;
-using Interfaces;
-using Requests.Authentications;
-using Common.Infrastructure.Extensions;
-using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
 
 public class ConfirmHandler(
     IValidator<ConfirmRequest> validator,
@@ -32,7 +31,7 @@ public class ConfirmHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 logger.LogWarning("Confirmation validation failed for user ID: {UserId}. Errors: {@Errors}",
                     request.UserId, errors);
                 return res.SetError(nameof(E000), E000, errors);

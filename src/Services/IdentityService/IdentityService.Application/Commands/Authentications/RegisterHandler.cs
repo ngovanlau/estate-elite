@@ -1,4 +1,3 @@
-using DistributedCache.Redis;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -9,11 +8,12 @@ using EventBus.RabbitMQ.Events;
 using FluentValidation;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Requests.Authentications;
-using Common.Infrastructure.Extensions;
 using Common.Application.Responses;
-using Common.Infrastructure.Settings;
-using static SharedKernel.Constants.ErrorCode;
+using Common.Application.Settings;
+using static Common.Domain.Constants.ErrorCode;
 using EventBus.Abstraction.Interfaces;
+using Caching.Configuration;
+using Caching.Services;
 
 namespace IdentityService.Application.Commands.Authentications;
 
@@ -41,7 +41,7 @@ public class RegisterHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 logger.LogWarning("Registration validation failed for username: {Username}. Errors: {@Errors}",
                     request.Username, errors);
                 return res.SetError(nameof(E000), E000, errors);

@@ -42,7 +42,7 @@ public interface ISoftDeletableEntity
     /// <summary>
     /// Who deleted the entity.
     /// </summary>
-    string? DeletedBy { get; set; }
+    Guid? DeletedBy { get; set; }
 
     /// <summary>
     /// Indicates whether the entity is deleted.

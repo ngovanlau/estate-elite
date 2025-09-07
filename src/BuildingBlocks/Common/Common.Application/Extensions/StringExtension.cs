@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Common.Infrastructure.Extensions;
+namespace Common.Application.Extensions;
 
 public static class StringExtension
 {

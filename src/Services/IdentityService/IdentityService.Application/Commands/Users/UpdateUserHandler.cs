@@ -1,5 +1,4 @@
 using AutoMapper;
-using DistributedCache.Redis;
 using FluentValidation;
 using IdentityService.Application.Dtos.Users;
 using IdentityService.Application.Interfaces;
@@ -8,10 +7,11 @@ using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Common.Infrastructure.Extensions;
 using Common.Application.Interfaces;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
+using Caching.Configuration;
+using Caching.Services;
 
 namespace IdentityService.Application.Commands.Users;
 
@@ -35,8 +35,8 @@ public class UpdateUserHandler(
             if (!validationResult.IsValid)
             {
                 logger.LogWarning("Validation failed for user {UserId} with {ErrorCount} errors: {Errors}",
-                    currentUserService.Id, validationResult.Errors.Count, validationResult.Errors.ToDic());
-                return res.SetError(nameof(E000), E000, validationResult.Errors.ToDic());
+                    currentUserService.Id, validationResult.Errors.Count, validationResult.Errors);
+                return res.SetError(nameof(E000), E000, validationResult.Errors);
             }
 
             if (currentUserService.Id is null)

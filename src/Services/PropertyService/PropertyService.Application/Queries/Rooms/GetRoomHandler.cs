@@ -10,7 +10,7 @@ using PropertyService.Application.Dtos.Rooms;
 using PropertyService.Application.Requests.Rooms;
 using PropertyService.Domain.Entities;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 public class GetRoomHandler(
     IRoomRepository repository,

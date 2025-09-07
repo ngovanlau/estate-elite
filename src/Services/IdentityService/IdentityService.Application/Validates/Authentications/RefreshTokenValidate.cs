@@ -3,7 +3,7 @@ using FluentValidation;
 namespace IdentityService.Application.Validates.Authentications;
 
 using Requests.Authentications;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 public class RefreshTokenValidate : AbstractValidator<RefreshTokenRequest>
 {

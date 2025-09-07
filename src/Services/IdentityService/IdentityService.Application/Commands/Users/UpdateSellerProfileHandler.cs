@@ -1,5 +1,4 @@
 using AutoMapper;
-using DistributedCache.Redis;
 using FluentValidation;
 using IdentityService.Application.Dtos.Users;
 using IdentityService.Application.Interfaces;
@@ -9,10 +8,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Common.Infrastructure.Extensions;
 using Common.Application.Interfaces;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
+using Caching.Configuration;
+using Caching.Services;
 
 namespace IdentityService.Application.Commands.Users;
 
@@ -35,7 +35,7 @@ public class UpdateSellerProfileHandler(
             if (!validationResult.IsValid)
             {
                 logger.LogWarning("Request validation failed with {ErrorCount} errors", validationResult.Errors.Count);
-                return res.SetError(nameof(E000), E000, validationResult.Errors.ToDic());
+                return res.SetError(nameof(E000), E000, validationResult.Errors);
             }
 
             if (currentUserService.Id is null)

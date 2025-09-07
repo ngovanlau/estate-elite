@@ -1,9 +1,9 @@
+using Common.Domain.Enums;
+using Core.Domain.Primitives;
+
 namespace IdentityService.Domain.Entities;
 
-using SharedKernel.Entities;
-using Common.Domain.Enums;
-
-public partial class User : AuditableEntity
+public partial class User : SoftDeletableEntity
 {
     public required string Username { get; init; }
     public required string Email { get; set; }

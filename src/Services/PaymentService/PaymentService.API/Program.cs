@@ -9,7 +9,7 @@ using Serilog;
 using SharedKernel.Commons;
 using Common.Infrastructure.Extensions;
 using SharedKernel.Middleware;
-using Common.Infrastructure.Settings;
+using Common.Application.Settings;
 using System.Reflection;
 using System.Text.Json.Serialization;
 

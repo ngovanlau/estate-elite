@@ -5,7 +5,7 @@ namespace IdentityService.Application.Validates.Authentications;
 using IdentityService.Application.Interfaces;
 using Requests.Authentications;
 using Common.Application.Validators;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 
 public class LoginValidate : AbstractValidator<LoginRequest>

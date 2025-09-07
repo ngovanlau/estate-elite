@@ -36,7 +36,7 @@ public interface IAuditableEntity
     /// <summary>
     /// When the entity was created.
     /// </summary>
-    DateTime CreateOn { get; set; }
+    DateTime CreatedOn { get; set; }
 
     /// <summary>
     /// When the entity was last modified.
@@ -46,10 +46,10 @@ public interface IAuditableEntity
     /// <summary>
     /// Who created the entity.
     /// </summary>
-    string? CreatedBy { get; set; }
+    Guid? CreatedBy { get; set; }
 
     /// <summary>
     /// Who last modified the entity.
     /// </summary>
-    string? ModifiedBy { get; set; }
+    Guid? ModifiedBy { get; set; }
 }

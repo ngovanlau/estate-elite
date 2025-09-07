@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PropertyService.Application.Requests.PropertyTypes;
-using SharedKernel.Controllers;
+using Common.Presentation.Controllers;
 
 namespace PropertyService.API.Controllers;
 

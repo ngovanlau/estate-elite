@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Common.Infrastructure.Implements;
 using Common.Application.Interfaces;
-using Common.Infrastructure.Settings;
+using Common.Application.Settings;
 
 namespace Common.Infrastructure.Extensions;
 

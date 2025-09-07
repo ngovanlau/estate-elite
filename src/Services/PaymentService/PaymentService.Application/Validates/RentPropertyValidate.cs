@@ -1,6 +1,6 @@
 using FluentValidation;
 using PaymentService.Application.Requests;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PaymentService.Application.Validates;
 

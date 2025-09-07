@@ -3,19 +3,19 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-
-namespace IdentityService.Application.Commands.Users;
-
 using AutoMapper;
-using DistributedCache.Redis;
-using Domain.Entities;
+using IdentityService.Domain.Entities;
 using IdentityService.Application.Dtos.Users;
-using Interfaces;
-using Requests.Users;
-using Common.Infrastructure.Extensions;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Users;
 using Common.Application.Interfaces;
 using Common.Application.Responses;
-using static SharedKernel.Constants.ErrorCode;
+using static Common.Domain.Constants.ErrorCode;
+using Caching.Configuration;
+using Caching.Services;
+using Common.Application.Extensions;
+
+namespace IdentityService.Application.Commands.Users;
 
 public class UploadHandler(
     ICurrentUserService currentUserService,
@@ -37,8 +37,8 @@ public class UploadHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                logger.LogWarning("Validation failed: {Errors}", validationResult.Errors.ToDic());
-                return res.SetError(nameof(E000), E000, validationResult.Errors.ToDic());
+                logger.LogWarning("Validation failed: {Errors}", validationResult.Errors);
+                return res.SetError(nameof(E000), E000, validationResult.Errors);
             }
 
             if (currentUserService.Id is null)

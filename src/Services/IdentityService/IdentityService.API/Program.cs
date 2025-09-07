@@ -1,5 +1,4 @@
-﻿using DistributedCache.Redis.Extensions;
-using EventBus.RabbitMQ.Extensions;
+﻿using EventBus.RabbitMQ.Extensions;
 using IdentityService.Application.Mediators;
 using IdentityService.Application.Protos;
 using IdentityService.Infrastructure.Data;
@@ -8,12 +7,14 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using SharedKernel.Commons;
-using Common.Infrastructure.Extensions;
-using SharedKernel.Middleware;
-using Common.Infrastructure.Settings;
+using Common.Application.Settings;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Common.Infrastructure.Extensions;
+using Common.Presentation.Converters;
+using Caching.Extensions;
+using Common.Application.Interceptors;
+using Common.Infrastructure.Middleware;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()
@@ -75,7 +76,7 @@ try
     builder.Services.AddHealthChecks();
 
     // Infrastructure Services
-    builder.Services.AddDistributedService(configuration);
+    builder.Services.AddCacheService(configuration);
     builder.Services.AddInfrastructureServices(configuration);
     builder.Services.AddAuthenticationService(configuration);
     builder.Services.AddMinioService(configuration);

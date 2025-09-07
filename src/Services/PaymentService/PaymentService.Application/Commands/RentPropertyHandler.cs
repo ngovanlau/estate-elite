@@ -15,8 +15,8 @@ using Common.Infrastructure.Extensions;
 using Common.Application.Interfaces;
 using Contracts.Grpc.Protos;
 using Common.Application.Responses;
-using Common.Infrastructure.Settings;
-using static SharedKernel.Constants.ErrorCode;
+using Common.Application.Settings;
+using static Common.Domain.Constants.ErrorCode;
 
 namespace PaymentService.Application.Commands;
 
@@ -42,7 +42,7 @@ public class RentPropertyHandler(
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.ToDic();
+                var errors = validationResult.Errors;
                 logger.LogWarning("Validation failed for RentPropertyRequest: {Errors}", errors);
                 return res.SetError(nameof(E000), E000, errors);
             }

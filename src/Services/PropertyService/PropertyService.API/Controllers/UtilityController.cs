@@ -6,7 +6,7 @@ namespace PropertyService.API.Controllers;
 
 using PropertyService.Application.Requests.Utilities;
 using Common.Domain.Constants;
-using SharedKernel.Controllers;
+using Common.Presentation.Controllers;
 
 public class UtilityController(IMediator mediator) : BaseController(mediator)
 {

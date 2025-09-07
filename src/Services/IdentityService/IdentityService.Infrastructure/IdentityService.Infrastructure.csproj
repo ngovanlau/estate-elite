@@ -8,9 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../../../BuildingBlocks/Common/Common.Domain/Common.Domain.csproj" />
+    <ProjectReference
+      Include="../../../BuildingBlocks/Common/Common.Infrastructure/Common.Infrastructure.csproj" />
     <ProjectReference
       Include="..\..\..\BuildingBlocks\EventBus\EventBus.RabbitMQ\EventBus.RabbitMQ.csproj" />
-    <ProjectReference Include="../../../BuildingBlocks/Common/Common.Infrastructure.csproj" />
     <ProjectReference Include="..\IdentityService.Application\IdentityService.Application.csproj" />
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
   </ItemGroup>
