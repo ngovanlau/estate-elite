@@ -1,0 +1,59 @@
+{
+  "recommendations": [
+    // Core .NET Development
+    "ms-dotnettools.csdevkit",
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.vscode-dotnet-runtime",
+
+    // Code Quality & Formatting
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+
+    // Git & Version Control
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    "github.copilot",
+    "github.copilot-chat",
+
+    // Database
+    "ms-mssql.mssql",
+    "oracle.oracledevtools",
+
+    // Web Development
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+    "ms-vscode.vscode-typescript-next",
+
+    // Documentation
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+
+    // Testing
+    "ms-dotnettools.vscodeintellicode",
+    "formulahendry.dotnet-test-explorer",
+
+    // Docker & Containers
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker",
+
+    // Azure
+    "ms-vscode.azure-account",
+    "ms-azuretools.vscode-azurefunctions",
+
+    // Productivity
+    "ms-vscode.powershell",
+    "ms-vscode-remote.remote-wsl",
+    "ms-vscode.live-server",
+    "bradlc.vscode-tailwindcss",
+
+    // API Development
+    "humao.rest-client",
+    "42crunch.vscode-openapi",
+
+    // Performance & Monitoring
+    "ms-dotnettools.vscode-dotnet-pack"
+  ],
+
+  "unwantedRecommendations": ["ms-vscode.vscode-typescript", "hookyqr.beautify"]
+}
