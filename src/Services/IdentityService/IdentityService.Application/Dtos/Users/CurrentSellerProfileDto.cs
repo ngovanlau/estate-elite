@@ -1,4 +1,4 @@
-﻿namespace IdentityService.Application.Dtos.Users;
+namespace IdentityService.Application.Dtos.Users;
 
 public class CurrentSellerProfileDto
 {

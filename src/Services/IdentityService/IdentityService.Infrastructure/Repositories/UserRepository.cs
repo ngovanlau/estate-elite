@@ -6,11 +6,11 @@ namespace IdentityService.Infrastructure.Repositories;
 
 using Application.Dtos.Authentications;
 using Application.Dtos.Users;
+using Common.Infrastructure.Extensions;
+using Common.Infrastructure.Implements;
 using Data;
 using Domain.Entities;
 using IdentityService.Application.Interfaces;
-using Common.Infrastructure.Extensions;
-using Common.Infrastructure.Implements;
 
 public class UserRepository(IdentityContext context, IMapper mapper) : Repository<User>(context, mapper), IUserRepository
 {

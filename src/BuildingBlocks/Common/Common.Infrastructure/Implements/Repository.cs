@@ -1,10 +1,10 @@
+using System.Linq.Expressions;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
 using Common.Application.Interfaces;
-using Core.Domain.Primitives;
 using Common.Infrastructure.Extensions;
-using System.Linq.Expressions;
+using Core.Domain.Primitives;
+using Microsoft.EntityFrameworkCore;
 
 namespace Common.Infrastructure.Implements;
 

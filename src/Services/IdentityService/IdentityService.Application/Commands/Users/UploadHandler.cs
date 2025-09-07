@@ -1,19 +1,19 @@
+using AutoMapper;
+using Caching.Configuration;
+using Caching.Services;
+using Common.Application.Extensions;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
 using FluentValidation;
+using IdentityService.Application.Dtos.Users;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Users;
+using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using AutoMapper;
-using IdentityService.Domain.Entities;
-using IdentityService.Application.Dtos.Users;
-using IdentityService.Application.Interfaces;
-using IdentityService.Application.Requests.Users;
-using Common.Application.Interfaces;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
-using Caching.Configuration;
-using Caching.Services;
-using Common.Application.Extensions;
 
 namespace IdentityService.Application.Commands.Users;
 

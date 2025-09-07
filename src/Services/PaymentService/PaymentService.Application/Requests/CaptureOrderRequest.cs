@@ -1,5 +1,5 @@
-﻿using MediatR;
 using Common.Application.Responses;
+using MediatR;
 
 namespace PaymentService.Application.Requests;
 

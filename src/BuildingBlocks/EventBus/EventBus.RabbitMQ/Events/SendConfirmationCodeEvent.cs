@@ -1,4 +1,4 @@
-﻿using EventBus.Abstraction;
+using EventBus.Abstraction;
 using EventBus.Abstraction.Interfaces;
 
 namespace EventBus.RabbitMQ.Events;

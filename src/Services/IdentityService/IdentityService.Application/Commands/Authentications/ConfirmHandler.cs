@@ -1,16 +1,16 @@
+using System.Transactions;
+using Caching.Configuration;
+using Caching.Services;
+using Common.Application.Responses;
+using FluentValidation;
+using IdentityService.Application.Dtos.Authentications;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Authentications;
+using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using System.Transactions;
-using IdentityService.Domain.Entities;
-using IdentityService.Application.Dtos.Authentications;
-using FluentValidation;
-using IdentityService.Application.Interfaces;
-using IdentityService.Application.Requests.Authentications;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
-using Caching.Configuration;
-using Caching.Services;
 
 namespace IdentityService.Application.Commands.Authentications;
 

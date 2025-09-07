@@ -1,9 +1,9 @@
+using Common.Domain.Constants;
+using Common.Presentation.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Application.Requests;
-using Common.Domain.Constants;
-using Common.Presentation.Controllers;
 
 namespace PaymentService.API.Controllers;
 

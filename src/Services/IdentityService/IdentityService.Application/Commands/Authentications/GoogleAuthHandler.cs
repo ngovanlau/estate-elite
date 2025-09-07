@@ -1,4 +1,7 @@
 using AutoMapper;
+using Common.Application.Extensions;
+using Common.Application.Responses;
+using Common.Domain.Enums;
 using FluentValidation;
 using IdentityService.Application.Dtos.Authentications;
 using IdentityService.Application.Interfaces;
@@ -6,9 +9,6 @@ using IdentityService.Application.Requests.Authentications;
 using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Common.Domain.Enums;
-using Common.Application.Extensions;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
 
 namespace IdentityService.Application.Commands.Authentications;

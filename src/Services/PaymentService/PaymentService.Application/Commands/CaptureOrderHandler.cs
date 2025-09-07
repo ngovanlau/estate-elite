@@ -1,4 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Common.Application.Responses;
+using Common.Application.Settings;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
+using Contracts.Grpc.Protos;
 using DistributedCache.Redis;
 using FluentValidation;
 using Grpc.Net.Client;
@@ -10,11 +15,6 @@ using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
 using PaymentService.Application.Requests;
 using PaymentService.Domain.Entities;
-using Common.Domain.Enums;
-using Common.Infrastructure.Extensions;
-using Contracts.Grpc.Protos;
-using Common.Application.Responses;
-using Common.Application.Settings;
 using static Common.Domain.Constants.ErrorCode;
 
 namespace PaymentService.Application.Commands;

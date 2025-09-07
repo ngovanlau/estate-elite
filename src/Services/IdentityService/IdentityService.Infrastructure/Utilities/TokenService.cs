@@ -1,20 +1,20 @@
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Infrastructure.Utilities;
 
 using Application.Dtos.Authentications;
 using Application.Interfaces;
-using Domain.Models;
-using Common.Application.Settings;
 using Caching.Configuration;
 using Caching.Services;
+using Common.Application.Settings;
+using Domain.Models;
 
 public class TokenService : ITokenService
 {

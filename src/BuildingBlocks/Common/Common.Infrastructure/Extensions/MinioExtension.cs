@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Common.Infrastructure.Implements;
 using Common.Application.Interfaces;
 using Common.Application.Settings;
+using Common.Infrastructure.Implements;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Common.Infrastructure.Extensions;
 

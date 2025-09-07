@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace IdentityService.Application.Validates.Authentications;
 
+using Common.Application.Validators;
 using IdentityService.Application.Interfaces;
 using Requests.Authentications;
-using Common.Application.Validators;
 using static Common.Domain.Constants.ErrorCode;
 
 

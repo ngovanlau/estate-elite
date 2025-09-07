@@ -1,9 +1,9 @@
+using Common.Application.Settings;
+using Google.Apis.Auth;
 using IdentityService.Application.Dtos.Authentications;
 using IdentityService.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Common.Application.Settings;
-using Google.Apis.Auth;
 
 namespace IdentityService.Infrastructure.Utilities;
 

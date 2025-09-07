@@ -1,6 +1,6 @@
+using Common.Domain.Constants;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Common.Domain.Constants;
 using static Common.Domain.Constants.ErrorCode;
 
 namespace Common.Application.Validators;

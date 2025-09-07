@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using PropertyService.Application.Requests.Properties;
 using static Common.Domain.Constants.ErrorCode;
 

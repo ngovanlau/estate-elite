@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PropertyService.API.Controllers;
 
-using PropertyService.Application.Requests.Utilities;
 using Common.Domain.Constants;
 using Common.Presentation.Controllers;
+using PropertyService.Application.Requests.Utilities;
 
 public class UtilityController(IMediator mediator) : BaseController(mediator)
 {

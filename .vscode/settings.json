@@ -1,1 +1,11 @@
-{}
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "[xml]": {
+    "editor.formatOnSave": false
+  },
+  "[csproj]": {
+    "editor.formatOnSave": false
+  }
+}

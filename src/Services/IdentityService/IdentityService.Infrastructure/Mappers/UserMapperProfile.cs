@@ -4,8 +4,8 @@ namespace IdentityService.Infrastructure.Mappers;
 
 using Application.Dtos.Authentications;
 using Application.Dtos.Users;
-using Domain.Entities;
 using Contracts.Grpc.Protos;
+using Domain.Entities;
 
 public class UserMapperProfile : Profile
 {

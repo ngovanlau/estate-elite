@@ -1,5 +1,5 @@
-using Common.Domain.Enums;
 using System.Text.Json.Serialization;
+using Common.Domain.Enums;
 
 namespace PropertyService.Application.Dtos.Properties;
 

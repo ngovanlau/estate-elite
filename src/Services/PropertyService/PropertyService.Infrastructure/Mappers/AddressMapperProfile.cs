@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 

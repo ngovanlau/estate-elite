@@ -1,15 +1,15 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Common.Domain.Enums;
+using Common.Infrastructure.Extensions;
+using Common.Infrastructure.Implements;
 using Microsoft.EntityFrameworkCore;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
 using SharedKernel.Commons;
-using Common.Domain.Enums;
-using Common.Infrastructure.Extensions;
-using Common.Infrastructure.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 

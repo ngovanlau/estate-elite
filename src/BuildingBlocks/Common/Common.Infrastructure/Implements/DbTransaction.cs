@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
 using Common.Application.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Common.Infrastructure.Implements;
 

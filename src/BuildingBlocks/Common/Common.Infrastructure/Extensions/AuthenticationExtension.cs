@@ -1,12 +1,12 @@
+using System.Text;
+using Common.Application.Interfaces;
+using Common.Application.Settings;
+using Common.Domain.Constants;
+using Common.Infrastructure.Implements;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Common.Domain.Constants;
-using Common.Infrastructure.Implements;
-using Common.Application.Interfaces;
-using Common.Application.Settings;
-using System.Text;
 
 namespace Common.Infrastructure.Extensions;
 

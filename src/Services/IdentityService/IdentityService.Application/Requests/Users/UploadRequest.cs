@@ -1,6 +1,6 @@
+using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System.Text.Json.Serialization;
 
 namespace IdentityService.Application.Requests.Users;
 

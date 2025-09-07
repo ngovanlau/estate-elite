@@ -1,6 +1,6 @@
-﻿using Core.Domain.Primitives;
 using System.Data;
 using System.Linq.Expressions;
+using Core.Domain.Primitives;
 
 namespace Common.Application.Interfaces;
 

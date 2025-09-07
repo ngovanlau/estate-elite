@@ -1,6 +1,6 @@
+using Common.Application.Validators;
 using FluentValidation;
 using IdentityService.Application.Requests.Users;
-using Common.Application.Validators;
 
 namespace IdentityService.Application.Validates.Users;
 

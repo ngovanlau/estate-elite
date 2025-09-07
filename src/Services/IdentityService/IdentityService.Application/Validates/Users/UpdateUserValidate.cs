@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace IdentityService.Application.Validates.Users;
 
-using Requests.Users;
-using Common.Domain.Constants;
 using Common.Application.Validators;
+using Common.Domain.Constants;
+using Requests.Users;
 using static Common.Domain.Constants.ErrorCode;
 
 public class UpdateUserValidate : AbstractValidator<UpdateUserRequest>

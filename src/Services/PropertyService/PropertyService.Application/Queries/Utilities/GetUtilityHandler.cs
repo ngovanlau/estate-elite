@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace PropertyService.Application.Queries.Utilities;
 
+using Common.Application.Responses;
 using DistributedCache.Redis;
 using Interfaces;
 using PropertyService.Application.Dtos.Utilities;
 using PropertyService.Application.Requests.Utilities;
 using PropertyService.Domain.Entities;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
 
 public class GetUtilityHandler(

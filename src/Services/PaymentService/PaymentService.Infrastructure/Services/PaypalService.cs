@@ -1,10 +1,10 @@
+using Common.Domain.Enums;
 using Microsoft.Extensions.Logging;
 using PaymentService.Application.Dtos;
 using PaymentService.Application.Interfaces;
 using PaymentService.Infrastructure.PaymentProviders.Paypal;
 using PaypalServerSdk.Standard.Controllers;
 using PaypalServerSdk.Standard.Models;
-using Common.Domain.Enums;
 
 namespace PaymentService.Infrastructure.Services;
 

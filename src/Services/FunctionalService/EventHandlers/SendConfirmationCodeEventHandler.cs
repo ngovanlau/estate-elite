@@ -1,7 +1,7 @@
-using Serilog;
-using EventBus.RabbitMQ.Events;
 using EventBus.Abstraction.Interfaces;
+using EventBus.RabbitMQ.Events;
 using FunctionalService.Interfaces;
+using Serilog;
 
 namespace FunctionalService.EventHandlers;
 

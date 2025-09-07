@@ -1,4 +1,4 @@
-﻿using SharedKernel.Entities;
+using SharedKernel.Entities;
 
 namespace PropertyService.Domain.Entities;
 

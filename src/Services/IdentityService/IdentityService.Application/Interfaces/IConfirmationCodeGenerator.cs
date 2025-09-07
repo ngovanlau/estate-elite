@@ -1,4 +1,4 @@
-﻿namespace IdentityService.Application.Interfaces;
+namespace IdentityService.Application.Interfaces;
 
 public interface IConfirmationCodeGenerator
 {

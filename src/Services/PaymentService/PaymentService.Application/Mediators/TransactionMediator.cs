@@ -1,8 +1,8 @@
+using Common.Application.Responses;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PaymentService.Application.Commands;
 using PaymentService.Application.Requests;
-using Common.Application.Responses;
 
 namespace PaymentService.Application.Mediators;
 

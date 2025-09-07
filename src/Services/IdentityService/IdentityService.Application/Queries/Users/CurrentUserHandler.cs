@@ -1,16 +1,16 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using IdentityService.Domain.Entities;
+using AutoMapper;
+using Caching.Configuration;
+using Caching.Services;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
 using IdentityService.Application.Dtos.Users;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Requests.Users;
-using Common.Application.Interfaces;
-using Common.Application.Responses;
+using IdentityService.Domain.Entities;
+using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using static Common.Domain.Constants.ErrorCode;
-using Caching.Configuration;
-using Caching.Services;
 
 namespace IdentityService.Application.Queries.Users;
 

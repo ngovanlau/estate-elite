@@ -1,10 +1,10 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using RabbitMQ.Client;
 using EventBus.Abstraction.Interfaces;
 using EventBus.RabbitMQ.Interfaces;
 using EventBus.RabbitMQ.Settings;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 
 namespace EventBus.RabbitMQ.Extensions;
 

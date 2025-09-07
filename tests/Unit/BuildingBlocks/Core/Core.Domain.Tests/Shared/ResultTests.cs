@@ -1,4 +1,4 @@
-﻿using Core.Domain.Shared;
+using Core.Domain.Shared;
 using FluentAssertions;
 using Xunit;
 

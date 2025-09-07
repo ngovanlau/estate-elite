@@ -65,7 +65,7 @@ public sealed class ForbiddenException : ApplicationException
     {
         var exception = new ForbiddenException(
             $"Insufficient permissions to {action} {resource}.");
-        
+
         return (ForbiddenException)exception
             .WithDetail("Resource", resource)
             .WithDetail("Action", action);

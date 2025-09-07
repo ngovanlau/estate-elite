@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PropertyService.Infrastructure.Data;
 
-using Domain.Entities;
 using Common.Infrastructure.Extensions;
+using Domain.Entities;
 
 public static class DbInitializer
 {

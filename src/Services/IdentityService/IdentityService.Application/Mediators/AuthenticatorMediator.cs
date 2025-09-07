@@ -1,8 +1,8 @@
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using Common.Application.Responses;
 using IdentityService.Application.Commands.Authentications;
 using IdentityService.Application.Requests.Authentications;
-using Common.Application.Responses;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IdentityService.Application.Mediators;
 

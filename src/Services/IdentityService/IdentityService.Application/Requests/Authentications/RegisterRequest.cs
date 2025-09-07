@@ -2,8 +2,8 @@ using MediatR;
 
 namespace IdentityService.Application.Requests.Authentications;
 
-using Common.Domain.Enums;
 using Common.Application.Responses;
+using Common.Domain.Enums;
 
 public class RegisterRequest : IRequest<ApiResponse>
 {

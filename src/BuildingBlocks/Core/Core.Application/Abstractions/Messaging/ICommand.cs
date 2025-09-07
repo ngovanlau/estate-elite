@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Why define ICommand and ICommand<TResponse> this way:
  * -----------------------------------------------------
  * 1. CQRS Principle:

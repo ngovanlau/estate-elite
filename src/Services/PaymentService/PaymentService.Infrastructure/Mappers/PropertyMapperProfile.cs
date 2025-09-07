@@ -1,6 +1,6 @@
 using AutoMapper;
-using PaymentService.Application.Dtos;
 using Contracts.Grpc.Protos;
+using PaymentService.Application.Dtos;
 
 namespace PaymentService.Infrastructure.Mappers;
 

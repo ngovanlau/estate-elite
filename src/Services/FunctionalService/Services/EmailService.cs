@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Options;
 using FunctionalService.Interfaces;
-using MailKit.Net.Smtp;
-using MimeKit;
 using FunctionalService.Settings;
+using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace FunctionalService.Services;
 

@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using PropertyService.Application.Dtos.Properties;
+using AutoMapper;
 using Contracts.Grpc.Protos;
+using PropertyService.Application.Dtos.Properties;
 
 namespace PropertyService.Infrastructure.Mappers;
 

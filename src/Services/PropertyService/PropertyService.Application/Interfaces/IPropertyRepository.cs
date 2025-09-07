@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
+using Common.Application.Interfaces;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Commons;
-using Common.Application.Interfaces;
 
 namespace PropertyService.Application.Interfaces;
 

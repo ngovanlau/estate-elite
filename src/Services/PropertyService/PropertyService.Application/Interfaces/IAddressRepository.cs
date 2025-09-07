@@ -1,5 +1,5 @@
-using PropertyService.Domain.Entities;
 using Common.Application.Interfaces;
+using PropertyService.Domain.Entities;
 
 namespace PropertyService.Application.Interfaces;
 

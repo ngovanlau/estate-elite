@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
+using Common.Infrastructure.Extensions;
 using DistributedCache.Redis;
 using FluentValidation;
 using MediatR;
@@ -7,9 +10,6 @@ using PropertyService.Application.Extensions;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using Common.Infrastructure.Extensions;
-using Common.Application.Interfaces;
-using Common.Application.Responses;
 using StackExchange.Redis;
 using static Common.Domain.Constants.ErrorCode;
 

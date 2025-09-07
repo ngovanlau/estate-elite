@@ -1,6 +1,6 @@
 using System;
-using SharedKernel.Entities;
 using Common.Domain.Enums;
+using SharedKernel.Entities;
 
 namespace PaymentService.Domain.Entities;
 

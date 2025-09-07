@@ -1,4 +1,6 @@
-﻿using DistributedCache.Redis;
+using Common.Application.Interfaces;
+using Common.Application.Responses;
+using DistributedCache.Redis;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -7,8 +9,6 @@ using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
 using SharedKernel.Commons;
-using Common.Application.Interfaces;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;

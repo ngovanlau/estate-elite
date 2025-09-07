@@ -1,10 +1,10 @@
+using Common.Application.Interfaces;
 using DistributedCache.Redis;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using Common.Application.Interfaces;
 using StackExchange.Redis;
 
 namespace PropertyService.Application.Commands.Properties;

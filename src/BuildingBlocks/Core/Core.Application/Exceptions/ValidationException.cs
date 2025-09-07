@@ -32,8 +32,8 @@
  *    - Works seamlessly with both FluentValidation and domain-level validations.
  */
 
-using FluentValidation.Results;
 using Core.Domain.Shared;
+using FluentValidation.Results;
 
 namespace Core.Application.Exceptions;
 

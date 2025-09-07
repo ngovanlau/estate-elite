@@ -1,8 +1,8 @@
 namespace PropertyService.Application.Interfaces;
 
+using Common.Application.Interfaces;
 using PropertyService.Application.Dtos.PropertyTypes;
 using PropertyService.Domain.Entities;
-using Common.Application.Interfaces;
 
 public interface IPropertyTypeRepository : IRepository<PropertyType>
 {

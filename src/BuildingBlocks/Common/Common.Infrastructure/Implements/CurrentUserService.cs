@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Common.Domain.Enums;
 using Common.Application.Interfaces;
+using Common.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Common.Infrastructure.Implements;
 

@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using System.Net.Sockets;
+using System.Text;
+using System.Text.Json;
+using EventBus.Abstraction.Interfaces;
+using EventBus.RabbitMQ.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
-using System.Net.Sockets;
-using System.Text;
-using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using EventBus.Abstraction.Interfaces;
-using EventBus.RabbitMQ.Interfaces;
 
 namespace EventBus.RabbitMQ;
 

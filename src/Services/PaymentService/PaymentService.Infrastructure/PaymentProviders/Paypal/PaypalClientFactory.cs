@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+using Common.Application.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PaypalServerSdk.Standard;
 using PaypalServerSdk.Standard.Authentication;
-using Common.Application.Settings;
 
 namespace PaymentService.Infrastructure.PaymentProviders.Paypal;
 

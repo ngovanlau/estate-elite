@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PropertyService.Application.Mediators;
 
+using Common.Application.Responses;
 using Queries.Utilities;
 using Requests.Utilities;
-using Common.Application.Responses;
 
 public static class UtilityMediator
 {

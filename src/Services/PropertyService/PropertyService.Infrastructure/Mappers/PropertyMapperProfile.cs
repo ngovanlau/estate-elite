@@ -1,9 +1,9 @@
 using AutoMapper;
+using Common.Domain.Enums;
+using Contracts.Grpc.Protos;
 using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using Common.Domain.Enums;
-using Contracts.Grpc.Protos;
 
 namespace PropertyService.Infrastructure.Mappers;
 

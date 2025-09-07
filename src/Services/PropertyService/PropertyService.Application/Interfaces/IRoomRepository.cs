@@ -2,9 +2,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace PropertyService.Application.Interfaces;
 
+using Common.Application.Interfaces;
 using PropertyService.Application.Dtos.Rooms;
 using PropertyService.Domain.Entities;
-using Common.Application.Interfaces;
 
 public interface IRoomRepository : IRepository<Room>
 {

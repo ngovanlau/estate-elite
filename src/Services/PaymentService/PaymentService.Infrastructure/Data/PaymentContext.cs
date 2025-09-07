@@ -1,6 +1,6 @@
+using Common.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PaymentService.Domain.Entities;
-using Common.Infrastructure.Extensions;
 
 namespace PaymentService.Infrastructure.Data;
 

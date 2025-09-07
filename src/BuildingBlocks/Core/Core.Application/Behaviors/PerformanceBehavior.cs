@@ -36,9 +36,9 @@
  *    - In production, you may integrate with APM tools (e.g., OpenTelemetry, Application Insights).
  */
 
+using System.Diagnostics;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 
 namespace Core.Application.Behaviors;
 

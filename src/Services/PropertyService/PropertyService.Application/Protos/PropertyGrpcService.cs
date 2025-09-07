@@ -1,10 +1,10 @@
+using Common.Domain.Enums;
+using Contracts.Grpc.Protos;
 using DistributedCache.Redis;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
-using Common.Domain.Enums;
-using Contracts.Grpc.Protos;
 using StackExchange.Redis;
 
 namespace PropertyService.Application.Protos;

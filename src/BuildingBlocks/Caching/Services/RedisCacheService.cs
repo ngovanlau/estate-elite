@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using StackExchange.Redis;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 
 namespace Caching.Services;
 

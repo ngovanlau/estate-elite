@@ -1,31 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PaymentService.Infrastructure.Migrations
+namespace PaymentService.Infrastructure.Migrations;
+
+/// <inheritdoc />
+public partial class AddRentalPeriodForTransaction : Migration
 {
     /// <inheritdoc />
-    public partial class AddRentalPeriodForTransaction : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<int>(
-                name: "RentalPeriod",
-                schema: "payment",
-                table: "Transactions",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-        }
+        migrationBuilder.AddColumn<int>(
+            name: "RentalPeriod",
+            schema: "payment",
+            table: "Transactions",
+            type: "integer",
+            nullable: false,
+            defaultValue: 0);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "RentalPeriod",
-                schema: "payment",
-                table: "Transactions");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "RentalPeriod",
+            schema: "payment",
+            table: "Transactions");
     }
 }

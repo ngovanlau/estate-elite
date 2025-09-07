@@ -1,8 +1,8 @@
+using Common.Application.Interfaces;
+using Common.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using PropertyService.Domain.Entities;
-using Common.Infrastructure.Extensions;
-using Common.Application.Interfaces;
 
 namespace PropertyService.Application.Extensions;
 

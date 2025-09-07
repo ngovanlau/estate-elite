@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PropertyService.API.Controllers;
 
-using PropertyService.Application.Requests.Rooms;
 using Common.Domain.Constants;
 using Common.Presentation.Controllers;
+using PropertyService.Application.Requests.Rooms;
 
 public class RoomController(IMediator mediator) : BaseController(mediator)
 {

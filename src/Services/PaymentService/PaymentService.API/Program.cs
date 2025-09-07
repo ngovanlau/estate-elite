@@ -1,3 +1,7 @@
+using System.Reflection;
+using System.Text.Json.Serialization;
+using Common.Application.Settings;
+using Common.Infrastructure.Extensions;
 using DistributedCache.Redis.Extensions;
 using EventBus.RabbitMQ.Extensions;
 using Microsoft.AspNetCore.Http.Json;
@@ -7,11 +11,7 @@ using PaymentService.Infrastructure.Data;
 using PaymentService.Infrastructure.Extensions;
 using Serilog;
 using SharedKernel.Commons;
-using Common.Infrastructure.Extensions;
 using SharedKernel.Middleware;
-using Common.Application.Settings;
-using System.Reflection;
-using System.Text.Json.Serialization;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()

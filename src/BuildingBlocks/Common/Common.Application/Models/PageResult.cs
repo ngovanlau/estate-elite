@@ -1,4 +1,4 @@
-﻿namespace Common.Application.Models;
+namespace Common.Application.Models;
 
 public sealed record class PageResult<T> where T : class
 {

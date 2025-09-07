@@ -38,10 +38,10 @@
  * - Extensibility (can easily add mappings for domain/application errors).
  */
 
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Core.Application.Middlewares;
 

@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace PropertyService.Application.Queries.PropertyTypes;
 
+using Common.Application.Responses;
 using DistributedCache.Redis;
 using Dtos.PropertyTypes;
 using Interfaces;
 using PropertyService.Domain.Entities;
 using Requests.PropertyTypes;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
 
 public class GetPropertyTypeHandler(

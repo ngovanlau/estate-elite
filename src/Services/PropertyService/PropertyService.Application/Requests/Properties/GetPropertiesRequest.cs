@@ -1,6 +1,6 @@
-using MediatR;
 using Common.Application.Requests;
 using Common.Application.Responses;
+using MediatR;
 
 namespace PropertyService.Application.Requests.Properties;
 

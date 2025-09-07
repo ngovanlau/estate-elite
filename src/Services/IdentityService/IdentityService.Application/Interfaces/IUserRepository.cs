@@ -1,7 +1,7 @@
-using IdentityService.Domain.Entities;
+using Common.Application.Interfaces;
 using IdentityService.Application.Dtos.Authentications;
 using IdentityService.Application.Dtos.Users;
-using Common.Application.Interfaces;
+using IdentityService.Domain.Entities;
 
 namespace IdentityService.Application.Interfaces;
 

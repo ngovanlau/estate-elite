@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace IdentityService.Application.Mediators;
 
 using Commands.Users;
+using Common.Application.Responses;
 using Queries.Users;
 using Requests.Users;
-using Common.Application.Responses;
 
 public static class UserMediator
 {

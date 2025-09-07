@@ -1,5 +1,5 @@
-using FluentValidation.Results;
 using Common.Application.Dtos;
+using FluentValidation.Results;
 
 namespace Common.Infrastructure.Extensions;
 

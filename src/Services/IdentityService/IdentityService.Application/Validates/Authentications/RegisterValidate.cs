@@ -1,10 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 
 namespace IdentityService.Application.Validates.Authentications;
 
-using Requests.Authentications;
-using Common.Domain.Enums;
 using Common.Application.Validators;
+using Common.Domain.Enums;
+using Requests.Authentications;
 
 public class RegisterValidate : AbstractValidator<RegisterRequest>
 {

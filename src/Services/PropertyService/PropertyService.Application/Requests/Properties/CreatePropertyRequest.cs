@@ -1,12 +1,12 @@
-﻿using MediatR;
+using MediatR;
 
 namespace PropertyService.Application.Requests.Properties;
 
+using Common.Application.Responses;
+using Common.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel.Commons;
-using Common.Domain.Enums;
-using Common.Application.Responses;
 
 public sealed record CreatePropertyRequest : IRequest<ApiResponse>
 {

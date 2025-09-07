@@ -1,4 +1,4 @@
-﻿namespace Common.Application.Requests;
+namespace Common.Application.Requests;
 
 public abstract class PageRequest
 {

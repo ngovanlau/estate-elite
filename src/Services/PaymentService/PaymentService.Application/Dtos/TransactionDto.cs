@@ -1,4 +1,4 @@
-﻿using Common.Domain.Enums;
+using Common.Domain.Enums;
 
 namespace PaymentService.Application.Dtos;
 

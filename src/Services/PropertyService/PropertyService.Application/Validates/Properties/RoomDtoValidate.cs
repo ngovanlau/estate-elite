@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using PropertyService.Application.Requests.Properties;
 
 namespace PropertyService.Application.Validates.Properties;

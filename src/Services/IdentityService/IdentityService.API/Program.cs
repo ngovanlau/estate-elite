@@ -1,4 +1,12 @@
-﻿using EventBus.RabbitMQ.Extensions;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using Caching.Extensions;
+using Common.Application.Interceptors;
+using Common.Application.Settings;
+using Common.Infrastructure.Extensions;
+using Common.Infrastructure.Middleware;
+using Common.Presentation.Converters;
+using EventBus.RabbitMQ.Extensions;
 using IdentityService.Application.Mediators;
 using IdentityService.Application.Protos;
 using IdentityService.Infrastructure.Data;
@@ -7,14 +15,6 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Common.Application.Settings;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using Common.Infrastructure.Extensions;
-using Common.Presentation.Converters;
-using Caching.Extensions;
-using Common.Application.Interceptors;
-using Common.Infrastructure.Middleware;
 
 // Setup initial logger for startup errors
 Log.Logger = new LoggerConfiguration()

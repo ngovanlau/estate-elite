@@ -1,4 +1,4 @@
-﻿namespace PropertyService.Domain.Entities;
+namespace PropertyService.Domain.Entities;
 
 public class PropertyRoom
 {

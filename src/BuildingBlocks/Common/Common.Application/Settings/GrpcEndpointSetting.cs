@@ -1,4 +1,4 @@
-﻿namespace Common.Application.Settings;
+namespace Common.Application.Settings;
 
 public sealed record GrpcEndpointSetting(
     string Identity,

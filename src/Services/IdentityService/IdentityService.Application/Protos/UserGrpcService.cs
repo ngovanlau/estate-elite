@@ -1,7 +1,7 @@
 
+using Contracts.Grpc.Protos;
 using Grpc.Core;
 using IdentityService.Application.Interfaces;
-using Contracts.Grpc.Protos;
 
 namespace IdentityService.Application.Protos;
 

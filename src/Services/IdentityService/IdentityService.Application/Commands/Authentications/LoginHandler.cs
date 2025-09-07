@@ -1,10 +1,10 @@
+using Common.Application.Responses;
 using FluentValidation;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using IdentityService.Application.Dtos.Authentications;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Requests.Authentications;
-using Common.Application.Responses;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using static Common.Domain.Constants.ErrorCode;
 
 namespace IdentityService.Application.Commands.Authentications;

@@ -1,8 +1,8 @@
 using AutoMapper;
+using Common.Infrastructure.Implements;
 using PropertyService.Application.Interfaces;
 using PropertyService.Domain.Entities;
 using PropertyService.Infrastructure.Data;
-using Common.Infrastructure.Implements;
 
 namespace PropertyService.Infrastructure.Repositories;
 

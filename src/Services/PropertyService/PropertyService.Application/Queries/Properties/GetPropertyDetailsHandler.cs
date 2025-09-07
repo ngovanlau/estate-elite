@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Common.Application.Responses;
+using Common.Application.Settings;
+using Common.Infrastructure.Extensions;
+using Contracts.Grpc.Protos;
 using DistributedCache.Redis;
 using FluentValidation;
 using Grpc.Net.Client;
@@ -10,10 +14,6 @@ using PropertyService.Application.Dtos.Properties;
 using PropertyService.Application.Interfaces;
 using PropertyService.Application.Requests.Properties;
 using PropertyService.Domain.Entities;
-using Common.Infrastructure.Extensions;
-using Contracts.Grpc.Protos;
-using Common.Application.Responses;
-using Common.Application.Settings;
 using static Common.Domain.Constants.ErrorCode;
 
 namespace PropertyService.Application.Queries.Properties;

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using PaymentService.Application.Dtos;
 using PaymentService.Domain.Entities;
 

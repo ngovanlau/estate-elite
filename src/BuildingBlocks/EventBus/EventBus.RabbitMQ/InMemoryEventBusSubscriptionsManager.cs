@@ -1,6 +1,6 @@
-﻿using EventBus.Abstraction;
-using EventBus.Abstraction.Interfaces;
 using System.Collections.Concurrent;
+using EventBus.Abstraction;
+using EventBus.Abstraction.Interfaces;
 
 namespace EventBus.RabbitMQ;
 

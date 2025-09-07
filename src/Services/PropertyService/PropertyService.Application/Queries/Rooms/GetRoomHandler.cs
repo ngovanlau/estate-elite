@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace PropertyService.Application.Queries.Rooms;
 
+using Common.Application.Responses;
 using DistributedCache.Redis;
 using Interfaces;
 using PropertyService.Application.Dtos.Rooms;
 using PropertyService.Application.Requests.Rooms;
 using PropertyService.Domain.Entities;
-using Common.Application.Responses;
 using static Common.Domain.Constants.ErrorCode;
 
 public class GetRoomHandler(

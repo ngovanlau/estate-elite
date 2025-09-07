@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PropertyService.Infrastructure.Data;
 
-using Domain.Entities;
 using Common.Domain.Enums;
 using Common.Infrastructure.Extensions;
+using Domain.Entities;
 
 public class PropertyContext(DbContextOptions<PropertyContext> options) : DbContext(options)
 {

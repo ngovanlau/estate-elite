@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Common.Presentation.ModelBinders;
 

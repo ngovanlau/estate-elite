@@ -1,4 +1,4 @@
-﻿namespace Common.Application.Interfaces;
+namespace Common.Application.Interfaces;
 
 public interface ITransaction : IDisposable
 {

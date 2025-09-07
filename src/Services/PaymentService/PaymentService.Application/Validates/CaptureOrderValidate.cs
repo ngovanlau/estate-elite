@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using PaymentService.Application.Requests;
 
 namespace PaymentService.Application.Validates;

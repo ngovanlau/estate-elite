@@ -1,19 +1,19 @@
+using Caching.Configuration;
+using Caching.Services;
+using Common.Application.Responses;
+using Common.Application.Settings;
+using EventBus.Abstraction.Interfaces;
+using EventBus.RabbitMQ.Events;
+using FluentValidation;
+using IdentityService.Application.Dtos.Authentications;
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Requests.Authentications;
+using IdentityService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using IdentityService.Domain.Entities;
-using IdentityService.Application.Dtos.Authentications;
-using EventBus.RabbitMQ.Events;
-using FluentValidation;
-using IdentityService.Application.Interfaces;
-using IdentityService.Application.Requests.Authentications;
-using Common.Application.Responses;
-using Common.Application.Settings;
 using static Common.Domain.Constants.ErrorCode;
-using EventBus.Abstraction.Interfaces;
-using Caching.Configuration;
-using Caching.Services;
 
 namespace IdentityService.Application.Commands.Authentications;
 
